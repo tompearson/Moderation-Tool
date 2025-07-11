@@ -223,6 +223,25 @@ Be thorough in your analysis and reference specific rules from the guidelines.`;
             <div className="reason">
               {result.reason}
             </div>
+            <button 
+              className="copy-button"
+              onClick={() => {
+                const textToCopy = `Decision: ${result.decision}\n\nReason: ${result.reason}`;
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                  // Optional: Show a brief "Copied!" message
+                  const button = document.querySelector('.copy-button');
+                  const originalText = button.textContent;
+                  button.textContent = 'Copied!';
+                  setTimeout(() => {
+                    button.textContent = originalText;
+                  }, 2000);
+                }).catch(err => {
+                  console.error('Failed to copy: ', err);
+                });
+              }}
+            >
+              Copy Result
+            </button>
           </div>
         )}
       </div>
