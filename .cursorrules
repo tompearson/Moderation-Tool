@@ -1,0 +1,57 @@
+# Nextdoor Community Moderation Rules (.cursorrules)
+
+## Purpose
+Check whether a flagged post violates Nextdoor's Community Guidelines.  
+Decide if it should be removed or kept.
+
+## When reviewing a post:
+- Read the post carefully.
+- Compare the content to each rule below.
+- If any rule is violated, say which one and why.
+
+---
+
+## Rules
+
+### 1. Be Respectful
+- No hate speech, slurs, or harassment.
+- No threats or intimidation.
+- No name-calling, personal attacks, or insults.
+- Excessive profanity aimed at others is not allowed.
+
+### 2. Keep It Relevant
+- Posts must be relevant to the local community.
+- Do not share unrelated national politics or off-topic content.
+
+### 3. Do Not Discriminate
+- No content that discriminates or promotes hate based on race, ethnicity, religion, gender, sexual orientation, disability, or age.
+
+### 4. No Misinformation
+- Do not share false or misleading information that could harm others.
+- Health, safety, or crime claims must be accurate.
+
+### 5. Respect Privacy
+- Do not share someone’s private information without consent (addresses, phone numbers, etc.).
+- No doxxing.
+
+### 6. No Prohibited Content
+- No violence or calls for violence.
+- No promotion of criminal acts.
+- No adult sexual content or explicit material.
+- No spam, scams, or fraudulent schemes.
+
+### 7. Civil Tone
+- Use civil language.
+- Avoid aggressive or offensive tone.
+
+---
+
+## Output Format
+
+When you analyze a post, always respond like this:
+
+**Decision:** [Remove] or [Keep]  
+**Reason:** [State the specific rule(s) and exactly why this post violates or does not violate them.]
+
+Example output:
+
