@@ -121,6 +121,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
+  const [showRules, setShowRules] = useState(false);
 
   const tryModel = async (modelName, prompt, retryCount = 0) => {
     console.log('DEBUG: tryModel function called with model:', modelName);
@@ -239,6 +240,7 @@ IMPORTANT: Keep your response brief and concise. Focus on the most relevant rule
       <div className="header">
         <h1>Nextdoor Moderation Tool</h1>
         <p>AI-powered post moderation using Nextdoor Community Guidelines</p>
+        <div className="version">v0.2.0-alpha</div>
       </div>
       
       <div className="content">
@@ -268,20 +270,31 @@ IMPORTANT: Keep your response brief and concise. Focus on the most relevant rule
             )}
           </div>
 
-          <button 
-            type="submit" 
-            className="button" 
-            disabled={isLoading || !postContent.trim()}
-          >
-            {isLoading ? (
-              <div className="loading">
-                <div className="spinner"></div>
-                Analyzing post...
-              </div>
-            ) : (
-              'Analyze Post'
-            )}
-          </button>
+          <div className="button-group">
+            <button 
+              type="submit" 
+              className="button" 
+              disabled={isLoading || !postContent.trim()}
+            >
+              {isLoading ? (
+                <div className="loading">
+                  <div className="spinner"></div>
+                  Analyzing post...
+                </div>
+              ) : (
+                'Analyze Post'
+              )}
+            </button>
+            
+            <button 
+              type="button" 
+              className="button rules-button"
+              onClick={() => setShowRules(true)}
+              disabled={isLoading}
+            >
+              📋 Show Rules
+            </button>
+          </div>
         </form>
 
         {error && (
@@ -321,6 +334,146 @@ IMPORTANT: Keep your response brief and concise. Focus on the most relevant rule
           </div>
         )}
       </div>
+
+      {/* Rules Modal */}
+      {showRules && (
+        <div className="modal-overlay" onClick={() => setShowRules(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2>📋 Nextdoor Community Guidelines</h2>
+              <button 
+                className="modal-close"
+                onClick={() => setShowRules(false)}
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="modal-body">
+              <div className="rules-content">
+                <div className="rules-section">
+                  <h3>🎯 Purpose</h3>
+                  <p>Check whether a flagged post violates Nextdoor's Community Guidelines. Decide if it should be removed or kept.</p>
+                </div>
+
+                <div className="rules-section">
+                  <h3>📍 Local Coverage</h3>
+                  <div className="zip-codes">
+                    <h4>Portland Metro Area Zip Codes:</h4>
+                    <div className="zip-grid">
+                      <div className="zip-group">
+                        <strong>Hillsboro:</strong> 97124
+                      </div>
+                      <div className="zip-group">
+                        <strong>Beaverton:</strong> 97006, 97003, 97078
+                      </div>
+                      <div className="zip-group">
+                        <strong>Cornelius:</strong> 97113
+                      </div>
+                      <div className="zip-group">
+                        <strong>Forest Grove:</strong> 97116
+                      </div>
+                      <div className="zip-group">
+                        <strong>Gaston:</strong> 97119
+                      </div>
+                      <div className="zip-group">
+                        <strong>Newburg:</strong> 97132
+                      </div>
+                      <div className="zip-group">
+                        <strong>Sherwood:</strong> 97140
+                      </div>
+                      <div className="zip-group">
+                        <strong>Portland:</strong> 97086, 97201-97206, 97209-97214, 97215-97220, 97221-97225, 97227, 97229-97233, 97236, 97252, 97253, 97267
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="rules-section">
+                  <h3>📜 Community Rules</h3>
+                  
+                  <div className="rule-item">
+                    <h4>1. 🤝 Be Respectful</h4>
+                    <ul>
+                      <li>No hate speech, slurs, or harassment</li>
+                      <li>No threats or intimidation</li>
+                      <li>No name-calling, personal attacks, or insults</li>
+                      <li>Excessive profanity aimed at others is not allowed</li>
+                    </ul>
+                  </div>
+
+                  <div className="rule-item">
+                    <h4>2. 🎯 Keep It Relevant</h4>
+                    <ul>
+                      <li>Posts must be relevant to the local community</li>
+                      <li>Do not share unrelated national politics or off-topic content</li>
+                    </ul>
+                  </div>
+
+                  <div className="rule-item">
+                    <h4>3. ❌ Do Not Discriminate</h4>
+                    <ul>
+                      <li>No content that discriminates or promotes hate based on race, ethnicity, religion, gender, sexual orientation, disability, or age</li>
+                    </ul>
+                  </div>
+
+                  <div className="rule-item">
+                    <h4>4. ✅ No Misinformation</h4>
+                    <ul>
+                      <li>Do not share false or misleading information that could harm others</li>
+                      <li>Health, safety, or crime claims must be accurate</li>
+                      <li>Do not allow misinformation about politics and election topics</li>
+                    </ul>
+                  </div>
+
+                  <div className="rule-item">
+                    <h4>5. 🔒 Respect Privacy</h4>
+                    <ul>
+                      <li>Do not share someone's private information without consent (addresses, phone numbers, etc.)</li>
+                      <li>No doxxing</li>
+                    </ul>
+                  </div>
+
+                  <div className="rule-item">
+                    <h4>6. 🚫 No Prohibited Content</h4>
+                    <ul>
+                      <li>No violence or calls for violence</li>
+                      <li>No promotion of criminal acts</li>
+                      <li>No adult sexual content or explicit material</li>
+                      <li>No spam, scams, or fraudulent schemes</li>
+                      <li>No public shaming</li>
+                      <li>No selling or promoting illegal goods or services</li>
+                    </ul>
+                  </div>
+
+                  <div className="rule-item">
+                    <h4>7. 🗣️ Civil Tone</h4>
+                    <ul>
+                      <li>Use civil language</li>
+                      <li>Avoid aggressive or offensive tone</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="rules-section">
+                  <h3>⚖️ Moderation Approach</h3>
+                  <div className="moderation-guidelines">
+                    <p><strong>Our AI uses a balanced, lenient approach:</strong></p>
+                    <ul>
+                      <li>When in doubt, err on the side of keeping posts</li>
+                      <li>Only remove posts that clearly and definitively violate rules</li>
+                      <li>Consider context and intent of the post</li>
+                      <li>Allow legitimate expression of concerns, even if emotional</li>
+                      <li>Be especially lenient with local community content</li>
+                      <li>Minor violations are generally kept with warnings</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

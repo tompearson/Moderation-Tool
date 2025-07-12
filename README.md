@@ -6,12 +6,14 @@ An AI-powered web application for moderating Nextdoor posts using Google's Gemin
 
 - 🤖 AI-powered post analysis using Google Gemini Pro
 - 📋 Automatic loading of Nextdoor Community Guidelines from `.cursorrules`
+- 📖 **Show Rules modal** - Beautiful, organized display of all community guidelines
 - 🎨 Modern, responsive UI with beautiful styling
 - ⚡ Real-time analysis with loading states
 - 🔒 Secure API key handling (stored locally)
 - 📱 Mobile-friendly design
 - 📋 Copy button for easy sharing of moderation results
 - 🧪 Comprehensive testing framework with 17+ test cases
+- 🏷️ **Version indicator** - Discrete version number display (v0.2.0-alpha)
 
 ## Prerequisites
 
@@ -139,11 +141,16 @@ To access the app from other devices on your network:
    - Enter it in the "Google AI API Key" field
    - Your key is stored locally and never sent to our servers
 
-2. **Paste a flagged post**
+2. **Review the guidelines (optional)**
+   - Click the "📋 Show Rules" button to view all Nextdoor Community Guidelines
+   - The modal displays organized sections with local zip codes and moderation approach
+   - Perfect for reference during moderation decisions
+
+3. **Paste a flagged post**
    - Copy the content of a flagged Nextdoor post
    - Paste it into the "Flagged Post Content" text area
 
-3. **Analyze the post**
+4. **Analyze the post**
    - Click "Analyze Post" to send the content to Gemini
    - The AI will review the post against Nextdoor's Community Guidelines
    - Results will show the decision (Remove/Keep) and detailed reasoning
