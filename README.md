@@ -11,6 +11,7 @@ An AI-powered web application for moderating Nextdoor posts using Google's Gemin
 - 🔒 Secure API key handling (stored locally)
 - 📱 Mobile-friendly design
 - 📋 Copy button for easy sharing of moderation results
+- 🧪 Comprehensive testing framework with 17+ test cases
 
 ## Prerequisites
 
@@ -176,12 +177,42 @@ The tool uses the Nextdoor Community Guidelines defined in `.cursorrules`:
 - Implementing proper API key management
 - Adding rate limiting and usage monitoring
 
+## Testing Framework
+
+### Test Posts
+
+The project includes a comprehensive testing framework with structured test cases:
+
+- **`test-posts.md`** - Complete test suite with 17+ test cases
+- **Public Gist** - [View test posts online](https://gist.github.com/tompearson/8062df3075486e944bf436bc596be0f2)
+
+#### Test Categories:
+- **Posts that should be REMOVED** (7 examples) - Hate speech, threats, misinformation, etc.
+- **Posts that should be KEPT** (5 examples) - Legitimate local concerns, community events
+- **Borderline cases** (3 examples) - Test AI judgment capabilities
+- **Complex cases** (2 examples) - Multiple issues in single posts
+
+#### Using the Test Framework:
+1. Copy a test post from the Gist or `test-posts.md`
+2. Paste it into the moderation tool
+3. Compare AI decision with expected result
+4. Use the Clear button to reset for next test
+
+### Automated Testing
+
+The test posts are designed to verify:
+- ✅ **Accuracy** across different violation types
+- ✅ **Consistency** in AI decisions
+- ✅ **Edge case handling** for borderline situations
+- ✅ **Error handling** for invalid content
+
 ## Development
 
 ### Project Structure
 ```
 ModerationTool/
 ├── .cursorrules          # Nextdoor Community Guidelines
+├── test-posts.md         # Comprehensive test cases
 ├── package.json          # Dependencies and scripts
 ├── vite.config.js        # Vite configuration
 ├── index.html            # Main HTML file

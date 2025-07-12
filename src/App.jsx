@@ -5,16 +5,24 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 const MODERATION_RULES = `# Nextdoor Community Moderation Rules (.cursorrules)
 
 ## Purpose
-
-
 Check whether a flagged post violates Nextdoor's Community Guidelines.  
 Decide if it should be removed or kept.
-Nextdoor aims to foster strong, helpful, and authentic local communities by facilitating relevant discussions and mutual communication among neighbors.
 
 ## When reviewing a post:
 - Read the post carefully.
 - Compare the content to each rule below.
 - If any rule is violated, say which one and why.
+- There are no specific "cival tone' guidelines but the goal of the guidelines is to create a safe, respectful inclusive space where neighbors can build stronger communities through constructive conversations. Nextdoor is a locally focused platform, not a place for discussing events in other states.
+
+## Local zip codes
+97124, 97123 Hillsboro, Oregon
+97006, 97003, 97078 Beaverton, Oregon
+97113 Cornelius, Oregon
+97116 Forest Grove, Oregon
+97119 Gaston, Oregon
+97132 Newburg, Oregon
+97140 Sherwood, Oregon
+
 
 ---
 
@@ -25,6 +33,7 @@ Nextdoor aims to foster strong, helpful, and authentic local communities by faci
 - No threats or intimidation.
 - No name-calling, personal attacks, or insults.
 - Excessive profanity aimed at others is not allowed.
+- If the post is respectful and focuses on a legitimate neighborhood concern without singling out or attacking the neighbor
 
 ### 2. Keep It Relevant
 - Posts must be relevant to the local community.
@@ -36,6 +45,7 @@ Nextdoor aims to foster strong, helpful, and authentic local communities by faci
 ### 4. No Misinformation
 - Do not share false or misleading information that could harm others.
 - Health, safety, or crime claims must be accurate.
+- Do not allow misinformation about politics and election topics    
 
 ### 5. Respect Privacy
 - Do not share someone's private information without consent (addresses, phone numbers, etc.).
@@ -46,6 +56,10 @@ Nextdoor aims to foster strong, helpful, and authentic local communities by faci
 - No promotion of criminal acts.
 - No adult sexual content or explicit material.
 - No spam, scams, or fraudulent schemes.
+- Public shaming
+- Threats or harassment
+- Selling or promoting illegal goods or services 
+- Spam or misinformation
 
 ### 7. Civil Tone
 - Use civil language.
