@@ -108,10 +108,22 @@ This file contains various test posts to verify the moderation tool's accuracy i
 **Expected:** Remove - Contains both acceptable and unacceptable content
 ```
 
-#### 4.2 Emotional but Not Violating
+### 5. Real User Posts (Actual Content)
+
+This section contains real posts from users that need moderation decisions. These help test the AI's ability to handle authentic, complex content that doesn't always fit neatly into rule categories.
+
+#### 5.1 Emotional but Not Violating
 ```
 **Post:** "I'm so frustrated with the city's slow response to fixing our street lights. It's been months and our neighborhood is getting dangerous at night. This is ridiculous!"
 **Expected:** Keep - Frustration expressed but not threatening or uncivil
+**Notes:** Tests the boundary between expressing legitimate frustration and being uncivil
+```
+
+#### 5.2 Example Real Post
+```
+**Post:** [Real user post content here]
+**Expected:** [Expected decision based on analysis]
+**Notes:** [Any special considerations or edge cases]
 ```
 
 ## Usage Instructions
