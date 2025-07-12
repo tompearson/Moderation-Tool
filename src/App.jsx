@@ -157,6 +157,10 @@ Be thorough in your analysis and reference specific rules from the guidelines.`;
             setError('Invalid API key. Please check the configuration.');
           } else if (err.message.includes('QUOTA_EXCEEDED')) {
             setError('API quota exceeded. Please check your Google AI usage limits.');
+          } else if (err.message.includes('SAFETY')) {
+            setError('Content was blocked by safety filters. Please try with different content.');
+          } else if (err.message.includes('PERMISSION_DENIED')) {
+            setError('API key does not have access to this model. Please check your API permissions.');
           } else if (err.message.includes('overloaded')) {
             setError('All models are currently overloaded. Please try again in a few minutes.');
           } else if (err.message.includes('models/') && err.message.includes('not found')) {
@@ -190,6 +194,20 @@ Be thorough in your analysis and reference specific rules from the guidelines.`;
               placeholder="Paste the flagged Nextdoor post here..."
               disabled={isLoading}
             />
+            {postContent && (
+              <button 
+                type="button"
+                className="clear-button"
+                onClick={() => {
+                  setPostContent('');
+                  setResult(null);
+                  setError('');
+                }}
+                disabled={isLoading}
+              >
+                Clear Content
+              </button>
+            )}
           </div>
 
           <button 
