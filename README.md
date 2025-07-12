@@ -10,12 +10,14 @@ An AI-powered web application for moderating Nextdoor posts using Google's Gemin
 - ⚡ Real-time analysis with loading states
 - 🔒 Secure API key handling (stored locally)
 - 📱 Mobile-friendly design
+- 📋 Copy button for easy sharing of moderation results
 
 ## Prerequisites
 
 - Node.js (version 16 or higher)
 - npm or yarn
 - Google AI API key (get one at [https://makersuite.google.com/app/apikey](https://makersuite.google.com/app/apikey))
+- mkcert (optional, for HTTPS development) - [Installation guide](https://github.com/FiloSottile/mkcert#installation)
 
 ## Installation
 
@@ -37,6 +39,97 @@ An AI-powered web application for moderating Nextdoor posts using Google's Gemin
 
 4. **Open your browser**
    The application will automatically open at `http://localhost:3000`
+
+## HTTPS Development Setup (Optional)
+
+For secure local development with HTTPS (recommended for clipboard API and modern browser features), you can set up mkcert to generate trusted local certificates.
+
+### Installing mkcert
+
+#### Windows (using Chocolatey)
+```bash
+choco install mkcert
+```
+
+#### macOS (using Homebrew)
+```bash
+brew install mkcert
+```
+
+#### Linux (Ubuntu/Debian)
+```bash
+sudo apt install mkcert
+```
+
+#### Manual Installation
+Download from [https://github.com/FiloSottile/mkcert#installation](https://github.com/FiloSottile/mkcert#installation)
+
+### Setting up HTTPS
+
+1. **Install the root certificate**
+   ```bash
+   mkcert -install
+   ```
+
+2. **Generate certificates for localhost and your network IP**
+   ```bash
+   # For localhost only
+   mkcert localhost
+   
+   # For localhost and network access (replace with your IP)
+   mkcert localhost 192.168.254.204
+   ```
+
+3. **Update Vite configuration**
+   The project is already configured to use mkcert certificates. If you generated new certificates, update the filenames in `vite.config.js`:
+   ```javascript
+   https: {
+     key: fs.readFileSync('./localhost-key.pem'),
+     cert: fs.readFileSync('./localhost.pem')
+   }
+   ```
+
+4. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+5. **Access your app**
+   - Local: `https://localhost:3000/`
+   - Network: `https://192.168.254.204:3000/` (replace with your IP)
+
+### Benefits of HTTPS Development
+
+- ✅ **Clipboard API works** - Copy button functionality requires secure context
+- ✅ **No certificate warnings** - Trusted local certificates
+- ✅ **Modern browser features** - All APIs work as expected
+- ✅ **Network access** - Access from other devices on your network
+- ✅ **Production-like environment** - Closer to real-world deployment
+
+### Network Access
+
+To access the app from other devices on your network:
+
+1. **Find your computer's IP address**
+   ```bash
+   # Windows
+   ipconfig
+   
+   # macOS/Linux
+   ifconfig
+   ```
+
+2. **Generate certificates including your IP**
+   ```bash
+   mkcert localhost 192.168.254.204
+   ```
+
+3. **Install mkcert on other devices** (optional, for trusted certificates)
+   - Install mkcert on the other device
+   - Run `mkcert -install` to trust the root certificate
+
+4. **Access from other devices**
+   - Use `https://YOUR_IP:3000/` from any device on the network
 
 ## Usage
 
