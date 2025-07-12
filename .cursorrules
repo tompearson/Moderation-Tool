@@ -8,6 +8,50 @@ Decide if it should be removed or kept.
 - Read the post carefully.
 - Compare the content to each rule below.
 - If any rule is violated, say which one and why.
+- There are no specific "civil tone' guidelines but the goal of the guidelines is to create a safe, respectful inclusive space where neighbors can build stronger communities through constructive conversations. Nextdoor is a locally focused platform, not a place for discussing events in other states.
+
+## Local zip codes
+HILLSBORO OR 97124
+BEAVERTON OR 97006, 97003, 97078
+CORNELIUS OR 97113
+FOREST GROVE OR 97116
+GASTON OR 97119
+NEWBURG OR 97132
+SHERWOOD OR 97140
+PORTLAND OR 97086
+PORTLAND OR 97201
+PORTLAND OR 97202
+PORTLAND OR 97203
+PORTLAND OR 97204
+PORTLAND OR 97205
+PORTLAND OR 97206
+PORTLAND OR 97209
+PORTLAND OR 97210
+PORTLAND OR 97211
+PORTLAND OR 97212
+PORTLAND OR 97213
+PORTLAND OR 97214
+PORTLAND OR 97215
+PORTLAND OR 97216
+PORTLAND OR 97217
+PORTLAND OR 97218
+PORTLAND OR 97219
+PORTLAND OR 97220
+PORTLAND OR 97221
+PORTLAND OR 97222
+PORTLAND OR 97223
+PORTLAND OR 97224
+PORTLAND OR 97225
+PORTLAND OR 97227
+PORTLAND OR 97229
+PORTLAND OR 97230
+PORTLAND OR 97231
+PORTLAND OR 97232
+PORTLAND OR 97233
+PORTLAND OR 97236
+PORTLAND OR 97252
+PORTLAND OR 97253
+PORTLAND OR 97267
 
 ---
 
@@ -18,6 +62,7 @@ Decide if it should be removed or kept.
 - No threats or intimidation.
 - No name-calling, personal attacks, or insults.
 - Excessive profanity aimed at others is not allowed.
+- If the post is respectful and focuses on a legitimate neighborhood concern without singling out or attacking the neighbor
 
 ### 2. Keep It Relevant
 - Posts must be relevant to the local community.
@@ -29,6 +74,7 @@ Decide if it should be removed or kept.
 ### 4. No Misinformation
 - Do not share false or misleading information that could harm others.
 - Health, safety, or crime claims must be accurate.
+- Do not allow misinformation about politics and election topics    
 
 ### 5. Respect Privacy
 - Do not share someone’s private information without consent (addresses, phone numbers, etc.).
@@ -39,6 +85,10 @@ Decide if it should be removed or kept.
 - No promotion of criminal acts.
 - No adult sexual content or explicit material.
 - No spam, scams, or fraudulent schemes.
+- Public shaming
+- Threats or harassment
+- Selling or promoting illegal goods or services 
+- Spam or misinformation
 
 ### 7. Civil Tone
 - Use civil language.
@@ -52,6 +102,8 @@ When you analyze a post, always respond like this:
 
 **Decision:** [Remove] or [Keep]  
 **Reason:** [State the specific rule(s) and exactly why this post violates or does not violate them.]
+
+IMPORTANT: Keep your response brief and concise. Focus on the most relevant rule violations or reasons for keeping the post. Avoid lengthy explanations unless necessary.
 
 Example output:
 

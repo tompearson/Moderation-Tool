@@ -12,16 +12,50 @@ Decide if it should be removed or kept.
 - Read the post carefully.
 - Compare the content to each rule below.
 - If any rule is violated, say which one and why.
-- There are no specific "cival tone' guidelines but the goal of the guidelines is to create a safe, respectful inclusive space where neighbors can build stronger communities through constructive conversations. Nextdoor is a locally focused platform, not a place for discussing events in other states.
+- There are no specific "civil tone' guidelines but the goal of the guidelines is to create a safe, respectful inclusive space where neighbors can build stronger communities through constructive conversations. Nextdoor is a locally focused platform, not a place for discussing events in other states.
 
 ## Local zip codes
-97124, 97123 Hillsboro, Oregon
-97006, 97003, 97078 Beaverton, Oregon
-97113 Cornelius, Oregon
-97116 Forest Grove, Oregon
-97119 Gaston, Oregon
-97132 Newburg, Oregon
-97140 Sherwood, Oregon
+HILLSBORO OR 97124
+BEAVERTON OR 97006, 97003, 97078
+CORNELIUS OR 97113
+FOREST GROVE OR 97116
+GASTON OR 97119
+NEWBURG OR 97132
+SHERWOOD OR 97140
+PORTLAND OR 97086
+PORTLAND OR 97201
+PORTLAND OR 97202
+PORTLAND OR 97203
+PORTLAND OR 97204
+PORTLAND OR 97205
+PORTLAND OR 97206
+PORTLAND OR 97209
+PORTLAND OR 97210
+PORTLAND OR 97211
+PORTLAND OR 97212
+PORTLAND OR 97213
+PORTLAND OR 97214
+PORTLAND OR 97215
+PORTLAND OR 97216
+PORTLAND OR 97217
+PORTLAND OR 97218
+PORTLAND OR 97219
+PORTLAND OR 97220
+PORTLAND OR 97221
+PORTLAND OR 97222
+PORTLAND OR 97223
+PORTLAND OR 97224
+PORTLAND OR 97225
+PORTLAND OR 97227
+PORTLAND OR 97229
+PORTLAND OR 97230
+PORTLAND OR 97231
+PORTLAND OR 97232
+PORTLAND OR 97233
+PORTLAND OR 97236
+PORTLAND OR 97252
+PORTLAND OR 97253
+PORTLAND OR 97267
 
 
 ---
@@ -138,19 +172,29 @@ function App() {
     setError('');
     setResult(null);
 
-    const prompt = `You are a Nextdoor community moderator. Review the following post according to these rules:
+    const prompt = `You are a Nextdoor community moderator with a balanced approach to moderation. Review the following post according to these rules:
 
 ${MODERATION_RULES}
 
 Post to review:
 "${postContent}"
 
+IMPORTANT MODERATION GUIDELINES:
+- When in doubt, err on the side of keeping posts rather than removing them
+- Only remove posts that clearly and definitively violate the rules
+- Consider the context and intent of the post
+- Allow for legitimate expression of concerns, even if emotionally expressed
+- Be especially lenient with posts that are relevant to the local community
+- Minor violations or borderline cases should generally be kept with a warning
+
 Please analyze this post and respond in exactly this format:
 
 **Decision:** [Remove] or [Keep]
 **Reason:** [State the specific rule(s) and exactly why this post violates or does not violate them.]
 
-Be thorough in your analysis and reference specific rules from the guidelines.`;
+IMPORTANT: Keep your response brief and concise. Focus on the most relevant rule violations or reasons for keeping the post. Avoid lengthy explanations unless necessary.`;
+
+    console.log('DEBUG: Full prompt being sent to AI:', prompt);
 
     // Try each model in sequence
     for (let i = 0; i < MODELS_TO_TRY.length; i++) {
