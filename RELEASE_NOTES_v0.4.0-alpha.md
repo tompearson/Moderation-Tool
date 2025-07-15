@@ -2,7 +2,7 @@
 
 ## 🎉 Community Moderation Tool v0.4.0-alpha
 
-**Release Date:** December 15, 2024  
+**Release Date:** July 15, 2025  
 **Previous Version:** v0.3.0-alpha  
 **Type:** Major Feature Release
 
