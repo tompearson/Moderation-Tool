@@ -35,13 +35,35 @@ An AI-powered web application for moderating community posts using Google's Gemi
    npm install
    ```
 
-3. **Start the development server**
+3. **Choose your development mode:**
+
+   **Option A: Frontend Only (Vite Dev Server)**
    ```bash
    npm run dev
    ```
+   - Runs on `http://localhost:5173`
+   - Hot reload for development
+   - No API endpoints available
+
+   **Option B: Full Stack (Express Server)**
+   ```bash
+   npm run start
+   ```
+   - Runs on `http://localhost:3000`
+   - Includes API endpoints for Postman testing
+   - Serves built React app
+
+   **Option C: Development with API (Both servers)**
+   ```bash
+   npm run dev:full
+   ```
+   - Frontend: `http://localhost:5173` (Vite dev server)
+   - Backend: `http://localhost:3000` (Express API server)
+   - Best for development with API testing
 
 4. **Open your browser**
-   The application will automatically open at `http://localhost:3000`
+   - Frontend only: `http://localhost:5173`
+   - Full stack: `http://localhost:3000`
 
 ## HTTPS Development Setup (Optional)
 
@@ -176,13 +198,59 @@ The tool uses the Community Guidelines defined in `.cursorrules`:
 - **No Prohibited Content** - No violence, criminal acts, or adult content
 - **Civil Tone** - Use civil language and avoid aggressive tone
 
+## API Endpoints
+
+When running in full-stack mode (`npm run start`), the following API endpoints are available:
+
+### Health Check
+```bash
+GET /api/health
+```
+Returns service status and version information.
+
+### Get Guidelines
+```bash
+GET /api/guidelines
+```
+Returns the current community moderation guidelines in structured format.
+
+### Moderate Post
+```bash
+POST /api/moderate
+Content-Type: application/json
+
+{
+  "postContent": "Your post content here"
+}
+```
+Analyzes a flagged post and returns a moderation decision.
+
+**Response Format:**
+```json
+{
+  "success": true,
+  "decision": "Keep|Remove",
+  "reason": "Detailed reasoning...",
+  "model": "gemini-1.5-flash",
+  "timestamp": "2024-12-15T10:30:00Z"
+}
+```
+
+### Postman Integration
+
+The project includes ready-to-use Postman files:
+- `postman_collection.json` - Complete API collection
+- `openapi.yaml` - OpenAPI specification
+- `POSTMAN_SETUP.md` - Setup instructions
+
 ## API Key Security
 
-⚠️ **Important**: This application runs entirely in the browser and sends your API key directly to Google AI. For production use, consider:
+⚠️ **Important**: The API endpoints handle your Gemini API key server-side for better security. For production use, consider:
 
-- Using a backend proxy to handle API calls
+- Using environment variables for API keys
 - Implementing proper API key management
 - Adding rate limiting and usage monitoring
+- Setting up authentication for API access
 
 ## Testing Framework
 

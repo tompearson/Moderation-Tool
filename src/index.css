@@ -255,10 +255,12 @@ body {
   border-radius: 16px;
   max-width: 800px;
   width: 100%;
-  max-height: 90vh;
+  max-height: 95vh;
   overflow: hidden;
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
   animation: modalSlideIn 0.3s ease-out;
+  display: flex;
+  flex-direction: column;
 }
 
 @keyframes modalSlideIn {
@@ -310,12 +312,23 @@ body {
 
 .modal-body {
   padding: 30px;
-  max-height: calc(90vh - 100px);
+  padding-bottom: 50px; /* Extra padding at bottom for last section */
+  max-height: calc(95vh - 120px);
   overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* Allow flex item to shrink */
 }
 
 .rules-content {
   line-height: 1.6;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0; /* Allow flex item to shrink */
+  overflow-y: auto; /* Ensure scrolling works */
+  height: auto; /* Allow natural height */
 }
 
 .rules-section {
@@ -425,6 +438,9 @@ body {
   border-radius: 12px;
   padding: 20px;
   border: 1px solid #bae6fd;
+  margin-bottom: 20px; /* Ensure bottom spacing */
+  page-break-inside: avoid; /* Prevent breaking in print */
+  break-inside: avoid; /* Modern CSS for preventing breaks */
 }
 
 .moderation-guidelines p {
@@ -603,4 +619,96 @@ body {
   opacity: 0.6;
   cursor: not-allowed;
   background: #8b5cf6;
+} 
+
+/* Print styles for the rules modal */
+@media print {
+  .modal-overlay {
+    position: static !important;
+    background: white !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+  }
+  
+  .modal-content {
+    position: static !important;
+    max-height: none !important;
+    height: auto !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 20px !important;
+    box-shadow: none !important;
+    border: none !important;
+    overflow: visible !important;
+    display: block !important; /* Override flex for print */
+  }
+  
+  .modal-header {
+    position: static !important;
+    background: white !important;
+    border-bottom: 2px solid #333 !important;
+    margin-bottom: 20px !important;
+  }
+  
+  .modal-body {
+    max-height: none !important;
+    height: auto !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    display: block !important; /* Override flex for print */
+  }
+  
+  .rules-content {
+    height: auto !important;
+    overflow: visible !important;
+    display: block !important; /* Override flex for print */
+  }
+  
+  .rules-section {
+    page-break-inside: avoid;
+    margin-bottom: 30px !important;
+  }
+  
+  .rule-item {
+    page-break-inside: avoid;
+    margin-bottom: 20px !important;
+  }
+  
+  .zip-grid {
+    page-break-inside: avoid;
+  }
+  
+  .zip-group {
+    page-break-inside: avoid;
+  }
+  
+  /* Hide elements that shouldn't be printed */
+  .modal-close,
+  .button,
+  .paste-button,
+  .clear-button,
+  .clear-paste-button {
+    display: none !important;
+  }
+  
+  /* Ensure text is readable */
+  body {
+    font-size: 12pt !important;
+    line-height: 1.4 !important;
+  }
+  
+  h1, h2, h3, h4 {
+    page-break-after: avoid;
+    page-break-inside: avoid;
+  }
+  
+  ul, ol {
+    page-break-inside: avoid;
+  }
+  
+  li {
+    page-break-inside: avoid;
+  }
 } 

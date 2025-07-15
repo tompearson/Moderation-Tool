@@ -1,0 +1,288 @@
+openapi: 3.1.0
+info:
+  title: Community Moderation API
+  description: AI-powered post moderation using Google's Gemini API and community guidelines
+  version: 0.3.0-alpha
+  contact:
+    name: Community Moderation Tool
+    url: https://github.com/tompearson/nextdoor-moderation-tool
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:3000
+    description: Local development server
+  - url: https://your-production-domain.com
+    description: Production server (replace with actual domain)
+
+paths:
+  /api/moderate:
+    post:
+      summary: Moderate a community post
+      description: |
+        Analyze a flagged community post using AI-powered moderation.
+        Returns a decision (Remove/Keep) with detailed reasoning based on community guidelines.
+      operationId: moderatePost
+      tags:
+        - Moderation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - postContent
+              properties:
+                postContent:
+                  type: string
+                  description: The flagged post content to moderate
+                  example: "Lost my keys near the park on Main Street. If anyone finds them, please let me know. Thanks neighbors!"
+                apiKey:
+                  type: string
+                  description: Google AI API key (optional if configured server-side)
+                  example: "AIzaSyCjosDYs15EFppjV2iP2JNdkz5bU-5Qylc"
+            examples:
+              legitimate_post:
+                summary: Legitimate community post
+                value:
+                  postContent: "Lost my keys near the park on Main Street. If anyone finds them, please let me know. Thanks neighbors!"
+              hate_speech:
+                summary: Hate speech example
+                value:
+                  postContent: "I hate all the immigrants moving into our neighborhood. They're ruining everything and should go back where they came from!"
+              political_content:
+                summary: Political content example
+                value:
+                  postContent: "Everyone should boycott the new restaurant on Oak Ave because the owner is a Democrat and supports liberal policies."
+      responses:
+        '200':
+          description: Successful moderation analysis
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  decision:
+                    type: string
+                    enum: [Remove, Keep]
+                    description: The moderation decision
+                    example: "Keep"
+                  reason:
+                    type: string
+                    description: Detailed reasoning for the decision
+                    example: "This post is a legitimate community concern about lost property. It's relevant to the local area and doesn't violate any community guidelines."
+                  model:
+                    type: string
+                    description: The AI model used for analysis
+                    example: "gemini-2.5-pro"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    description: When the analysis was performed
+                    example: "2024-12-15T10:30:00Z"
+              examples:
+                keep_decision:
+                  summary: Post kept
+                  value:
+                    success: true
+                    decision: "Keep"
+                    reason: "This post is a legitimate community concern about lost property. It's relevant to the local area and doesn't violate any community guidelines."
+                    model: "gemini-2.5-pro"
+                    timestamp: "2024-12-15T10:30:00Z"
+                remove_decision:
+                  summary: Post removed
+                  value:
+                    success: true
+                    decision: "Remove"
+                    reason: "This post violates Rule 1 (Be Respectful) and Rule 3 (Do Not Discriminate). It contains hate speech targeting immigrants and promotes discrimination."
+                    model: "gemini-2.5-pro"
+                    timestamp: "2024-12-15T10:30:00Z"
+        '400':
+          description: Bad request - missing or invalid input
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Please enter a post to moderate."
+        '401':
+          description: Unauthorized - invalid API key
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "Invalid API key. Please check the configuration."
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "API quota exceeded. Please check your Google AI usage limits."
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: "All models are currently overloaded or unavailable. Please try again in a few minutes."
+
+  /api/health:
+    get:
+      summary: Health check
+      description: Check if the moderation service is running
+      operationId: healthCheck
+      tags:
+        - System
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "healthy"
+                  version:
+                    type: string
+                    example: "0.3.0-alpha"
+                  timestamp:
+                    type: string
+                    format: date-time
+                    example: "2024-12-15T10:30:00Z"
+
+  /api/guidelines:
+    get:
+      summary: Get community guidelines
+      description: Retrieve the current community moderation guidelines
+      operationId: getGuidelines
+      tags:
+        - Guidelines
+      responses:
+        '200':
+          description: Community guidelines retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  guidelines:
+                    type: object
+                    properties:
+                      rules:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: integer
+                              example: 1
+                            title:
+                              type: string
+                              example: "Be Respectful"
+                            description:
+                              type: string
+                              example: "No hate speech, slurs, or harassment."
+                      localCoverage:
+                        type: object
+                        properties:
+                          zipCodes:
+                            type: array
+                            items:
+                              type: string
+                            example: ["97124", "97006", "97003", "97078"]
+                          cities:
+                            type: array
+                            items:
+                              type: string
+                            example: ["Hillsboro", "Beaverton", "Cornelius"]
+
+components:
+  schemas:
+    ModerationRequest:
+      type: object
+      required:
+        - postContent
+      properties:
+        postContent:
+          type: string
+          description: The flagged post content to moderate
+        apiKey:
+          type: string
+          description: Google AI API key (optional if configured server-side)
+    
+    ModerationResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        decision:
+          type: string
+          enum: [Remove, Keep]
+        reason:
+          type: string
+        model:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+    
+    ErrorResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          type: string
+
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: Google AI API key for authentication
+
+security:
+  - ApiKeyAuth: []
+
+tags:
+  - name: Moderation
+    description: Post moderation operations
+  - name: Guidelines
+    description: Community guidelines management
+  - name: System
+    description: System health and status 
