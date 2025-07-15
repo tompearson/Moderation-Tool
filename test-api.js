@@ -1,6 +1,6 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
-const API_KEY = 'AIzaSyCjosDYs15EFppjV2iP2JNdkz5bU-5Qylc';
+const API_KEY = process.env.VITE_GEMINI_API_KEY || 'AIzaSyB2EyDjWFEwSAOQsnnwdoeFA3SY4Kz21hs';
 
 async function testAPI() {
   console.log('Testing Google AI API...\n');

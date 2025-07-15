@@ -16,7 +16,7 @@
 - **Input**: Text only
 - **Speed**: Fast
 - **Cost**: Lower
-- **Use case**: Perfect for Nextdoor post moderation
+- **Use case**: Perfect for community post moderation
 
 ### gemini-pro-vision
 - **Best for**: Image + text analysis

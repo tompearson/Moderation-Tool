@@ -485,36 +485,55 @@ body {
   }
 }
 
-.clear-button {
-  background: #f3f4f6;
-  color: #374151;
-  border: 1px solid #d1d5db;
-  padding: 10px 20px;
+.button-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  justify-content: flex-start;
+}
+
+.paste-button {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 8px 16px;
   border-radius: 6px;
   font-size: 0.9rem;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
-  margin-top: 10px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.paste-button:hover {
+  background: #059669;
+}
+
+.paste-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #10b981;
+}
+
+.clear-button {
+  background: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 .clear-button:hover {
-  background: #e5e7eb;
-  border-color: #9ca3af;
-  transform: translateY(-1px);
-}
-
-.clear-button:active {
-  transform: translateY(0);
+  background: #dc2626;
 }
 
 .clear-button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
-  transform: none;
+  background: #ef4444;
 }
 
 .api-key-section {
@@ -562,4 +581,26 @@ body {
   .content {
     padding: 20px;
   }
+} 
+
+.clear-paste-button {
+  background: #8b5cf6;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.clear-paste-button:hover {
+  background: #7c3aed;
+}
+
+.clear-paste-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #8b5cf6;
 } 

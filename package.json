@@ -1,7 +1,7 @@
 {
-  "name": "nextdoor-moderation-tool",
+  "name": "community-moderation-assistant",
   "version": "1.0.0",
-  "description": "AI-powered Nextdoor post moderation tool",
+  "description": "AI-powered community post moderation tool",
   "main": "index.js",
   "scripts": {
     "dev": "vite",
@@ -19,7 +19,7 @@
     "@vitejs/plugin-react": "^4.2.1",
     "vite": "^5.0.8"
   },
-  "keywords": ["nextdoor", "moderation", "ai", "react", "gemini"],
+  "keywords": ["community", "moderation", "ai", "react", "gemini"],
   "author": "",
   "license": "MIT"
 } 

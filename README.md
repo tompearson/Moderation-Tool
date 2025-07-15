@@ -1,12 +1,12 @@
-# Nextdoor Moderation Tool
+# Community Moderation Assistant
 
-An AI-powered web application for moderating Nextdoor posts using Google's Gemini Pro model and Nextdoor's Community Guidelines.
+An AI-powered web application for moderating community posts using Google's Gemini Pro model and community guidelines.
 
 ## Features
 
 - 🤖 AI-powered post analysis using Google Gemini Pro
-- 📋 Automatic loading of Nextdoor Community Guidelines from `.cursorrules`
-- 📖 **Show Rules modal** - Beautiful, organized display of all community guidelines
+- 📋 Automatic loading of Community Guidelines from `.cursorrules`
+- 📖 **Show Guidlines modal** - Beautiful, organized display of all community guidelines
 - 🎨 Modern, responsive UI with beautiful styling
 - ⚡ Real-time analysis with loading states
 - 🔒 Secure API key handling (stored locally)
@@ -142,17 +142,17 @@ To access the app from other devices on your network:
    - Your key is stored locally and never sent to our servers
 
 2. **Review the guidelines (optional)**
-   - Click the "📋 Show Rules" button to view all Nextdoor Community Guidelines
+   - Click the "📋 Show Guidelines" button to view all Community Guidelines
    - The modal displays organized sections with local zip codes and moderation approach
    - Perfect for reference during moderation decisions
 
 3. **Paste a flagged post**
-   - Copy the content of a flagged Nextdoor post
+   - Copy the content of a flagged community post
    - Paste it into the "Flagged Post Content" text area
 
 4. **Analyze the post**
    - Click "Analyze Post" to send the content to Gemini
-   - The AI will review the post against Nextdoor's Community Guidelines
+   - The AI will review the post against Community Guidelines
    - Results will show the decision (Remove/Keep) and detailed reasoning
 
 ## How It Works
@@ -166,7 +166,7 @@ The application:
 
 ## Community Guidelines
 
-The tool uses the Nextdoor Community Guidelines defined in `.cursorrules`:
+The tool uses the Community Guidelines defined in `.cursorrules`:
 
 - **Be Respectful** - No hate speech, harassment, or threats
 - **Keep It Relevant** - Posts must be relevant to the local community
@@ -218,7 +218,7 @@ The test posts are designed to verify:
 ### Project Structure
 ```
 ModerationTool/
-├── .cursorrules          # Nextdoor Community Guidelines
+├── .cursorrules          # Community Guidelines
 ├── test-posts.md         # Comprehensive test cases
 ├── package.json          # Dependencies and scripts
 ├── vite.config.js        # Vite configuration
@@ -244,8 +244,79 @@ To modify the moderation rules:
 
 To change the AI model:
 1. Open `src/App.jsx`
-2. Find the `model: "gemini-pro"` line
-3. Change to your preferred model (e.g., `"gemini-pro-vision"` for image support)
+2. Find the `MODELS_TO_TRY` array
+3. Change to your preferred models (e.g., `"gemini-pro-vision"` for image support)
+
+## Model Performance & Token Usage
+
+### Current Model Configuration
+The app uses a sequential fallback approach with these models:
+- **Primary**: `gemini-1.5-pro` - Advanced reasoning capabilities
+- **Fallback**: `gemini-1.5-flash` - Fast alternative if primary is overloaded
+
+### Token Usage Analysis
+Typical usage for content moderation:
+```
+"usageMetadata": {
+  "promptTokenCount": 1238,      // Your input + rules
+  "candidatesTokenCount": 72,    // AI's decision + reasoning  
+  "totalTokenCount": 1310,       // Total tokens used
+  "promptTokensDetails": [
+    {
+      "modality": "TEXT",
+      "tokenCount": 1238
+    }
+  ]
+}
+```
+
+### Load Classification
+- **Light Load** (< 1,000 tokens): Simple questions, short analysis
+- **Moderate Load** (1,000 - 4,000 tokens): ⭐ **Your usage here** - Content moderation with rules
+- **Heavy Load** (4,000 - 32,000 tokens): Long documents, complex analysis
+- **Very Heavy Load** (32,000+ tokens): Book-length content, massive datasets
+
+### Why This is Efficient
+✅ **1,310 tokens** is well within normal range  
+✅ **Good prompt-to-response ratio** (1,238 → 72)  
+✅ **Cost-effective** - not wasting tokens  
+✅ **Fast response time** expected  
+✅ **Only 0.07%** of Gemini 1.5's 2M token capacity  
+
+### Cost Impact
+- **Very low cost** per request
+- **Efficient token usage** for quality results
+- **Good value** for moderation quality
+- **Optimal** for content moderation tasks
+
+### Rate Limits & Usage Tiers
+
+The Gemini API has different rate limits based on your usage tier. According to the [official Gemini API rate limits documentation](https://ai.google.dev/gemini-api/docs/rate-limits), here are the key limits:
+
+#### Free Tier Limits
+- **Gemini 1.5 Flash (Deprecated)**: 15 RPM, 250,000 TPM, 50 RPD
+- **Gemini 1.5 Pro (Deprecated)**: No free tier access
+- **Gemini 2.5 Pro**: 5 RPM, 250,000 TPM, 100 RPD
+- **Gemini 2.5 Flash**: 10 RPM, 250,000 TPM, 250 RPD
+
+#### Tier 1 Limits (Paid)
+- **Gemini 1.5 Flash (Deprecated)**: 2,000 RPM, 4,000,000 TPM
+- **Gemini 1.5 Pro (Deprecated)**: 1,000 RPM, 4,000,000 TPM
+- **Gemini 2.5 Pro**: 150 RPM, 2,000,000 TPM, 1,000 RPD
+- **Gemini 2.5 Flash**: 1,000 RPM, 1,000,000 TPM, 10,000 RPD
+
+#### Rate Limit Dimensions
+- **RPM**: Requests per minute
+- **TPM**: Tokens per minute (input)
+- **RPD**: Requests per day
+
+#### Usage Tier Qualifications
+- **Free**: Users in eligible countries
+- **Tier 1**: Billing account linked to project
+- **Tier 2**: Total spend > $250 and 30+ days since payment
+- **Tier 3**: Total spend > $1,000 and 30+ days since payment
+
+**Note**: Your current usage of ~1,310 tokens per request is well within all tier limits. Even on the free tier, you could make ~190 requests per minute before hitting TPM limits.
 
 ## Troubleshooting
 

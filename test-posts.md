@@ -1,6 +1,6 @@
-# Test Posts for Nextdoor Moderation Tool
+# Test Posts for Community Moderation Assistant
 
-This file contains various test posts to verify the moderation tool's accuracy in identifying violations of Nextdoor Community Guidelines.
+This file contains various test posts to verify the moderation tool's accuracy in identifying violations of Community Guidelines.
 
 ## Test Categories
 
@@ -145,7 +145,7 @@ This section contains real posts from users that need moderation decisions. Thes
 
 ## Notes
 
-- **Expected results** are based on Nextdoor Community Guidelines
+- **Expected results** are based on Community Guidelines
 - **AI may interpret** some cases differently than expected
 - **Borderline cases** help test AI judgment capabilities
 - **Complex cases** test AI's ability to identify multiple issues

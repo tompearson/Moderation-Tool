@@ -1,14 +1,13 @@
-# Nextdoor Community Moderation Rules (.cursorrules)
+# Community Moderation Rules (.cursorrules)
 
 ## Purpose
-Check whether a flagged post violates Nextdoor's Community Guidelines.  
-Decide if it should be removed or kept.
+Check whether a flagged post violates community guidelines.  
 
 ## When reviewing a post:
 - Read the post carefully.
 - Compare the content to each rule below.
 - If any rule is violated, say which one and why.
-- There are no specific "civil tone' guidelines but the goal of the guidelines is to create a safe, respectful inclusive space where neighbors can build stronger communities through constructive conversations. Nextdoor is a locally focused platform, not a place for discussing events in other states.
+- There are no specific "civil tone' guidelines but the goal of the guidelines is to create a safe, respectful inclusive space where neighbors can build stronger communities through constructive conversations. This platform is locally focused, not a place for discussing events in other states.
 
 ## Local zip codes
 HILLSBORO OR 97124
@@ -94,6 +93,10 @@ PORTLAND OR 97267
 - Use civil language.
 - Avoid aggressive or offensive tone.
 
+### 8. Incorrect Catagory 
+- Items offered for sale or free are considered 'Posted In Error' 
+and should not be in the main feed and should not be allowed.
+
 ---
 
 ## Output Format
@@ -103,7 +106,7 @@ When you analyze a post, always respond like this:
 **Decision:** [Remove] or [Keep]  
 **Reason:** [State the specific rule(s) and exactly why this post violates or does not violate them.]
 
-IMPORTANT: Keep your response brief and concise. Focus on the most relevant rule violations or reasons for keeping the post. Avoid lengthy explanations unless necessary.
+IMPORTANT: Keep your response brief and concise  and limitied to 300 charactors. Focus on the most relevant rule violations or reasons for keeping the post. Avoid lengthy explanations unless necessary. Limit response to 300 characters.
 
 Example output:
 

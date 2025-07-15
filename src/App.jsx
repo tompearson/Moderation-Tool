@@ -2,17 +2,16 @@ import React, { useState } from 'react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // Import the rules directly as a string to avoid Vite processing
-const MODERATION_RULES = `# Nextdoor Community Moderation Rules (.cursorrules)
+const MODERATION_RULES = `# Community Moderation Rules (.cursorrules)
 
 ## Purpose
-Check whether a flagged post violates Nextdoor's Community Guidelines.  
-Decide if it should be removed or kept.
+Check whether a flagged post violates community guidelines.  
 
 ## When reviewing a post:
 - Read the post carefully.
 - Compare the content to each rule below.
 - If any rule is violated, say which one and why.
-- There are no specific "civil tone' guidelines but the goal of the guidelines is to create a safe, respectful inclusive space where neighbors can build stronger communities through constructive conversations. Nextdoor is a locally focused platform, not a place for discussing events in other states.
+- There are no specific "civil tone' guidelines but the goal of the guidelines is to create a safe, respectful inclusive space where neighbors can build stronger communities through constructive conversations. This platform is locally focused, not a place for discussing events in other states.
 
 ## Local zip codes
 HILLSBORO OR 97124
@@ -99,6 +98,10 @@ PORTLAND OR 97267
 - Use civil language.
 - Avoid aggressive or offensive tone.
 
+### 8. Incorrect Catagory 
+- Items offered for sale or free are considered 'Posted In Error' 
+and should not be in the main feed and should not be allowed.
+
 ---
 
 ## Output Format
@@ -108,12 +111,15 @@ When you analyze a post, always respond like this:
 **Decision:** [Remove] or [Keep]  
 **Reason:** [State the specific rule(s) and exactly why this post violates or does not violate them.]`;
 
-// Hardcoded API key
-const GEMINI_API_KEY = 'AIzaSyCjosDYs15EFppjV2iP2JNdkz5bU-5Qylc';
+// API key from environment variable
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
-// Available models to try in order (updated based on test results)
+// Available models to try in order (using latest available models)
 const MODELS_TO_TRY = [
-  'gemini-1.5-flash'  // Keep this as primary, it works when not overloaded
+  'gemini-2.5-pro',    // Primary - advanced reasoning
+  'gemini-2.5-flash',  // Fallback - if pro is overloaded
+  'gemini-2.0-flash',  // Alternative - fast and reliable
+  'gemini-2.0-flash-lite' // Backup - fastest option
 ];
 
 function App() {
@@ -124,7 +130,7 @@ function App() {
   const [showRules, setShowRules] = useState(false);
 
   const tryModel = async (modelName, prompt, retryCount = 0) => {
-    console.log('DEBUG: tryModel function called with model:', modelName);
+    // console.log('DEBUG: tryModel function called with model:', modelName);
     try {
       const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
       const model = genAI.getGenerativeModel({ model: modelName });
@@ -133,14 +139,14 @@ function App() {
       const response = await result.response;
       const text = response.text();
       
-      console.log('DEBUG: AI Response received:', text);
+      // console.log('DEBUG: AI Response received:', text);
       
       // Parse the response to extract decision and reason
       const decisionMatch = text.match(/\*\*Decision:\*\*\s*(Remove|Keep)/);
       const reasonMatch = text.match(/\*\*Reason:\*\*\s*(.+)/s);
       
-      console.log('DEBUG: decisionMatch:', decisionMatch);
-      console.log('DEBUG: reasonMatch:', reasonMatch);
+      // console.log('DEBUG: decisionMatch:', decisionMatch);
+      // console.log('DEBUG: reasonMatch:', reasonMatch);
       
       if (decisionMatch && reasonMatch) {
         const decision = decisionMatch[1];
@@ -148,12 +154,12 @@ function App() {
         
         return { decision, reason };
       } else {
-        console.log('DEBUG: Parsing failed. Full response:', text);
+        // console.log('DEBUG: Parsing failed. Full response:', text);
         throw new Error('Unable to parse AI response');
       }
     } catch (err) {
-      // If model is overloaded and we haven't retried too many times, wait and retry
-      if (err.message.includes('overloaded') && retryCount < 2) {
+      // If model is overloaded or returns 503 and we haven't retried too many times, wait and retry
+      if ((err.message.includes('overloaded') || err.message.includes('503') || err.status === 503) && retryCount < 2) {
         await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds
         return tryModel(modelName, prompt, retryCount + 1);
       }
@@ -173,7 +179,7 @@ function App() {
     setError('');
     setResult(null);
 
-    const prompt = `You are a Nextdoor community moderator with a balanced approach to moderation. Review the following post according to these rules:
+    const prompt = `You are a community moderator with a balanced approach to moderation. Review the following post according to these rules:
 
 ${MODERATION_RULES}
 
@@ -193,9 +199,10 @@ Please analyze this post and respond in exactly this format:
 **Decision:** [Remove] or [Keep]
 **Reason:** [State the specific rule(s) and exactly why this post violates or does not violate them.]
 
-IMPORTANT: Keep your response brief and concise. Focus on the most relevant rule violations or reasons for keeping the post. Avoid lengthy explanations unless necessary.`;
+IMPORTANT: Keep your response brief and concise and limitied to 300 charactors. 
+Focus on the most relevant rule violations or reasons for keeping the post. Avoid lengthy explanations unless necessary.`;
 
-    console.log('DEBUG: Full prompt being sent to AI:', prompt);
+    // console.log('DEBUG: Full prompt being sent to AI:', prompt);
 
     // Try each model in sequence
     for (let i = 0; i < MODELS_TO_TRY.length; i++) {
@@ -220,8 +227,8 @@ IMPORTANT: Keep your response brief and concise. Focus on the most relevant rule
             setError('Content was blocked by safety filters. Please try with different content.');
           } else if (err.message.includes('PERMISSION_DENIED')) {
             setError('API key does not have access to this model. Please check your API permissions.');
-          } else if (err.message.includes('overloaded')) {
-            setError('All models are currently overloaded. Please try again in a few minutes.');
+          } else if (err.message.includes('overloaded') || err.message.includes('503') || err.status === 503) {
+            setError('All models are currently overloaded or unavailable. Please try again in a few minutes.');
           } else if (err.message.includes('models/') && err.message.includes('not found')) {
             setError('No available models found. Please check your API access.');
           } else {
@@ -237,11 +244,11 @@ IMPORTANT: Keep your response brief and concise. Focus on the most relevant rule
 
   return (
     <div className="container">
-      <div className="header">
-        <h1>Nextdoor Moderation Tool</h1>
-        <p>AI-powered post moderation using Nextdoor Community Guidelines</p>
-        <div className="version">v0.2.0-alpha</div>
-      </div>
+              <div className="header">
+          <h1>Community Moderation Assistant</h1>
+          <p>AI-powered post moderation using community guidelines</p>
+          <div className="version">v0.3.0-alpha</div>
+        </div>
       
       <div className="content">
         <form onSubmit={handleSubmit}>
@@ -251,23 +258,66 @@ IMPORTANT: Keep your response brief and concise. Focus on the most relevant rule
               id="postContent"
               value={postContent}
               onChange={(e) => setPostContent(e.target.value)}
-              placeholder="Paste the flagged Nextdoor post here..."
+              placeholder="Paste the flagged community post here..."
               disabled={isLoading}
             />
-            {postContent && (
-              <button 
-                type="button"
-                className="clear-button"
-                onClick={() => {
-                  setPostContent('');
-                  setResult(null);
-                  setError('');
-                }}
-                disabled={isLoading}
-              >
-                Clear Content
-              </button>
-            )}
+            
+            <div className="button-row">
+              {!postContent && (
+                <button 
+                  type="button"
+                  className="paste-button"
+                  onClick={async () => {
+                    try {
+                      const text = await navigator.clipboard.readText();
+                      setPostContent(text);
+                      setResult(null);
+                      setError('');
+                    } catch (err) {
+                      console.error('Failed to read clipboard:', err);
+                      setError('Unable to access clipboard. Please paste manually.');
+                    }
+                  }}
+                  disabled={isLoading}
+                >
+                  📋 Paste Content
+                </button>
+              )}
+              {postContent && (
+                <>
+                  <button 
+                    type="button"
+                    className="clear-button"
+                    onClick={() => {
+                      setPostContent('');
+                      setResult(null);
+                      setError('');
+                    }}
+                    disabled={isLoading}
+                  >
+                    Clear Content
+                  </button>
+                  <button 
+                    type="button"
+                    className="clear-paste-button"
+                    onClick={async () => {
+                      try {
+                        const text = await navigator.clipboard.readText();
+                        setPostContent(text);
+                        setResult(null);
+                        setError('');
+                      } catch (err) {
+                        console.error('Failed to read clipboard:', err);
+                        setError('Unable to access clipboard. Please paste manually.');
+                      }
+                    }}
+                    disabled={isLoading}
+                  >
+                    🔄 Clear & Paste
+                  </button>
+                </>
+              )}
+            </div>
           </div>
 
           <div className="button-group">
@@ -292,7 +342,7 @@ IMPORTANT: Keep your response brief and concise. Focus on the most relevant rule
               onClick={() => setShowRules(true)}
               disabled={isLoading}
             >
-              📋 Show Rules
+              📋 Show Guidelines
             </button>
           </div>
         </form>
@@ -340,7 +390,7 @@ IMPORTANT: Keep your response brief and concise. Focus on the most relevant rule
         <div className="modal-overlay" onClick={() => setShowRules(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h2>📋 Nextdoor Community Guidelines</h2>
+              <h2>📋 Community Guidelines</h2>
               <button 
                 className="modal-close"
                 onClick={() => setShowRules(false)}
@@ -353,7 +403,10 @@ IMPORTANT: Keep your response brief and concise. Focus on the most relevant rule
               <div className="rules-content">
                 <div className="rules-section">
                   <h3>🎯 Purpose</h3>
-                  <p>Check whether a flagged post violates Nextdoor's Community Guidelines. Decide if it should be removed or kept.</p>
+                  <p>Check whether the reported content violates community guidelines. 
+                    Decide if it should be removed or kept. 
+                    Always use your own driscretion when evaluating. 
+                    You don't have to agree with the recomendation by this tool.</p>
                 </div>
 
                 <div className="rules-section">
