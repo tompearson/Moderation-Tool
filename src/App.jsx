@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { GoogleGenerativeAI } from '@google/generative-ai';
 
 // Import the rules directly as a string to avoid Vite processing
 const MODERATION_RULES = `# Community Moderation Rules (.cursorrules)
@@ -111,16 +110,8 @@ When you analyze a post, always respond like this:
 **Decision:** [Remove] or [Keep]  
 **Reason:** [State the specific rule(s) and exactly why this post violates or does not violate them.]`;
 
-// API key from environment variable
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
-
-// Available models to try in order (using latest available models)
-const MODELS_TO_TRY = [
-  'gemini-2.5-pro',    // Primary - advanced reasoning
-  'gemini-2.5-flash',  // Fallback - if pro is overloaded
-  'gemini-2.0-flash',  // Alternative - fast and reliable
-  'gemini-2.0-flash-lite' // Backup - fastest option
-];
+// API endpoint for moderation
+const API_ENDPOINT = '/api/moderate';
 
 function App() {
   const [postContent, setPostContent] = useState('');
@@ -129,40 +120,24 @@ function App() {
   const [error, setError] = useState('');
   const [showRules, setShowRules] = useState(false);
 
-  const tryModel = async (modelName, prompt, retryCount = 0) => {
-    // console.log('DEBUG: tryModel function called with model:', modelName);
+  const moderatePost = async (content) => {
     try {
-      const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-      const model = genAI.getGenerativeModel({ model: modelName });
-      
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      const text = response.text();
-      
-      // console.log('DEBUG: AI Response received:', text);
-      
-      // Parse the response to extract decision and reason
-      const decisionMatch = text.match(/\*\*Decision:\*\*\s*(Remove|Keep)/);
-      const reasonMatch = text.match(/\*\*Reason:\*\*\s*(.+)/s);
-      
-      // console.log('DEBUG: decisionMatch:', decisionMatch);
-      // console.log('DEBUG: reasonMatch:', reasonMatch);
-      
-      if (decisionMatch && reasonMatch) {
-        const decision = decisionMatch[1];
-        const reason = reasonMatch[1].trim();
-        
-        return { decision, reason };
-      } else {
-        // console.log('DEBUG: Parsing failed. Full response:', text);
-        throw new Error('Unable to parse AI response');
+      const response = await fetch(API_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ content })
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
       }
+
+      const result = await response.json();
+      return result;
     } catch (err) {
-      // If model is overloaded or returns 503 and we haven't retried too many times, wait and retry
-      if ((err.message.includes('overloaded') || err.message.includes('503') || err.status === 503) && retryCount < 2) {
-        await new Promise(resolve => setTimeout(resolve, 2000)); // Wait 2 seconds
-        return tryModel(modelName, prompt, retryCount + 1);
-      }
       throw err;
     }
   };
@@ -202,40 +177,27 @@ Please analyze this post and respond in exactly this format:
 IMPORTANT: Keep your response brief and concise and limitied to 300 charactors. 
 Focus on the most relevant rule violations or reasons for keeping the post. Avoid lengthy explanations unless necessary.`;
 
-    // console.log('DEBUG: Full prompt being sent to AI:', prompt);
-
-    // Try each model in sequence
-    for (let i = 0; i < MODELS_TO_TRY.length; i++) {
-      const modelName = MODELS_TO_TRY[i];
+    try {
+      const result = await moderatePost(postContent);
+      setResult(result);
+      setError(''); // Clear any previous error
+    } catch (err) {
+      console.error('Moderation error:', err);
       
-      try {
-        setError(`Trying model: ${modelName}...`);
-        const result = await tryModel(modelName, prompt);
-        setResult(result);
-        setError(''); // Clear any previous error
-        break; // Success, exit the loop
-      } catch (err) {
-        console.error(`Error with model ${modelName}:`, err);
-        
-        // If this is the last model, show the error
-        if (i === MODELS_TO_TRY.length - 1) {
-          if (err.message.includes('API_KEY_INVALID')) {
-            setError('Invalid API key. Please check the configuration.');
-          } else if (err.message.includes('QUOTA_EXCEEDED')) {
-            setError('API quota exceeded. Please check your Google AI usage limits.');
-          } else if (err.message.includes('SAFETY')) {
-            setError('Content was blocked by safety filters. Please try with different content.');
-          } else if (err.message.includes('PERMISSION_DENIED')) {
-            setError('API key does not have access to this model. Please check your API permissions.');
-          } else if (err.message.includes('overloaded') || err.message.includes('503') || err.status === 503) {
-            setError('All models are currently overloaded or unavailable. Please try again in a few minutes.');
-          } else if (err.message.includes('models/') && err.message.includes('not found')) {
-            setError('No available models found. Please check your API access.');
-          } else {
-            setError(`Error: ${err.message}`);
-          }
-        }
-        // Continue to next model if available
+      if (err.message.includes('API_KEY_INVALID') || err.message.includes('Invalid API key')) {
+        setError('Invalid API key. Please check the configuration.');
+      } else if (err.message.includes('QUOTA_EXCEEDED')) {
+        setError('API quota exceeded. Please check your Google AI usage limits.');
+      } else if (err.message.includes('SAFETY')) {
+        setError('Content was blocked by safety filters. Please try with different content.');
+      } else if (err.message.includes('PERMISSION_DENIED')) {
+        setError('API key does not have access to this model. Please check your API permissions.');
+      } else if (err.message.includes('overloaded') || err.message.includes('503') || err.status === 503) {
+        setError('All models are currently overloaded or unavailable. Please try again in a few minutes.');
+      } else if (err.message.includes('models/') && err.message.includes('not found')) {
+        setError('No available models found. Please check your API access.');
+      } else {
+        setError(`Error: ${err.message}`);
       }
     }
 
@@ -405,7 +367,7 @@ Focus on the most relevant rule violations or reasons for keeping the post. Avoi
                   <h3>🎯 Purpose</h3>
                   <p>Check whether the reported content violates community guidelines. 
                     Decide if it should be removed or kept. 
-                    Always use your own driscretion when evaluating. 
+                    Always use your own discretionwhen evaluating. 
                     You don't have to agree with the recomendation by this tool.</p>
                 </div>
 

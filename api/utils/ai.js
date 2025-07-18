@@ -1,10 +1,17 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
-// Initialize Gemini AI
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || 'AIzaSyCjosDYs15EFppjV2iP2JNdkz5bU-5Qylc');
+// Validate API key
+if (!process.env.GEMINI_API_KEY) {
+  console.error('❌ GEMINI_API_KEY environment variable is not set!');
+  console.error('Please create a .env file with your Gemini API key.');
+  console.error('See env.example for reference.');
+}
 
-// Available models with fallback order
-const MODELS = ['gemini-2.0-flash-exp', 'gemini-1.5-pro', 'gemini-1.5-flash'];
+// Initialize Gemini AI
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+// Available models with fallback order (removed gemini-2.0-flash-exp as it doesn't exist)
+const MODELS = ['gemini-1.5-flash', 'gemini-1.5-pro'];
 
 // Generate content with fallback
 async function generateContent(prompt) {
@@ -29,10 +36,15 @@ async function generateContent(prompt) {
     throw new Error('All AI models are currently unavailable');
   }
 
-  return {
-    text: response.text(),
-    model: usedModel
-  };
+  try {
+    return {
+      text: response.text(),
+      model: usedModel
+    };
+  } catch (error) {
+    console.error('❌ Error extracting text from response:', error.message);
+    throw new Error(`Failed to extract text from ${usedModel} response: ${error.message}`);
+  }
 }
 
 // Parse AI response

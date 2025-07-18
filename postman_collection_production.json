@@ -1,14 +1,17 @@
 {
   "info": {
-    "name": "Community Moderation API",
-    "description": "AI-powered post moderation using Google's Gemini API and community guidelines",
-    "version": "0.3.0-alpha",
+    "name": "Community Moderation API - Production",
+    "description": "AI-powered post moderation using Google's Gemini API and community guidelines - Production Environment",
+    "version": "0.4.0-alpha",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
-  "auth": {
-    "type": "noauth"
-  },
-    "variable": [],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://your-app.vercel.app",
+      "type": "string"
+    }
+  ],
   "item": [
     {
       "name": "Moderation",
@@ -25,7 +28,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"content\": \"Lost my keys near the park on Main Street. If anyone finds them, please let me know. Thanks neighbors!\"\n}"
+              "raw": "{\n  \"postContent\": \"Lost my keys near the park on Main Street. If anyone finds them, please let me know. Thanks neighbors!\"\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/moderate",
@@ -47,7 +50,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"content\": \"Lost my keys near the park on Main Street. If anyone finds them, please let me know. Thanks neighbors!\"\n}"
+                  "raw": "{\n  \"postContent\": \"Lost my keys near the park on Main Street. If anyone finds them, please let me know. Thanks neighbors!\"\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/moderate",
@@ -65,7 +68,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n  \"success\": true,\n  \"decision\": \"Keep\",\n  \"reason\": \"This post is a legitimate community concern about lost property. It's relevant to the local area and doesn't violate any community guidelines.\",\n  \"model\": \"gemini-2.5-pro\",\n  \"timestamp\": \"2024-12-15T10:30:00Z\"\n}"
+              "body": "{\n  \"success\": true,\n  \"decision\": \"Keep\",\n  \"reason\": \"This post is a legitimate community concern about lost property. It's relevant to the local area and doesn't violate any community guidelines.\",\n  \"model\": \"gemini-1.5-flash\",\n  \"timestamp\": \"2025-07-15T21:30:00Z\"\n}"
             },
             {
               "name": "Remove Decision Example",
@@ -79,7 +82,7 @@
                 ],
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"content\": \"I hate all the immigrants moving into our neighborhood. They're ruining everything and should go back where they came from!\"\n}"
+                  "raw": "{\n  \"postContent\": \"I hate all the immigrants moving into our neighborhood. They're ruining everything and should go back where they came from!\"\n}"
                 },
                 "url": {
                   "raw": "{{baseUrl}}/api/moderate",
@@ -97,7 +100,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n  \"success\": true,\n  \"decision\": \"Remove\",\n  \"reason\": \"This post violates Rule 1 (Be Respectful) and Rule 3 (Do Not Discriminate). It contains hate speech targeting immigrants and promotes discrimination.\",\n  \"model\": \"gemini-2.5-pro\",\n  \"timestamp\": \"2024-12-15T10:30:00Z\"\n}"
+              "body": "{\n  \"success\": true,\n  \"decision\": \"Remove\",\n  \"reason\": \"This post violates Rule 1 (Be Respectful) and Rule 3 (Do Not Discriminate). It contains hate speech targeting immigrants and promotes discrimination.\",\n  \"model\": \"gemini-1.5-flash\",\n  \"timestamp\": \"2025-07-15T21:30:00Z\"\n}"
             }
           ]
         }
@@ -140,7 +143,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n  \"status\": \"healthy\",\n  \"version\": \"0.3.0-alpha\",\n  \"timestamp\": \"2024-12-15T10:30:00Z\"\n}"
+              "body": "{\n  \"status\": \"healthy\",\n  \"version\": \"0.4.0-alpha\",\n  \"timestamp\": \"2025-07-15T21:30:00Z\"\n}"
             }
           ]
         }
@@ -222,7 +225,12 @@
           "});",
           "",
           "// Log response for debugging",
-          "console.log('Response:', pm.response.json());"
+          "console.log('Response:', pm.response.json());",
+          "",
+          "// Performance test",
+          "pm.test('Response time is less than 5000ms', function () {",
+          "    pm.expect(pm.response.responseTime).to.be.below(5000);",
+          "});"
         ]
       }
     }

@@ -1,3 +1,6 @@
+// Load environment variables
+require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
@@ -9,8 +12,16 @@ const errorHandler = require('./api/middleware/errorHandler');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Production environment setup
+const isProduction = process.env.NODE_ENV === 'production';
+
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: isProduction 
+    ? ['https://moderation-tool.vercel.app'] 
+    : ['http://localhost:3000'],
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.static('dist')); // Serve the built React app
 
@@ -26,8 +37,9 @@ app.get('*', (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-  console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
-  console.log(`📋 Guidelines: http://localhost:${PORT}/api/guidelines`);
-  console.log(`🤖 Moderation: http://localhost:${PORT}/api/moderate`);
+  console.log(`🚀 Server running on ${isProduction ? 'production' : `http://localhost:${PORT}`}`);
+  console.log(`📊 Health check: ${isProduction ? 'https://moderation-tool.vercel.app' : `http://localhost:${PORT}`}/api/health`);
+  console.log(`📋 Guidelines: ${isProduction ? 'https://moderation-tool.vercel.app' : `http://localhost:${PORT}`}/api/guidelines`);
+  console.log(`🤖 Moderation: ${isProduction ? 'https://moderation-tool.vercel.app' : `http://localhost:${PORT}`}/api/moderate`);
+  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
 }); 

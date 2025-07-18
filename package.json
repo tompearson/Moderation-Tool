@@ -9,23 +9,32 @@
     "preview": "vite preview",
     "server": "node server.js",
     "start": "npm run build && npm run server",
-    "dev:full": "concurrently \"npm run dev\" \"npm run server\""
+    "dev:full": "concurrently \"npm run dev\" \"npm run server\"",
+    "setup": "node setup-env.js",
+    "vercel-build": "VITE_CJS_IGNORE_WARNING=true vite build"
   },
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "@google/generative-ai": "^0.2.1",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.0",
     "express": "^4.18.2",
-    "cors": "^2.8.5"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.43",
     "@types/react-dom": "^18.2.17",
     "@vitejs/plugin-react": "^4.2.1",
-    "vite": "^5.0.8",
-    "concurrently": "^8.2.2"
+    "concurrently": "^8.2.2",
+    "vite": "^5.0.8"
   },
-  "keywords": ["community", "moderation", "ai", "react", "gemini"],
+  "keywords": [
+    "community",
+    "moderation",
+    "ai",
+    "react",
+    "gemini"
+  ],
   "author": "",
   "license": "MIT"
-} 
+}

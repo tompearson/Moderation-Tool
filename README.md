@@ -35,6 +35,16 @@ An AI-powered web application for moderating community posts using Google's Gemi
    npm install
    ```
 
+3. **Set up environment variables**
+   ```bash
+   # Interactive setup (recommended)
+   npm run setup
+   
+   # OR manually create .env file
+   cp env.example .env
+   # Then edit .env with your Gemini API key
+   ```
+
 3. **Choose your development mode:**
 
    **Option A: Frontend Only (Vite Dev Server)**
@@ -243,11 +253,58 @@ The project includes ready-to-use Postman files:
 - `openapi.yaml` - OpenAPI specification
 - `POSTMAN_SETUP.md` - Setup instructions
 
+## Environment Variables
+
+### **Required Variables**
+- **`GEMINI_API_KEY`** - Your Google Gemini API key (get one at [https://makersuite.google.com/app/apikey](https://makersuite.google.com/app/apikey))
+
+### **Optional Variables**
+- **`PORT`** - Server port (default: 3000)
+- **`NODE_ENV`** - Environment (development/production)
+
+### **Setup Methods**
+
+#### **Method 1: Interactive Setup (Recommended)**
+```bash
+npm run setup
+```
+This will guide you through creating your `.env` file interactively.
+
+#### **Method 2: Manual Setup**
+```bash
+# Copy the example file
+cp env.example .env
+
+# Edit .env with your API key
+# GEMINI_API_KEY=your_actual_api_key_here
+```
+
+## 🚀 Production Deployment
+
+### **Vercel Deployment (Recommended)**
+Your app is ready for production deployment on Vercel!
+
+1. **Connect to Vercel**: Import your GitHub repository
+2. **Set Environment Variables**: Add `GEMINI_API_KEY` in Vercel dashboard
+3. **Deploy**: Automatic deployment on every push
+
+**See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions.**
+
+### **Production URLs**
+After deployment, your app will be available at:
+- **Frontend**: `https://your-app.vercel.app`
+- **API Health**: `https://your-app.vercel.app/api/health`
+- **API Guidelines**: `https://your-app.vercel.app/api/guidelines`
+- **API Moderation**: `https://your-app.vercel.app/api/moderate`
+
+### **Production Postman Collection**
+Use `postman_collection_production.json` for production testing.
+
 ## API Key Security
 
 ⚠️ **Important**: The API endpoints handle your Gemini API key server-side for better security. For production use, consider:
 
-- Using environment variables for API keys
+- Using environment variables for API keys (✅ Already implemented)
 - Implementing proper API key management
 - Adding rate limiting and usage monitoring
 - Setting up authentication for API access

@@ -1,48 +1,62 @@
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+require('dotenv').config();
 
-const API_KEY = process.env.VITE_GEMINI_API_KEY || 'AIzaSyB2EyDjWFEwSAOQsnnwdoeFA3SY4Kz21hs';
-
-async function testAPI() {
-  console.log('Testing Google AI API...\n');
+async function testGeminiAPI() {
+  console.log('🧪 Testing Gemini API...\n');
+  
+  // Check if API key exists
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    console.error('❌ GEMINI_API_KEY not found in environment variables');
+    console.log('Make sure you have a .env file with: GEMINI_API_KEY=your_key_here');
+    return;
+  }
+  
+  console.log(`✅ API Key found: ${apiKey.substring(0, 10)}...`);
   
   try {
-    const genAI = new GoogleGenerativeAI(API_KEY);
+    // Initialize Gemini
+    const genAI = new GoogleGenerativeAI(apiKey);
     
-    // Test 1: List available models
-    console.log('1. Testing model availability...');
-    const models = ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-pro'];
+    // Test with gemini-1.5-flash (most reliable)
+    console.log('🔄 Testing with gemini-1.5-flash...');
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
     
-    for (const modelName of models) {
-      try {
-        console.log(`   Testing ${modelName}...`);
-        const model = genAI.getGenerativeModel({ model: modelName });
-        const result = await model.generateContent('Hello, this is a test.');
-        console.log(`   ✅ ${modelName} - SUCCESS`);
-      } catch (err) {
-        console.log(`   ❌ ${modelName} - FAILED: ${err.message}`);
-      }
-    }
-    
-    // Test 2: Simple content generation
-    console.log('\n2. Testing simple content generation...');
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const result = await model.generateContent('Say "Hello World"');
+    const prompt = 'Say "Hello, Gemini API is working!" in one sentence.';
+    const result = await model.generateContent(prompt);
     const response = await result.response;
-    console.log(`   Response: ${response.text()}`);
+    const text = response.text();
     
-  } catch (err) {
-    console.error('❌ API Test Failed:', err.message);
+    console.log('✅ API Test Successful!');
+    console.log(`Response: ${text}\n`);
     
-    if (err.message.includes('API_KEY_INVALID')) {
-      console.log('\n🔑 SOLUTION: You need a new API key from Google AI Studio');
-      console.log('   Visit: https://makersuite.google.com/app/apikey');
-    } else if (err.message.includes('PERMISSION_DENIED')) {
-      console.log('\n🔑 SOLUTION: Enable the Generative AI API');
-      console.log('   Visit: https://console.cloud.google.com/apis/library/generativelanguage.googleapis.com');
-    } else if (err.message.includes('QUOTA_EXCEEDED')) {
-      console.log('\n🔑 SOLUTION: Check your API quota and billing');
+    // Test moderation prompt
+    console.log('🔄 Testing moderation prompt...');
+    const moderationPrompt = `Analyze this post for community guidelines violations:
+
+Post: "This is a test post that should be respectful and appropriate."
+
+Please respond with just "Decision: Keep" or "Decision: Remove" and a brief reason.`;
+    
+    const moderationResult = await model.generateContent(moderationPrompt);
+    const moderationResponse = await moderationResult.response;
+    const moderationText = moderationResponse.text();
+    
+    console.log('✅ Moderation Test Successful!');
+    console.log(`Response: ${moderationText}\n`);
+    
+  } catch (error) {
+    console.error('❌ API Test Failed:');
+    console.error(error.message);
+    
+    if (error.message.includes('API key')) {
+      console.log('\n💡 The API key appears to be invalid. Please check:');
+      console.log('1. Your API key starts with "AIza"');
+      console.log('2. The key is complete (not truncated)');
+      console.log('3. You have quota remaining');
     }
   }
 }
 
-testAPI(); 
+// Run the test
+testGeminiAPI(); 

@@ -13,6 +13,34 @@ router.get('/health', (req, res) => {
   });
 });
 
+// Debug environment variables endpoint
+router.get('/debug-env', (req, res) => {
+  const envInfo = {
+    geminiApiKey: process.env.GEMINI_API_KEY ? {
+      exists: true,
+      length: process.env.GEMINI_API_KEY.length,
+      startsWith: process.env.GEMINI_API_KEY.substring(0, 10) + '...',
+      endsWith: '...' + process.env.GEMINI_API_KEY.substring(process.env.GEMINI_API_KEY.length - 4)
+    } : {
+      exists: false,
+      message: 'GEMINI_API_KEY not found in environment variables'
+    },
+    nodeEnv: process.env.NODE_ENV || 'not set',
+    isProduction: process.env.NODE_ENV === 'production',
+    vercelEnv: process.env.VERCEL_ENV || 'not set',
+    vercelUrl: process.env.VERCEL_URL || 'not set',
+    allEnvKeys: Object.keys(process.env).filter(key => 
+      key.includes('GEMINI') || key.includes('API') || key.includes('KEY')
+    )
+  };
+  
+  res.json({
+    success: true,
+    environment: envInfo,
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Get guidelines endpoint
 router.get('/guidelines', (req, res) => {
   try {
@@ -31,55 +59,14 @@ router.get('/guidelines', (req, res) => {
 
 // Main moderation endpoint
 router.post('/moderate', async (req, res) => {
+  const { content } = req.body; // Gets the post content
+  
   try {
-    const { postContent } = req.body;
-    
-    if (!postContent) {
-      return res.status(400).json({
-        success: false,
-        error: 'postContent is required'
-      });
-    }
-
-    const guidelines = loadGuidelines();
-    
-    // Create the prompt for Gemini
-    const prompt = `${guidelines}
-
-Please analyze this flagged post according to the community guidelines above:
-
-POST CONTENT:
-${postContent}
-
-Please provide your analysis in this exact format:
-
-**Decision:** [Remove] or [Keep]  
-**Reason:** [State the specific rule(s) and exactly why this post violates or does not violate them.]
-
-IMPORTANT: Keep your response brief and concise and limited to 300 characters. Focus on the most relevant rule violations or reasons for keeping the post. Avoid lengthy explanations unless necessary. Limit response to 300 characters.`;
-
-    // Generate content with fallback
-    const { text, model: usedModel } = await generateContent(prompt);
-    
-    // Parse the response
-    const { decision, reason } = parseModerationResponse(text);
-
-    res.json({
-      success: true,
-      decision,
-      reason,
-      model: usedModel,
-      timestamp: new Date().toISOString(),
-      rawResponse: text
-    });
-
+    // Backend has access to GEMINI_API_KEY via process.env
+    const result = await generateContent(content);
+    res.json(result);
   } catch (error) {
-    console.error('Moderation error:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Internal server error',
-      timestamp: new Date().toISOString()
-    });
+    res.status(500).json({ error: error.message });
   }
 });
 

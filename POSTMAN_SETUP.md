@@ -38,7 +38,7 @@ This guide will help you import and set up the Community Moderation API in Postm
 2. **Add these variables**:
    ```
    baseUrl: http://localhost:3000
-   apiKey: AIzaSyCjosDYs15EFppjV2iP2JNdkz5bU-5Qylc
+   GEMINI_API_KEY: your_actual_api_key_here
    ```
 
 3. **Select the environment** from the dropdown in the top right
@@ -125,7 +125,7 @@ This guide will help you import and set up the Community Moderation API in Postm
 
 ### "Invalid API key" error
 - Check that your Google AI API key is correct
-- Verify the `apiKey` environment variable is set
+- Verify the `GEMINI_API_KEY` environment variable is set
 - Ensure you have sufficient quota in your Google AI account
 
 ### "Model overloaded" error
