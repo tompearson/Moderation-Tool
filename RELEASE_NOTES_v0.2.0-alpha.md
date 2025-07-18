@@ -1,4 +1,4 @@
-# Nextdoor Moderation Tool - Release Notes
+# Moderation Tool - Release Notes
 
 ## Version 0.2.0-alpha - Enhanced Moderation Guidelines
 
@@ -128,8 +128,8 @@ PORTLAND OR 97086, 97201-97206, 97209-97214, 97215-97220, 97221-97225, 97227, 97
 
 #### ⚡ Quick Start
 ```bash
-git clone https://github.com/tompearson/nextdoor-moderation-tool.git
-cd nextdoor-moderation-tool
+git clone https://github.com/tompearson/moderation-tool.git
+cd moderation-tool
 npm install
 npm run dev
 ```
@@ -146,7 +146,7 @@ npm run dev
 - Basic moderation functionality
 - Google Gemini AI integration
 - React-based user interface
-- Core Nextdoor Community Guidelines
+- Core  Community Guidelines
 
 #### v0.2.0-alpha (Current Release)
 - Enhanced lenient moderation approach
@@ -162,7 +162,7 @@ npm run dev
 - **Advanced Analytics**: Moderation decision tracking
 - **Custom Rule Sets**: Configurable moderation guidelines
 - **Batch Processing**: Multiple post analysis
-- **API Integration**: Direct Nextdoor API connectivity
+- **API Integration**: Direct API connectivity
 
 ### 🤝 Contributing
 
@@ -175,10 +175,10 @@ We welcome contributions! Please see the GitHub repository for:
 ### 📞 Support
 
 For support and questions:
-- GitHub Issues: [Repository Issues](https://github.com/tompearson/nextdoor-moderation-tool/issues)
+- GitHub Issues: [Repository Issues](https://github.com/tompearson/moderation-tool/issues)
 - Documentation: See README.md for detailed setup instructions
 
 ---
 
-**Nextdoor Moderation Tool v0.2.0-alpha**  
+** Moderation Tool v0.2.0-alpha**  
 *Empowering community moderation with AI-driven insights* 

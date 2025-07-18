@@ -1,4 +1,4 @@
-# Release Notes - v0.3.0-alpha
+# Moderation Tool Release Notes - v0.3.0-alpha
 
 ## 🚀 New Features
 

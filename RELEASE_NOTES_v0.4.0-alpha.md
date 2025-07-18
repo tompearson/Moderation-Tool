@@ -1,4 +1,4 @@
-# Release Notes - v0.4.0-alpha
+# Moderation Tool Release Notes - v0.4.0-alpha
 
 ## 🎉 Community Moderation Tool v0.4.0-alpha
 
