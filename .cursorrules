@@ -1,7 +1,7 @@
 # Community Moderation Rules (.cursorrules)
 
 ## Purpose
-Check whether a flagged post violates community guidelines.  
+Check whether a flagged post violates community guidelines. 
 
 ## When reviewing a post:
 - Read the post carefully.
@@ -9,7 +9,14 @@ Check whether a flagged post violates community guidelines.
 - If any rule is violated, say which one and why.
 - There are no specific "civil tone' guidelines but the goal of the guidelines is to create a safe, respectful inclusive space where neighbors can build stronger communities through constructive conversations. This platform is locally focused, not a place for discussing events in other states.
 
-## Local zip codes
+## Limitations
+- This tool does not store any submitted posts and has no awareness of the origin of the input. As a result, it cannot identify nuanced or repetitive submissions.
+
+## Local Coverage
+### Counties
+- WASHINGTON COUNTY OR (includes all cities and zip codes within Washington County)
+
+### Specific Cities and Zip Codes
 HILLSBORO OR 97124
 BEAVERTON OR 97006, 97003, 97078
 CORNELIUS OR 97113

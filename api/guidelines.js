@@ -1,4 +1,4 @@
-// Embedded community guidelines - no file system dependency for production
+// Import the guidelines directly as a string to avoid Vite processing
 const MODERATION_RULES = `# Community Moderation Rules (.cursorrules)
 
 ## Purpose
@@ -116,35 +116,24 @@ When you analyze a post, always respond like this:
 
 IMPORTANT: Keep your response brief and concise and limited to 300 characters. Focus on the most relevant rule violations or reasons for keeping the post. Avoid lengthy explanations unless necessary. Limit response to 300 characters.`;
 
-// Load community guidelines from embedded content
-function loadGuidelines() {
-  return MODERATION_RULES;
-}
+export default function handler(req, res) {
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
 
-// Parse guidelines into structured format
-function parseGuidelines() {
-  const rawContent = loadGuidelines();
-  
-  return {
-    rules: [
-      { id: 1, title: 'Be Respectful', description: 'No hate speech, slurs, or harassment.' },
-      { id: 2, title: 'Keep It Relevant', description: 'Posts must be relevant to the local community.' },
-      { id: 3, title: 'Do Not Discriminate', description: 'No content that discriminates or promotes hate.' },
-      { id: 4, title: 'No Misinformation', description: 'Do not share false or misleading information.' },
-      { id: 5, title: 'Respect Privacy', description: 'Do not share private information without consent.' },
-      { id: 6, title: 'No Prohibited Content', description: 'No violence, criminal acts, or adult content.' },
-      { id: 7, title: 'Civil Tone', description: 'Use civil language and avoid aggressive tone.' },
-      { id: 8, title: 'Incorrect Category', description: 'Items for sale should not be in main feed.' }
-    ],
-    localCoverage: {
-      zipCodes: ['97124', '97006', '97003', '97078', '97113', '97116', '97119', '97132', '97140', '97086', '97201', '97202', '97203', '97204', '97205', '97206', '97209', '97210', '97211', '97212', '97213', '97214', '97215', '97216', '97217', '97218', '97219', '97220', '97221', '97222', '97223', '97224', '97225', '97227', '97229', '97230', '97231', '97232', '97233', '97236', '97252', '97253', '97267'],
-      cities: ['Hillsboro', 'Beaverton', 'Cornelius', 'Forest Grove', 'Gaston', 'Newburg', 'Sherwood', 'Portland']
-    },
-    rawContent
-  };
-}
-
-module.exports = {
-  loadGuidelines,
-  parseGuidelines
-}; 
+  try {
+    res.status(200).json({
+      success: true,
+      guidelines: {
+        rawContent: MODERATION_RULES,
+        version: '0.6.0-alpha',
+        timestamp: new Date().toISOString()
+      }
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: 'Failed to load guidelines'
+    });
+  }
+} 

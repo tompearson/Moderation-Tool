@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 const MODERATION_RULES = `# Community Moderation Rules (.cursorrules)
 
 ## Purpose
-Check whether a flagged post violates community guidelines.  
+Check whether a flagged post violates community guidelines. 
 
 ## When reviewing a post:
 - Read the post carefully.
@@ -12,7 +12,14 @@ Check whether a flagged post violates community guidelines.
 - If any rule is violated, say which one and why.
 - There are no specific "civil tone' guidelines but the goal of the guidelines is to create a safe, respectful inclusive space where neighbors can build stronger communities through constructive conversations. This platform is locally focused, not a place for discussing events in other states.
 
-## Local zip codes
+## Limitations
+- This tool does not store any submitted posts and has no awareness of the origin of the input. As a result, it cannot identify nuanced or repetitive submissions.
+
+## Local Coverage
+### Counties
+- WASHINGTON COUNTY OR (includes all cities and zip codes within Washington County)
+
+### Specific Cities and Zip Codes
 HILLSBORO OR 97124
 BEAVERTON OR 97006, 97003, 97078
 CORNELIUS OR 97113
@@ -54,7 +61,6 @@ PORTLAND OR 97236
 PORTLAND OR 97252
 PORTLAND OR 97253
 PORTLAND OR 97267
-
 
 ---
 
@@ -108,10 +114,14 @@ and should not be in the main feed and should not be allowed.
 When you analyze a post, always respond like this:
 
 **Decision:** [Remove] or [Keep]  
-**Reason:** [State the specific rule(s) and exactly why this post violates or does not violate them.]`;
+**Reason:** [State the specific rule(s) and exactly why this post violates or does not violate them.]
 
-// API endpoint for moderation
-const API_ENDPOINT = '/api/moderate';
+IMPORTANT: Keep your response brief and concise and limited to 300 characters. Focus on the most relevant rule violations or reasons for keeping the post. Avoid lengthy explanations unless necessary. Limit response to 300 characters.`;
+
+// API endpoint for moderation - use production URL when deployed
+const API_ENDPOINT = process.env.NODE_ENV === 'production' 
+  ? '/api/moderate'  // Use relative path for production (same domain)
+  : 'http://localhost:3000/api/moderate';  // Use localhost for development
 
 function App() {
   const [postContent, setPostContent] = useState('');
@@ -122,12 +132,16 @@ function App() {
 
   const moderatePost = async (content) => {
     try {
+      const requestBody = { content };
+      console.log('Sending request:', requestBody);
+      console.log('JSON stringified:', JSON.stringify(requestBody));
+      
       const response = await fetch(API_ENDPOINT, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ content })
+        body: JSON.stringify(requestBody)
       });
 
       if (!response.ok) {
@@ -136,8 +150,10 @@ function App() {
       }
 
       const result = await response.json();
+      console.log('Received result:', result);
       return result;
     } catch (err) {
+      console.error('Request failed:', err);
       throw err;
     }
   };
@@ -153,29 +169,6 @@ function App() {
     setIsLoading(true);
     setError('');
     setResult(null);
-
-    const prompt = `You are a community moderator with a balanced approach to moderation. Review the following post according to these rules:
-
-${MODERATION_RULES}
-
-Post to review:
-"${postContent}"
-
-IMPORTANT MODERATION GUIDELINES:
-- When in doubt, err on the side of keeping posts rather than removing them
-- Only remove posts that clearly and definitively violate the rules
-- Consider the context and intent of the post
-- Allow for legitimate expression of concerns, even if emotionally expressed
-- Be especially lenient with posts that are relevant to the local community
-- Minor violations or borderline cases should generally be kept with a warning
-
-Please analyze this post and respond in exactly this format:
-
-**Decision:** [Remove] or [Keep]
-**Reason:** [State the specific rule(s) and exactly why this post violates or does not violate them.]
-
-IMPORTANT: Keep your response brief and concise and limitied to 300 charactors. 
-Focus on the most relevant rule violations or reasons for keeping the post. Avoid lengthy explanations unless necessary.`;
 
     try {
       const result = await moderatePost(postContent);
@@ -209,7 +202,7 @@ Focus on the most relevant rule violations or reasons for keeping the post. Avoi
               <div className="header">
           <h1>Community Moderation Assistant</h1>
           <p>AI-powered post moderation using community guidelines</p>
-          <div className="version">v0.3.0-alpha</div>
+          <div className="version">v0.6.0-alpha</div>
         </div>
       
       <div className="content">
@@ -220,7 +213,7 @@ Focus on the most relevant rule violations or reasons for keeping the post. Avoi
               id="postContent"
               value={postContent}
               onChange={(e) => setPostContent(e.target.value)}
-              placeholder="Paste the flagged community post here..."
+              placeholder="Paste the flagged community post here... (Ctrl+V or use Paste button)"
               disabled={isLoading}
             />
             
@@ -231,13 +224,34 @@ Focus on the most relevant rule violations or reasons for keeping the post. Avoi
                   className="paste-button"
                   onClick={async () => {
                     try {
+                      // Check if clipboard API is available
+                      if (!navigator.clipboard) {
+                        setError('Clipboard API not supported. Please paste manually (Ctrl+V).');
+                        return;
+                      }
+                      
+                      // Request clipboard permission
+                      const permission = await navigator.permissions.query({ name: 'clipboard-read' });
+                      if (permission.state === 'denied') {
+                        setError('Clipboard permission denied. Please paste manually (Ctrl+V).');
+                        return;
+                      }
+                      
                       const text = await navigator.clipboard.readText();
-                      setPostContent(text);
-                      setResult(null);
-                      setError('');
+                      if (text.trim()) {
+                        setPostContent(text);
+                        setResult(null);
+                        setError('');
+                      } else {
+                        setError('Clipboard is empty. Please copy some text first.');
+                      }
                     } catch (err) {
                       console.error('Failed to read clipboard:', err);
-                      setError('Unable to access clipboard. Please paste manually.');
+                      if (err.name === 'NotAllowedError') {
+                        setError('Clipboard access denied. Please paste manually (Ctrl+V).');
+                      } else {
+                        setError('Unable to access clipboard. Please paste manually (Ctrl+V).');
+                      }
                     }
                   }}
                   disabled={isLoading}
@@ -264,13 +278,34 @@ Focus on the most relevant rule violations or reasons for keeping the post. Avoi
                     className="clear-paste-button"
                     onClick={async () => {
                       try {
+                        // Check if clipboard API is available
+                        if (!navigator.clipboard) {
+                          setError('Clipboard API not supported. Please paste manually (Ctrl+V).');
+                          return;
+                        }
+                        
+                        // Request clipboard permission
+                        const permission = await navigator.permissions.query({ name: 'clipboard-read' });
+                        if (permission.state === 'denied') {
+                          setError('Clipboard permission denied. Please paste manually (Ctrl+V).');
+                          return;
+                        }
+                        
                         const text = await navigator.clipboard.readText();
-                        setPostContent(text);
-                        setResult(null);
-                        setError('');
+                        if (text.trim()) {
+                          setPostContent(text);
+                          setResult(null);
+                          setError('');
+                        } else {
+                          setError('Clipboard is empty. Please copy some text first.');
+                        }
                       } catch (err) {
                         console.error('Failed to read clipboard:', err);
-                        setError('Unable to access clipboard. Please paste manually.');
+                        if (err.name === 'NotAllowedError') {
+                          setError('Clipboard access denied. Please paste manually (Ctrl+V).');
+                        } else {
+                          setError('Unable to access clipboard. Please paste manually (Ctrl+V).');
+                        }
                       }
                     }}
                     disabled={isLoading}
@@ -327,7 +362,7 @@ Focus on the most relevant rule violations or reasons for keeping the post. Avoi
             <button 
               className="copy-button"
               onClick={() => {
-                const textToCopy = `Decision: ${result.decision}\n\nReason: ${result.reason}`;
+                const textToCopy = result.reason;
                 navigator.clipboard.writeText(textToCopy).then(() => {
                   // Optional: Show a brief "Copied!" message
                   const button = document.querySelector('.copy-button');
@@ -341,7 +376,7 @@ Focus on the most relevant rule violations or reasons for keeping the post. Avoi
                 });
               }}
             >
-              Copy Result
+              Copy Reason
             </button>
           </div>
         )}
@@ -367,14 +402,27 @@ Focus on the most relevant rule violations or reasons for keeping the post. Avoi
                   <h3>🎯 Purpose</h3>
                   <p>Check whether the reported content violates community guidelines. 
                     Decide if it should be removed or kept. 
-                    Always use your own discretionwhen evaluating. 
-                    You don't have to agree with the recomendation by this tool.</p>
+                    Always use your own discretion when evaluating. 
+                    You don't have to agree with the recommendation by this tool.</p>
+                </div>
+
+                <div className="rules-section">
+                  <h3>⚠️ Limitations</h3>
+                  <p>This tool does not store any submitted posts and has no awareness of the origin of the input. 
+                    As a result, it cannot identify nuanced or repetitive submissions.</p>
                 </div>
 
                 <div className="rules-section">
                   <h3>📍 Local Coverage</h3>
-                  <div className="zip-codes">
-                    <h4>Portland Metro Area Zip Codes:</h4>
+                  <div className="coverage-info">
+                    <h4>Counties:</h4>
+                    <div className="county-list">
+                      <div className="county-item">
+                        <strong>Washington County, OR</strong> - Includes all cities and zip codes within Washington County
+                      </div>
+                    </div>
+                    
+                    <h4>Major Cities and Zip Codes:</h4>
                     <div className="zip-grid">
                       <div className="zip-group">
                         <strong>Hillsboro:</strong> 97124
@@ -466,6 +514,14 @@ Focus on the most relevant rule violations or reasons for keeping the post. Avoi
                     <ul>
                       <li>Use civil language</li>
                       <li>Avoid aggressive or offensive tone</li>
+                    </ul>
+                  </div>
+
+                  <div className="rule-item">
+                    <h4>8. ❌ Incorrect Category</h4>
+                    <ul>
+                      <li>Items offered for sale or free are considered 'Posted In Error'</li>
+                      <li>Should not be in the main feed and should not be allowed</li>
                     </ul>
                   </div>
                 </div>

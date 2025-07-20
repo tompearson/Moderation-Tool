@@ -1,24 +1,12 @@
 {
 	"info": {
-		"_postman_id": "dd1bf447-a068-4d28-b9ab-343c49d3f89b",
-		"name": "Community Moderation API",
+		"_postman_id": "b890a303-04e2-4d55-93d4-d1767e9de413",
+		"name": "Local Community Moderation API",
 		"description": "AI-powered post moderation using Google's Gemini API and community guidelines",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "45378031",
-		"_collection_link": "https://tom5883.postman.co/workspace/b9619e90-e189-4de2-8c98-ee29f86cd71a/collection/45378031-dd1bf447-a068-4d28-b9ab-343c49d3f89b?action=share&source=collection_link&creator=45378031"
+		"_collection_link": "https://tom5883.postman.co/workspace/b9619e90-e189-4de2-8c98-ee29f86cd71a/collection/45378031-b890a303-04e2-4d55-93d4-d1767e9de413?action=share&source=collection_link&creator=45378031"
 	},
-	"variable": [
-		{
-			"key": "baseUrl",
-			"value": "http://localhost:3000",
-			"type": "string"
-		},
-		{
-			"key": "productionUrl",
-			"value": "https://moderation-tool.vercel.app",
-			"type": "string"
-		}
-	],
 	"item": [
 		{
 			"name": "Moderation",
@@ -35,7 +23,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"content\": \"Lost my keys near the park on Main Street. If anyone finds them, please let me know. Thanks neighbors!\"\n}"
+							"raw": "{\n  \"postContent\": \"Lost my keys near the park on Main Street. If anyone finds them, please let me know. Thanks neighbors!\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/moderate",
@@ -62,7 +50,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n  \"content\": \"Lost my keys near the park on Main Street. If anyone finds them, please let me know. Thanks neighbors!\"\n}"
+									"raw": "{\n  \"postContent\": \"Lost my keys near the park on Main Street. If anyone finds them, please let me know. Thanks neighbors!\"\n}"
 								},
 								"url": {
 									"raw": "{{baseUrl}}/api/moderate",
@@ -99,7 +87,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n  \"content\": \"I hate all the immigrants moving into our neighborhood. They're ruining everything and should go back where they came from!\"\n}"
+									"raw": "{\n  \"postContent\": \"I hate all the immigrants moving into our neighborhood. They're ruining everything and should go back where they came from!\"\n}"
 								},
 								"url": {
 									"raw": "{{baseUrl}}/api/moderate",
@@ -175,80 +163,9 @@
 								}
 							],
 							"cookie": [],
-							  "body": "{\n  \"status\": \"healthy\",\n  \"version\": \"0.6.0-alpha\",\n  \"timestamp\": \"2024-12-15T10:30:00Z\"\n}"
+							"body": "{\n  \"status\": \"healthy\",\n  \"version\": \"0.3.0-alpha\",\n  \"timestamp\": \"2024-12-15T10:30:00Z\"\n}"
 						}
 					]
-				}
-			]
-		},
-		{
-			"name": "Production Testing",
-			"item": [
-				{
-					"name": "Production Health Check",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{productionUrl}}/api/health",
-							"host": [
-								"{{productionUrl}}"
-							],
-							"path": [
-								"api",
-								"health"
-							]
-						},
-						"description": "Test if the production moderation service is running"
-					},
-					"response": []
-				},
-				{
-					"name": "Production Guidelines",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{productionUrl}}/api/guidelines",
-							"host": [
-								"{{productionUrl}}"
-							],
-							"path": [
-								"api",
-								"guidelines"
-							]
-						},
-						"description": "Test guidelines endpoint in production"
-					},
-					"response": []
-				},
-				{
-					"name": "Production Moderate Post",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"content\": \"Lost my keys near the park on Main Street. If anyone finds them, please let me know. Thanks neighbors!\"\n}"
-						},
-						"url": {
-							"raw": "{{productionUrl}}/api/moderate",
-							"host": [
-								"{{productionUrl}}"
-							],
-							"path": [
-								"api",
-								"moderate"
-							]
-						},
-						"description": "Test moderation endpoint in production environment"
-					},
-					"response": []
 				}
 			]
 		},
@@ -361,7 +278,7 @@
 		},
 		{
 			"key": "apiKey",
-			"value": "AIzaSyCjosDYs15EFppjV2iP2JNdkz5bU-5Qylc",
+			"value": "{{GEMINI_API_KEY}}",
 			"type": "string"
 		}
 	]

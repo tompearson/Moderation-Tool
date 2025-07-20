@@ -49,11 +49,25 @@ async function generateContent(prompt) {
 
 // Parse AI response
 function parseModerationResponse(text) {
+  // Look for the decision pattern
   const decisionMatch = text.match(/\*\*Decision:\*\*\s*(Remove|Keep)/i);
-  const reasonMatch = text.match(/\*\*Reason:\*\*\s*(.+)/i);
+  
+  // Look for the reason pattern - be more flexible with the matching
+  let reasonMatch = text.match(/\*\*Reason:\*\*\s*(.+?)(?=\n\n|\n\*\*|$)/i);
+  
+  // If that doesn't work, try a simpler approach
+  if (!reasonMatch) {
+    reasonMatch = text.match(/\*\*Reason:\*\*\s*(.+)/i);
+  }
   
   const decision = decisionMatch ? decisionMatch[1] : 'Keep';
-  const reason = reasonMatch ? reasonMatch[1].trim() : 'Unable to determine specific reason';
+  let reason = 'Unable to determine specific reason';
+  
+  if (reasonMatch && reasonMatch[1]) {
+    reason = reasonMatch[1].trim();
+    // Remove any trailing punctuation or extra text
+    reason = reason.replace(/[.!?]+$/, '');
+  }
 
   return { decision, reason };
 }

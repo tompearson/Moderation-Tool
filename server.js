@@ -19,7 +19,16 @@ const isProduction = process.env.NODE_ENV === 'production';
 app.use(cors({
   origin: isProduction 
     ? ['https://moderation-tool.vercel.app'] 
-    : ['http://localhost:3000'],
+    : [
+        'http://localhost:3000',
+        'http://localhost:3001',
+        'http://192.168.254.201:3000',
+        'http://192.168.254.201:3001',
+        'http://192.168.254.204:3000',
+        'http://192.168.254.204:3001',
+        'http://172.24.240.1:3000',
+        'http://172.24.240.1:3001'
+      ],
   credentials: true
 }));
 app.use(express.json());

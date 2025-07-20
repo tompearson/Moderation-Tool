@@ -1,24 +1,12 @@
 {
 	"info": {
-		"_postman_id": "dd1bf447-a068-4d28-b9ab-343c49d3f89b",
-		"name": "Community Moderation API",
-		"description": "AI-powered post moderation using Google's Gemini API and community guidelines",
+		"_postman_id": "365988fc-19b1-4b03-9ed0-0055d494f8f4",
+		"name": "Production Community Moderation API",
+		"description": "AI-powered post moderation using Google's Gemini API and community guidelines - Production Environment",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "45378031",
-		"_collection_link": "https://tom5883.postman.co/workspace/b9619e90-e189-4de2-8c98-ee29f86cd71a/collection/45378031-dd1bf447-a068-4d28-b9ab-343c49d3f89b?action=share&source=collection_link&creator=45378031"
+		"_collection_link": "https://tom5883.postman.co/workspace/b9619e90-e189-4de2-8c98-ee29f86cd71a/collection/45378031-365988fc-19b1-4b03-9ed0-0055d494f8f4?action=share&source=collection_link&creator=45378031"
 	},
-	"variable": [
-		{
-			"key": "baseUrl",
-			"value": "http://localhost:3000",
-			"type": "string"
-		},
-		{
-			"key": "productionUrl",
-			"value": "https://moderation-tool.vercel.app",
-			"type": "string"
-		}
-	],
 	"item": [
 		{
 			"name": "Moderation",
@@ -35,7 +23,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"content\": \"Lost my keys near the park on Main Street. If anyone finds them, please let me know. Thanks neighbors!\"\n}"
+							"raw": "{\n  \"postContent\": \"Lost my keys near the park on Main Street. If anyone finds them, please let me know. Thanks neighbors!\"\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/api/moderate",
@@ -62,7 +50,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n  \"content\": \"Lost my keys near the park on Main Street. If anyone finds them, please let me know. Thanks neighbors!\"\n}"
+									"raw": "{\n  \"postContent\": \"Lost my keys near the park on Main Street. If anyone finds them, please let me know. Thanks neighbors!\"\n}"
 								},
 								"url": {
 									"raw": "{{baseUrl}}/api/moderate",
@@ -85,7 +73,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n  \"success\": true,\n  \"decision\": \"Keep\",\n  \"reason\": \"This post is a legitimate community concern about lost property. It's relevant to the local area and doesn't violate any community guidelines.\",\n  \"model\": \"gemini-2.5-pro\",\n  \"timestamp\": \"2024-12-15T10:30:00Z\"\n}"
+							"body": "{\n  \"success\": true,\n  \"decision\": \"Keep\",\n  \"reason\": \"This post is a legitimate community concern about lost property. It's relevant to the local area and doesn't violate any community guidelines.\",\n  \"model\": \"gemini-1.5-flash\",\n  \"timestamp\": \"2025-07-15T21:30:00Z\"\n}"
 						},
 						{
 							"name": "Remove Decision Example",
@@ -99,7 +87,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n  \"content\": \"I hate all the immigrants moving into our neighborhood. They're ruining everything and should go back where they came from!\"\n}"
+									"raw": "{\n  \"postContent\": \"I hate all the immigrants moving into our neighborhood. They're ruining everything and should go back where they came from!\"\n}"
 								},
 								"url": {
 									"raw": "{{baseUrl}}/api/moderate",
@@ -122,7 +110,7 @@
 								}
 							],
 							"cookie": [],
-							"body": "{\n  \"success\": true,\n  \"decision\": \"Remove\",\n  \"reason\": \"This post violates Rule 1 (Be Respectful) and Rule 3 (Do Not Discriminate). It contains hate speech targeting immigrants and promotes discrimination.\",\n  \"model\": \"gemini-2.5-pro\",\n  \"timestamp\": \"2024-12-15T10:30:00Z\"\n}"
+							"body": "{\n  \"success\": true,\n  \"decision\": \"Remove\",\n  \"reason\": \"This post violates Rule 1 (Be Respectful) and Rule 3 (Do Not Discriminate). It contains hate speech targeting immigrants and promotes discrimination.\",\n  \"model\": \"gemini-1.5-flash\",\n  \"timestamp\": \"2025-07-15T21:30:00Z\"\n}"
 						}
 					]
 				}
@@ -175,80 +163,9 @@
 								}
 							],
 							"cookie": [],
-							  "body": "{\n  \"status\": \"healthy\",\n  \"version\": \"0.6.0-alpha\",\n  \"timestamp\": \"2024-12-15T10:30:00Z\"\n}"
+							"body": "{\n  \"status\": \"healthy\",\n  \"version\": \"0.4.0-alpha\",\n  \"timestamp\": \"2025-07-15T21:30:00Z\"\n}"
 						}
 					]
-				}
-			]
-		},
-		{
-			"name": "Production Testing",
-			"item": [
-				{
-					"name": "Production Health Check",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{productionUrl}}/api/health",
-							"host": [
-								"{{productionUrl}}"
-							],
-							"path": [
-								"api",
-								"health"
-							]
-						},
-						"description": "Test if the production moderation service is running"
-					},
-					"response": []
-				},
-				{
-					"name": "Production Guidelines",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{productionUrl}}/api/guidelines",
-							"host": [
-								"{{productionUrl}}"
-							],
-							"path": [
-								"api",
-								"guidelines"
-							]
-						},
-						"description": "Test guidelines endpoint in production"
-					},
-					"response": []
-				},
-				{
-					"name": "Production Moderate Post",
-					"request": {
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"content\": \"Lost my keys near the park on Main Street. If anyone finds them, please let me know. Thanks neighbors!\"\n}"
-						},
-						"url": {
-							"raw": "{{productionUrl}}/api/moderate",
-							"host": [
-								"{{productionUrl}}"
-							],
-							"path": [
-								"api",
-								"moderate"
-							]
-						},
-						"description": "Test moderation endpoint in production environment"
-					},
-					"response": []
 				}
 			]
 		},
@@ -306,16 +223,6 @@
 			]
 		}
 	],
-	"auth": {
-		"type": "apikey",
-		"apikey": [
-			{
-				"key": "X-API-Key",
-				"value": "{{apiKey}}",
-				"type": "string"
-			}
-		]
-	},
 	"event": [
 		{
 			"listen": "prerequest",
@@ -348,7 +255,12 @@
 					"});",
 					"",
 					"// Log response for debugging",
-					"console.log('Response:', pm.response.json());"
+					"console.log('Response:', pm.response.json());",
+					"",
+					"// Performance test",
+					"pm.test('Response time is less than 5000ms', function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+					"});"
 				]
 			}
 		}
@@ -356,12 +268,12 @@
 	"variable": [
 		{
 			"key": "baseUrl",
-			"value": "http://localhost:3000",
+			"value": "https://moderation-tool.vercel.app\n",
 			"type": "string"
 		},
 		{
-			"key": "apiKey",
-			"value": "AIzaSyCjosDYs15EFppjV2iP2JNdkz5bU-5Qylc",
+			"key": "GEMINI_API_KEY",
+			"value": "AIzaSyCjosDYs15EFppjV2iP2JNdkz5bU-5Qylc ",
 			"type": "string"
 		}
 	]

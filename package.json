@@ -1,6 +1,6 @@
 {
   "name": "community-moderation-assistant",
-  "version": "1.0.0",
+  "version": "0.6.0-alpha",
   "description": "AI-powered community post moderation tool",
   "main": "index.js",
   "scripts": {
@@ -11,7 +11,9 @@
     "start": "npm run build && npm run server",
     "dev:full": "concurrently \"npm run dev\" \"npm run server\"",
     "setup": "node setup-env.js",
-    "vercel-build": "VITE_CJS_IGNORE_WARNING=true vite build"
+    "vercel-build": "VITE_CJS_IGNORE_WARNING=true vite build",
+    "test:production": "node test-production.js",
+    "test:local": "node test-production.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.2.1",
