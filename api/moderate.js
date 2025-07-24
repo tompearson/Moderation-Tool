@@ -116,7 +116,7 @@ When you analyze a post, always respond like this:
 **Decision:** [Remove] or [Keep]  
 **Reason:** [State the specific rule(s) and exactly why this post violates or does not violate them.]
 
-IMPORTANT: Keep your response brief and concise and limited to 300 characters. Focus on the most relevant rule violations or reasons for keeping the post. Avoid lengthy explanations unless necessary. Limit response to 300 characters.`;
+IMPORTANT: Focus on the most relevant rule violations or reasons for keeping the post. The character limit will be specified in the moderation instructions.`;
 
 // Initialize Gemini AI
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -159,7 +159,7 @@ async function generateContent(prompt) {
 }
 
 // Parse AI response
-function parseModerationResponse(text) {
+function parseModerationResponse(text, characterLimit) {
   // Look for the decision pattern
   const decisionMatch = text.match(/\*\*Decision:\*\*\s*(Remove|Keep)/i);
   
@@ -180,7 +180,27 @@ function parseModerationResponse(text) {
     reason = reason.replace(/[.!?]+$/, '');
   }
 
-  return { decision, reason };
+  // Check if the full response exceeds character limit
+  const fullResponse = `**Decision:** ${decision}\n**Reason:** ${reason}`;
+  const responseLength = fullResponse.length;
+  
+  console.log(`Response length: ${responseLength} characters (limit: ${characterLimit})`);
+  
+  if (responseLength > characterLimit) {
+    // Truncate the reason to fit within the limit
+    const decisionPart = `**Decision:** ${decision}\n**Reason:** `;
+    const availableChars = characterLimit - decisionPart.length;
+    
+    if (availableChars > 10) { // Ensure we have at least some space for reason
+      reason = reason.substring(0, availableChars - 3) + '...';
+    } else {
+      reason = 'Response too long';
+    }
+    
+    console.log(`Response truncated to fit ${characterLimit} character limit`);
+  }
+
+  return { decision, reason, characterCount: fullResponse.length, characterLimit };
 }
 
 export default async function handler(req, res) {
@@ -204,9 +224,11 @@ export default async function handler(req, res) {
   
   // Handle both 'content' and 'postContent' field names for flexibility
   const content = req.body.content || req.body.postContent;
+  const characterLimit = req.body.characterLimit || 300; // Default to 300 if not provided
   console.log('Extracted content:', content);
   console.log('Content type:', typeof content);
   console.log('Content length:', content ? content.length : 'null');
+  console.log('Character limit:', characterLimit);
   
   // Validate that we have content to moderate
   if (!content || typeof content !== 'string' || content.trim().length === 0) {
@@ -225,7 +247,9 @@ export default async function handler(req, res) {
   
   try {
     // Construct the full moderation prompt
-    const prompt = `SYSTEM: You are a community moderation AI. Your ONLY job is to analyze posts and determine if they violate community guidelines. You must respond in the exact format specified.
+    const prompt = `CRITICAL CHARACTER LIMIT INSTRUCTION: You MUST write a ${characterLimit <= 300 ? 'brief' : 'comprehensive and detailed'} response using MOST of the available ${characterLimit} characters. For ${characterLimit} characters, provide extensive analysis with specific rule evaluation, context analysis, and detailed reasoning. DO NOT give short responses when ${characterLimit} characters are requested.
+
+SYSTEM: You are a community moderation AI. Your ONLY job is to analyze posts and determine if they violate community guidelines. You must respond in the exact format specified.
 
 TASK: Analyze the following post according to these community guidelines:
 
@@ -245,9 +269,17 @@ MODERATION INSTRUCTIONS:
 
 REQUIRED RESPONSE FORMAT (you must use exactly this format):
 **Decision:** [Remove] or [Keep]
-**Reason:** [Brief explanation of which rule(s) apply and why]
+**Reason:** [${characterLimit <= 300 ? 'Brief explanation' : 'Comprehensive analysis with specific rule evaluation, context analysis, and detailed reasoning'}]
 
-Keep your response under 300 characters. Focus only on the moderation decision.`;
+CHARACTER LIMIT ENFORCEMENT: Your ENTIRE response (including "**Decision:**" and "**Reason:**" text) must be ${characterLimit} characters or less. For ${characterLimit} characters, aim to use at least ${Math.floor(characterLimit * 0.8)} characters in your response.
+
+EXAMPLE FOR ${characterLimit} CHARACTERS:
+${characterLimit <= 300 ? 
+  '**Decision:** Keep\n**Reason:** Post discusses local driving concerns respectfully without personal attacks. No rule violations found.' :
+  '**Decision:** Keep\n**Reason:** This post fully aligns with the community guidelines and does not violate any of the specified rules. It promotes a local event focused on Restorative Justice, which is a legitimate and constructive topic for community discussion. The content is highly relevant to the local community as it aims to foster healing, understanding, and transformation within the neighborhood. The event details, including the location in Beaverton, Oregon, clearly place it within the approved local coverage area. The post is written with a civil tone, using respectful, inviting, and inclusive language throughout. There is no hate speech, threats, personal attacks, or excessive profanity. It does not attempt to discriminate based on any protected characteristic, nor does it share any misinformation, false claims, or private information without consent. Furthermore, it does not promote violence, criminal acts, or any other prohibited content like spam or fraudulent schemes. The event is a free community gathering, which is appropriate content for the main feed, and therefore, it does not fall under the \'Incorrect Category\' rule that applies to items offered for sale or free. Overall, the post strongly encourages positive community engagement and directly supports the platform\'s goal of creating a safe, respectful, and inclusive space for neighbors to build stronger communities through constructive conversations. It provides clear, actionable information about a beneficial community event.'
+}
+
+Make your response similar in length and detail to this example.`;
 
     // Send the full prompt to the AI
     console.log('Full prompt length:', prompt.length);
@@ -257,7 +289,7 @@ Keep your response under 300 characters. Focus only on the moderation decision.`
     console.log('AI Response:', aiResponse.text);
     
     // Parse the AI response to extract decision and reason
-    const parsedResult = parseModerationResponse(aiResponse.text);
+    const parsedResult = parseModerationResponse(aiResponse.text, characterLimit);
     console.log('Parsed Result:', parsedResult);
     
     res.status(200).json(parsedResult);

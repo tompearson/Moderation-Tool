@@ -48,7 +48,7 @@ async function generateContent(prompt) {
 }
 
 // Parse AI response
-function parseModerationResponse(text) {
+function parseModerationResponse(text, characterLimit) {
   // Look for the decision pattern
   const decisionMatch = text.match(/\*\*Decision:\*\*\s*(Remove|Keep)/i);
   
@@ -69,7 +69,39 @@ function parseModerationResponse(text) {
     reason = reason.replace(/[.!?]+$/, '');
   }
 
-  return { decision, reason };
+  // Check if the full response exceeds character limit
+  const fullResponse = `**Decision:** ${decision}\n**Reason:** ${reason}`;
+  const responseLength = fullResponse.length;
+  
+  console.log(`Response length: ${responseLength} characters (limit: ${characterLimit})`);
+  
+  if (responseLength > characterLimit) {
+    // Truncate the reason to fit within the limit
+    const decisionPart = `**Decision:** ${decision}\n**Reason:** `;
+    const availableChars = characterLimit - decisionPart.length;
+    
+    if (availableChars > 20) { // Ensure we have at least some space for reason
+      // Try to find a natural break point (sentence end)
+      const truncatedReason = reason.substring(0, availableChars - 3);
+      const lastPeriod = truncatedReason.lastIndexOf('.');
+      const lastExclamation = truncatedReason.lastIndexOf('!');
+      const lastQuestion = truncatedReason.lastIndexOf('?');
+      
+      const lastBreak = Math.max(lastPeriod, lastExclamation, lastQuestion);
+      
+      if (lastBreak > availableChars * 0.7) { // If we found a good break point
+        reason = truncatedReason.substring(0, lastBreak + 1);
+      } else {
+        reason = truncatedReason + '...';
+      }
+    } else {
+      reason = 'Response too long';
+    }
+    
+    console.log(`Response truncated to fit ${characterLimit} character limit`);
+  }
+
+  return { decision, reason, characterCount: fullResponse.length, characterLimit, model: null };
 }
 
 module.exports = {

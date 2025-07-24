@@ -13,7 +13,8 @@ An AI-powered web application for moderating community posts using Google's Gemi
 - 📱 Mobile-friendly design
 - 📋 Copy button for easy sharing of moderation results
 - 🧪 Comprehensive testing framework with 17+ test cases
-- 🏷️ **Version indicator** - Discrete version number display (v0.2.0-alpha)
+- 🏷️ **Version indicator** - Discrete version number display (v0.6.0-alpha)
+- ⚡ **Dynamic Character Limits** - Two analysis modes: Quick (300 chars) and Detailed (2000 chars)
 
 ## Prerequisites
 
@@ -182,10 +183,11 @@ To access the app from other devices on your network:
    - Copy the content of a flagged community post
    - Paste it into the "Flagged Post Content" text area
 
-4. **Analyze the post**
-   - Click "Analyze Post" to send the content to Gemini
+4. **Choose your analysis mode**
+   - **Quick Analysis (300 chars)**: Brief, concise responses for fast moderation
+   - **Detailed Analysis (2000 chars)**: Comprehensive analysis with detailed reasoning, rule evaluation, and context analysis
    - The AI will review the post against Community Guidelines
-   - Results will show the decision (Remove/Keep) and detailed reasoning
+   - Results will show the decision (Remove/Keep) and detailed reasoning with character count
 
 ## How It Works
 
@@ -230,10 +232,19 @@ POST /api/moderate
 Content-Type: application/json
 
 {
-  "postContent": "Your post content here"
+  "content": "Your post content here",
+  "characterLimit": 300
 }
 ```
 Analyzes a flagged post and returns a moderation decision.
+
+**Parameters:**
+- `content` (required): The post content to moderate
+- `characterLimit` (optional): Response character limit (default: 300, max: 2000)
+
+**Character Limit Options:**
+- **300 characters**: Quick, concise analysis
+- **2000 characters**: Detailed analysis with comprehensive reasoning
 
 **Response Format:**
 ```json

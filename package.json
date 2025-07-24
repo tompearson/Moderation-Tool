@@ -10,6 +10,9 @@
     "server": "node server.js",
     "start": "npm run build && npm run server",
     "dev:full": "concurrently \"npm run dev\" \"npm run server\"",
+    "dev:frontend": "vite",
+    "dev:backend": "node server.js",
+    "dev:separate": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
     "setup": "node setup-env.js",
     "vercel-build": "VITE_CJS_IGNORE_WARNING=true vite build",
     "test:production": "node test-production.js",
@@ -28,7 +31,7 @@
     "@types/react-dom": "^18.2.17",
     "@vitejs/plugin-react": "^4.2.1",
     "concurrently": "^8.2.2",
-    "vite": "^5.0.8"
+    "vite": "^7.0.5"
   },
   "keywords": [
     "community",

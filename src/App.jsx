@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-// Import the rules directly as a string to avoid Vite processing
+// Import the rules from .cursorrules file
 const MODERATION_RULES = `# Community Moderation Rules (.cursorrules)
 
 ## Purpose
@@ -116,12 +116,12 @@ When you analyze a post, always respond like this:
 **Decision:** [Remove] or [Keep]  
 **Reason:** [State the specific rule(s) and exactly why this post violates or does not violate them.]
 
-IMPORTANT: Keep your response brief and concise and limited to 300 characters. Focus on the most relevant rule violations or reasons for keeping the post. Avoid lengthy explanations unless necessary. Limit response to 300 characters.`;
+IMPORTANT: Keep your response brief and concise. Focus on the most relevant rule violations or reasons for keeping the post. Avoid lengthy explanations unless necessary. The character limit will be specified in the moderation instructions.`;
 
 // API endpoint for moderation - use production URL when deployed
 const API_ENDPOINT = process.env.NODE_ENV === 'production' 
-  ? '/api/moderate'  // Use relative path for production (same domain)
-  : 'http://localhost:3000/api/moderate';  // Use localhost for development
+  ? '/api/moderate'  // Use relative path for production (same domain). Set 
+  : `http://localhost:${process.env.REACT_APP_API_PORT || 3001}/api/moderate`;  // Use configurable port for development
 
 function App() {
   const [postContent, setPostContent] = useState('');
@@ -129,12 +129,11 @@ function App() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
   const [showRules, setShowRules] = useState(false);
+  const [characterLimit, setCharacterLimit] = useState(300); // Default to 300 chars
 
-  const moderatePost = async (content) => {
+  const moderatePost = async (content, charLimit = 300) => {
     try {
-      const requestBody = { content };
-      console.log('Sending request:', requestBody);
-      console.log('JSON stringified:', JSON.stringify(requestBody));
+      const requestBody = { content, characterLimit: charLimit };
       
       const response = await fetch(API_ENDPOINT, {
         method: 'POST',
@@ -150,7 +149,16 @@ function App() {
       }
 
       const result = await response.json();
-      console.log('Received result:', result);
+      
+      // Development-only logging
+      if (process.env.NODE_ENV !== 'production') {
+        // console.log('Moderation result:', { 
+        //   decision: result.decision, 
+        //   model: result.model,
+        //   characterCount: result.characterCount 
+        // });
+      }
+      
       return result;
     } catch (err) {
       console.error('Request failed:', err);
@@ -160,7 +168,10 @@ function App() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+    await handleSubmitWithLimit(characterLimit);
+  };
+
+  const handleSubmitWithLimit = async (limit) => {
     if (!postContent.trim()) {
       setError('Please enter a post to moderate.');
       return;
@@ -171,7 +182,7 @@ function App() {
     setResult(null);
 
     try {
-      const result = await moderatePost(postContent);
+      const result = await moderatePost(postContent, limit);
       setResult(result);
       setError(''); // Clear any previous error
     } catch (err) {
@@ -318,20 +329,43 @@ function App() {
           </div>
 
           <div className="button-group">
-            <button 
-              type="submit" 
-              className="button" 
-              disabled={isLoading || !postContent.trim()}
-            >
-              {isLoading ? (
-                <div className="loading">
-                  <div className="spinner"></div>
-                  Analyzing post...
-                </div>
-              ) : (
-                'Analyze Post'
-              )}
-            </button>
+                         <button 
+               type="button" 
+               className="button quick-analysis-button"
+               onClick={() => {
+                 setCharacterLimit(300);
+                 handleSubmitWithLimit(300);
+               }}
+               disabled={isLoading || !postContent.trim()}
+             >
+                              {isLoading && characterLimit === 300 ? (
+                 <div className="loading">
+                   <div className="spinner"></div>
+                   Quick Analysis...
+                 </div>
+               ) : (
+                 'Quick Analysis'
+               )}
+             </button>
+            
+                         <button 
+               type="button" 
+               className="button detailed-analysis-button"
+               onClick={() => {
+                 setCharacterLimit(2000);
+                 handleSubmitWithLimit(2000);
+               }}
+               disabled={isLoading || !postContent.trim()}
+             >
+                              {isLoading && characterLimit === 2000 ? (
+                 <div className="loading">
+                   <div className="spinner"></div>
+                   Detailed Analysis...
+                 </div>
+               ) : (
+                 'Detailed Analysis'
+               )}
+             </button>
             
             <button 
               type="button" 
@@ -352,7 +386,12 @@ function App() {
 
         {result && (
           <div className={`result ${result.decision.toLowerCase()}`}>
-            <h3>Moderation Result</h3>
+            <div className="result-info">
+              <div className="character-info">
+                <small>Response: {result.characterCount || 0} / {result.characterLimit || characterLimit} characters • AI Model: {result.model}</small>
+              </div>
+            </div>
+            <h3>Moderation Result ({result.characterLimit || result.characterCount || characterLimit} chars)</h3>
             <div className={`decision ${result.decision.toLowerCase()}`}>
               Decision: {result.decision}
             </div>

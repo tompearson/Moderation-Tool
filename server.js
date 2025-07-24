@@ -10,7 +10,7 @@ const apiRoutes = require('./api/routes');
 const errorHandler = require('./api/middleware/errorHandler');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3001;
 
 // Production environment setup
 const isProduction = process.env.NODE_ENV === 'production';
@@ -21,13 +21,9 @@ app.use(cors({
     ? ['https://moderation-tool.vercel.app'] 
     : [
         'http://localhost:3000',
-        'http://localhost:3001',
         'http://192.168.254.201:3000',
-        'http://192.168.254.201:3001',
         'http://192.168.254.204:3000',
-        'http://192.168.254.204:3001',
-        'http://172.24.240.1:3000',
-        'http://172.24.240.1:3001'
+        'http://172.24.240.1:3000'
       ],
   credentials: true
 }));

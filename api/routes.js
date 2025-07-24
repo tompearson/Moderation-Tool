@@ -59,21 +59,40 @@ router.get('/guidelines', (req, res) => {
 
 // Main moderation endpoint
 router.post('/moderate', async (req, res) => {
-  console.log('Received request body:', req.body);
-  console.log('Request body type:', typeof req.body);
-  console.log('Request body keys:', Object.keys(req.body || {}));
-  
+  // Enable CORS
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   // Handle both 'content' and 'postContent' field names for flexibility
   const content = req.body.content || req.body.postContent;
-  console.log('Extracted content:', content);
-  console.log('Content type:', typeof content);
-  console.log('Content length:', content ? content.length : 'null');
+  const characterLimit = req.body.characterLimit || 300; // Default to 300 if not provided
+  
+  // Production-safe logging
+  if (process.env.NODE_ENV !== 'production') {
+    // console.log('=== REQUEST DEBUG INFO ===');
+    // console.log('Content length:', content ? content.length : 'null');
+    // console.log('Character limit:', characterLimit);
+    // console.log('=== END REQUEST DEBUG INFO ===');
+  }
   
   // Validate that we have content to moderate
   if (!content || typeof content !== 'string' || content.trim().length === 0) {
     return res.status(400).json({ 
       error: 'Missing or invalid content. Please provide a post to moderate.',
       received: req.body 
+    });
+  }
+
+  // Validate API key
+  if (!process.env.GEMINI_API_KEY) {
+    return res.status(500).json({ 
+      error: 'GEMINI_API_KEY environment variable is not set. Please configure your API key in Vercel.' 
     });
   }
   
@@ -83,7 +102,9 @@ router.post('/moderate', async (req, res) => {
     const guidelines = guidelinesData.rawContent;
     
     // Construct the full moderation prompt
-    const prompt = `SYSTEM: You are a community moderation AI. Your ONLY job is to analyze posts and determine if they violate community guidelines. You must respond in the exact format specified.
+    const prompt = characterLimit <= 300 ? 
+      // Original simple prompt for 300 characters
+      `SYSTEM: You are a community moderation AI. Your ONLY job is to analyze posts and determine if they violate community guidelines. You must respond in the exact format specified.
 
 TASK: Analyze the following post according to these community guidelines:
 
@@ -105,21 +126,62 @@ REQUIRED RESPONSE FORMAT (you must use exactly this format):
 **Decision:** [Remove] or [Keep]
 **Reason:** [Brief explanation of which rule(s) apply and why]
 
-Keep your response under 300 characters. Focus only on the moderation decision.`;
+Keep your response under ${characterLimit} characters. Focus only on the moderation decision.` :
+      // Detailed prompt for 2000 characters
+      `CRITICAL CHARACTER LIMIT INSTRUCTION: You MUST write a comprehensive and detailed response using MOST of the available ${characterLimit} characters. Provide extensive analysis with specific rule evaluation, context analysis, and detailed reasoning.
+
+SYSTEM: You are a community moderation AI. Your ONLY job is to analyze posts and determine if they violate community guidelines. You must respond in the exact format specified.
+
+TASK: Analyze the following post according to these community guidelines:
+
+${guidelines}
+
+POST TO MODERATE:
+"${content}"
+
+MODERATION INSTRUCTIONS:
+- You are a community moderator reviewing a flagged post
+- Compare the post content to each rule above
+- Determine if the post should be kept or removed
+- When in doubt, err on the side of keeping posts
+- Only remove posts that clearly violate rules
+- Consider context and intent
+- Be lenient with local community content
+
+REQUIRED RESPONSE FORMAT (you must use exactly this format):
+**Decision:** [Remove] or [Keep]
+**Reason:** [Comprehensive analysis with specific rule evaluation, context analysis, and detailed reasoning]
+
+CHARACTER LIMIT ENFORCEMENT: Your ENTIRE response (including "**Decision:**" and "**Reason:**" text) must be EXACTLY ${characterLimit} characters or less. DO NOT exceed ${characterLimit} characters. For ${characterLimit} characters, aim to use at least ${Math.floor(characterLimit * 0.8)} characters in your response.
+
+EXAMPLE FOR ${characterLimit} CHARACTERS:
+**Decision:** Keep
+**Reason:** This post fully aligns with the community guidelines and does not violate any of the specified rules. It promotes a local event focused on Restorative Justice, which is a legitimate and constructive topic for community discussion. The content is highly relevant to the local community as it aims to foster healing, understanding, and transformation within the neighborhood. The event details, including the location in Beaverton, Oregon, clearly place it within the approved local coverage area. The post is written with a civil tone, using respectful, inviting, and inclusive language throughout. There is no hate speech, threats, personal attacks, or excessive profanity. It does not attempt to discriminate based on any protected characteristic, nor does it share any misinformation, false claims, or private information without consent. Furthermore, it does not promote violence, criminal acts, or any other prohibited content like spam or fraudulent schemes. The event is a free community gathering, which is appropriate content for the main feed, and therefore, it does not fall under the 'Incorrect Category' rule that applies to items offered for sale or free. Overall, the post strongly encourages positive community engagement and directly supports the platform's goal of creating a safe, respectful, and inclusive space for neighbors to build stronger communities through constructive conversations. It provides clear, actionable information about a beneficial community event.
+
+Make your response similar in length and detail to this example. REMEMBER: Your response must be ${characterLimit} characters or less.`;
 
     // Send the full prompt to the AI
-    console.log('Full prompt length:', prompt.length);
-    console.log('Post content being moderated:', content);
-    console.log('Sending prompt to AI (first 1000 chars):', prompt.substring(0, 1000) + '...');
     const aiResponse = await generateContent(prompt);
-    console.log('AI Response:', aiResponse.text);
     
     // Parse the AI response to extract decision and reason
-    const parsedResult = parseModerationResponse(aiResponse.text);
-    console.log('Parsed Result:', parsedResult);
+    const parsedResult = parseModerationResponse(aiResponse.text, characterLimit);
     
-    res.json(parsedResult);
+    // Add the AI model information to the response
+    const finalResult = {
+      ...parsedResult,
+      model: aiResponse.model
+    };
+    
+    // Production-safe logging
+    if (process.env.NODE_ENV !== 'production') {
+      // console.log('AI Model used:', aiResponse.model);
+      // console.log('Response decision:', parsedResult.decision);
+      // console.log('Response length:', aiResponse.text.length);
+    }
+    
+    res.status(200).json(finalResult);
   } catch (error) {
+    console.error('Moderation error:', error);
     res.status(500).json({ error: error.message });
   }
 });
