@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-// Import the rules from .cursorrules file
-const MODERATION_RULES = `# Community Moderation Rules (.cursorrules)
+// Moderation rules (consolidated from .cursorrules)
+const MODERATION_RULES = `# Community Moderation Rules
 
 ## Purpose
 Check whether a flagged post violates community guidelines. 
