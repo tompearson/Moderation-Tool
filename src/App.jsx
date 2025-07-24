@@ -213,7 +213,7 @@ function App() {
               <div className="header">
           <h1>Community Moderation Assistant</h1>
           <p>AI-powered post moderation using community guidelines</p>
-          <div className="version">v0.6.0-alpha</div>
+          <div className="version">v0.7.0-alpha</div>
         </div>
       
       <div className="content">
