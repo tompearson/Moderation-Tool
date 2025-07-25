@@ -1,6 +1,6 @@
 {
   "name": "community-moderation-assistant",
-  "version": "0.6.0-alpha",
+  "version": "0.8.0-alpha",
   "description": "AI-powered community post moderation tool",
   "main": "index.js",
   "scripts": {
@@ -16,7 +16,8 @@
     "setup": "node setup-env.js",
     "vercel-build": "VITE_CJS_IGNORE_WARNING=true vite build",
     "test:production": "node test-production.js",
-    "test:local": "node test-production.js"
+    "test:local": "node test-production.js",
+    "update-version": "node scripts/update-version.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.2.1",

@@ -119,9 +119,9 @@ When you analyze a post, always respond like this:
 IMPORTANT: Keep your response brief and concise. Focus on the most relevant rule violations or reasons for keeping the post. Avoid lengthy explanations unless necessary. The character limit will be specified in the moderation instructions.`;
 
 // API endpoint for moderation - use production URL when deployed
-const API_ENDPOINT = process.env.NODE_ENV === 'production' 
-  ? '/api/moderate'  // Use relative path for production (same domain). Set 
-  : `http://localhost:${process.env.REACT_APP_API_PORT || 3001}/api/moderate`;  // Use configurable port for development
+const API_ENDPOINT = import.meta.env.MODE === 'production'
+  ? '/api/moderate'  // Use relative path for production (same domain)
+  : `http://127.0.0.1:${import.meta.env.VITE_API_PORT || 3001}/api/moderate`;  // Use configurable port for development
 
 function App() {
   const [postContent, setPostContent] = useState('');
@@ -213,7 +213,7 @@ function App() {
               <div className="header">
           <h1>Community Moderation Assistant</h1>
           <p>AI-powered post moderation using community guidelines</p>
-          <div className="version">v0.7.0-alpha</div>
+          <div className="version">v{window.APP_VERSION?.full || '0.7.0-alpha'}</div>
         </div>
       
       <div className="content">

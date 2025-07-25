@@ -2,7 +2,7 @@
   "info": {
     "name": "Community Moderation API",
     "description": "AI-powered post moderation using Google's Gemini API and community guidelines",
-    "version": "0.3.0-alpha",
+    "version": "0.8.0-alpha",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "auth": {
@@ -65,7 +65,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n  \"success\": true,\n  \"decision\": \"Keep\",\n  \"reason\": \"This post is a legitimate community concern about lost property. It's relevant to the local area and doesn't violate any community guidelines.\",\n  \"model\": \"gemini-2.5-pro\",\n  \"timestamp\": \"2024-12-15T10:30:00Z\"\n}"
+              "body": "{\n  \"success\": true,\n  \"decision\": \"Keep\",\n  \"reason\": \"This post is a legitimate community concern about lost property. It's relevant to the local area and doesn't violate any community guidelines.\",\n  \"model\": \"gemini-2.5-pro\",\n  \"timestamp\": \"2025-07-25T10:30:00Z\"\n}"
             },
             {
               "name": "Remove Decision Example",
@@ -97,7 +97,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n  \"success\": true,\n  \"decision\": \"Remove\",\n  \"reason\": \"This post violates Rule 1 (Be Respectful) and Rule 3 (Do Not Discriminate). It contains hate speech targeting immigrants and promotes discrimination.\",\n  \"model\": \"gemini-2.5-pro\",\n  \"timestamp\": \"2024-12-15T10:30:00Z\"\n}"
+              "body": "{\n  \"success\": true,\n  \"decision\": \"Remove\",\n  \"reason\": \"This post violates Rule 1 (Be Respectful) and Rule 3 (Do Not Discriminate). It contains hate speech targeting immigrants and promotes discrimination.\",\n  \"model\": \"gemini-2.5-pro\",\n  \"timestamp\": \"2025-07-25T10:30:00Z\"\n}"
             }
           ]
         }
@@ -140,7 +140,7 @@
                 }
               ],
               "cookie": [],
-              "body": "{\n  \"status\": \"healthy\",\n  \"version\": \"0.3.0-alpha\",\n  \"timestamp\": \"2024-12-15T10:30:00Z\"\n}"
+              "body": "{\n  \"status\": \"healthy\",\n  \"version\": \"0.3.0-alpha\",\n  \"timestamp\": \"2025-07-25T10:30:00Z\"\n}"
             }
           ]
         }
