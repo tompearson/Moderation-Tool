@@ -4,10 +4,10 @@
 const VERSION = {
   number: '0.8.0-alpha',
   major: 0,
-  minor: 7,
+  minor: 8,
   patch: 0,
   prerelease: 'alpha',
-  full: '0.7.0-alpha'
+  full: '0.8.0-alpha'
 };
 
 // Export for CommonJS (Node.js)
