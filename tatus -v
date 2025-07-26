@@ -1,3 +1,0 @@
-[33m055f60a[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;33mtag: [m[1;33mv0.8.0-alpha[m[33m)[m feat: implement centralized version management and fix network configuration
-[33m2096619[m[33m ([m[1;31morigin/master[m[33m)[m fix: Update App.jsx comment to reflect consolidated rules approach
-[33m145c99d[m[33m ([m[1;33mtag: [m[1;33mv0.7.0-alpha[m[33m)[m fix: Update version to v0.7.0-alpha in App.jsx
