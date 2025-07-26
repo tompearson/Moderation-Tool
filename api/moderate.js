@@ -247,7 +247,7 @@ export default async function handler(req, res) {
   
   try {
     // Construct the full moderation prompt
-    const prompt = `CRITICAL CHARACTER LIMIT INSTRUCTION: You MUST write a ${characterLimit <= 300 ? 'brief' : 'comprehensive and detailed'} response using MOST of the available ${characterLimit} characters. For ${characterLimit} characters, provide extensive analysis with specific rule evaluation, context analysis, and detailed reasoning. DO NOT give short responses when ${characterLimit} characters are requested.
+    const prompt = `CRITICAL CHARACTER LIMIT INSTRUCTION: You MUST write a ${characterLimit <= 300 ? 'brief' : 'comprehensive and detailed'} response using MOST of the available ${characterLimit} characters. ${characterLimit <= 300 ? 'For brief responses, focus on key rule violations or reasons for keeping the post.' : 'For comprehensive responses, provide extensive analysis with specific rule evaluation, context analysis, and detailed reasoning.'} Always complete a thought and never truncate at the character limit.
 
 SYSTEM: You are a community moderation AI. Your ONLY job is to analyze posts and determine if they violate community guidelines. You must respond in the exact format specified.
 
@@ -269,9 +269,9 @@ MODERATION INSTRUCTIONS:
 
 REQUIRED RESPONSE FORMAT (you must use exactly this format):
 **Decision:** [Remove] or [Keep]
-**Reason:** [${characterLimit <= 300 ? 'Brief explanation' : 'Comprehensive analysis with specific rule evaluation, context analysis, and detailed reasoning'}]
+**Reason:** [${characterLimit <= 300 ? 'Brief explanation focusing on key rule violations or reasons for keeping the post' : 'Comprehensive analysis with specific rule evaluation, context analysis, and detailed reasoning'}]
 
-CHARACTER LIMIT ENFORCEMENT: Your ENTIRE response (including "**Decision:**" and "**Reason:**" text) must be ${characterLimit} characters or less. For ${characterLimit} characters, aim to use at least ${Math.floor(characterLimit * 0.8)} characters in your response.
+CHARACTER LIMIT ENFORCEMENT: Your ENTIRE response (including "**Decision:**" and "**Reason:**" text) must be ${characterLimit} characters or less. ${characterLimit <= 300 ? 'For brief responses, aim to use at least 200 characters.' : `For comprehensive responses, aim to use at least ${Math.floor(characterLimit * 0.8)} characters.`}
 
 EXAMPLE FOR ${characterLimit} CHARACTERS:
 ${characterLimit <= 300 ? 

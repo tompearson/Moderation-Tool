@@ -6,7 +6,7 @@ This guide will help you deploy your Community Moderation Tool to production.
 
 ### Prerequisites
 - [Vercel Account](https://vercel.com/signup)
-- [GitHub Repository](https://github.com/tompearson/nextdoor-moderation-tool) (already set up)
+- [GitHub Repository](https://github.com/tompearson/moderation-tool) (already set up)
 - Google Gemini API Key
 
 ### Step 1: Connect to Vercel
@@ -14,7 +14,7 @@ This guide will help you deploy your Community Moderation Tool to production.
 1. **Go to [Vercel Dashboard](https://vercel.com/dashboard)**
 2. **Click "New Project"**
 3. **Import your GitHub repository**
-4. **Select the repository**: `nextdoor-moderation-tool`
+4. **Select the repository**: `moderation-tool`
 
 ### Step 2: Configure Environment Variables
 

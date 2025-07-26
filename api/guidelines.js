@@ -1,3 +1,5 @@
+const VERSION = require('../version.js');
+
 // Import the guidelines directly as a string to avoid Vite processing
 const MODERATION_RULES = `# Community Moderation Rules (.cursorrules)
 
@@ -126,7 +128,7 @@ export default function handler(req, res) {
       success: true,
       guidelines: {
         rawContent: MODERATION_RULES,
-        version: '0.6.0-alpha',
+        version: VERSION.full,
         timestamp: new Date().toISOString()
       }
     });

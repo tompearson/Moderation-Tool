@@ -1,6 +1,7 @@
 const express = require('express');
 const { loadGuidelines, parseGuidelines } = require('./utils/guidelines');
 const { generateContent, parseModerationResponse } = require('./utils/ai');
+const VERSION = require('../version.js');
 
 const router = express.Router();
 
@@ -8,7 +9,7 @@ const router = express.Router();
 router.get('/health', (req, res) => {
   res.json({
     status: 'healthy',
-    version: '0.6.0-alpha',
+    version: VERSION.full,
     timestamp: new Date().toISOString()
   });
 });
@@ -104,7 +105,7 @@ router.post('/moderate', async (req, res) => {
     // Construct the full moderation prompt
     const prompt = characterLimit <= 300 ? 
       // Original simple prompt for 300 characters
-      `SYSTEM: You are a community moderation AI. Your ONLY job is to analyze posts and determine if they violate community guidelines. You must respond in the exact format specified.
+      `SYSTEM: You are a community moderation AI. Your ONLY job is to analyze posts and determine if they violate community guidelines. You must respond in the exact format specified. Never truncate your response being sure to use all the characters available.
 
 TASK: Analyze the following post according to these community guidelines:
 
