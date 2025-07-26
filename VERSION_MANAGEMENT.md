@@ -13,7 +13,7 @@ This project now uses a centralized version management system to prevent version
 ### 2. Files That Use Centralized Version
 - ✅ `api/health.js` - Health endpoint version
 - ✅ `api/routes.js` - Routes health endpoint version  
-- ✅ `api/guidelines.js` - Guidelines endpoint version
+- ✅ `api/guidelines-endpoint.js` - Guidelines endpoint version
 - ✅ `package.json` - Updated automatically by script
 - ✅ `package-lock.json` - Regenerated automatically by script
 - ✅ `README.md` - Version indicator updated automatically

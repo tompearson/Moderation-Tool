@@ -1,4 +1,4 @@
-// Embedded community guidelines - no file system dependency for production
+// Single source of truth for community guidelines - update here for all changes
 const MODERATION_RULES = `# Community Moderation Rules (.cursorrules)
 
 ## Purpose
@@ -144,7 +144,20 @@ function parseGuidelines() {
   };
 }
 
+// Get guidelines with version info for API responses
+function getGuidelinesWithMetadata() {
+  const VERSION = require('../version.js');
+  
+  return {
+    rawContent: MODERATION_RULES,
+    version: VERSION.full,
+    timestamp: new Date().toISOString()
+  };
+}
+
 module.exports = {
   loadGuidelines,
-  parseGuidelines
+  parseGuidelines,
+  getGuidelinesWithMetadata,
+  MODERATION_RULES // Export raw content for direct access
 }; 
