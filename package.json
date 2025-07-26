@@ -1,6 +1,6 @@
 {
   "name": "community-moderation-assistant",
-  "version": "0.8.0-alpha",
+  "version": "0.8.2-alpha",
   "description": "AI-powered community post moderation tool",
   "main": "index.js",
   "scripts": {
@@ -17,7 +17,11 @@
     "vercel-build": "VITE_CJS_IGNORE_WARNING=true vite build",
     "test:production": "node test-production.js",
     "test:local": "node test-production.js",
-    "update-version": "node scripts/update-version.js"
+    "update-version": "node scripts/update-version.js",
+    "bump-patch": "node scripts/bump-version.js patch",
+    "bump-minor": "node scripts/bump-version.js minor",
+    "bump-major": "node scripts/bump-version.js major",
+    "bump": "node scripts/bump-version.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.2.1",
