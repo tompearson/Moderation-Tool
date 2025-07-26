@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Version Test</title>
+</head>
+<body>
+    <h1>Version Loading Test</h1>
+    <div id="version-info"></div>
+    
+    <script src="/version.js"></script>
+    <script>
+        console.log('🔍 Version Test Debug:', {
+            windowAPP_VERSION: window.APP_VERSION,
+            full: window.APP_VERSION?.full,
+            fallback: '0.7.0-alpha',
+            finalVersion: window.APP_VERSION?.full || '0.7.0-alpha'
+        });
+        
+        document.getElementById('version-info').innerHTML = `
+            <p><strong>window.APP_VERSION:</strong> ${JSON.stringify(window.APP_VERSION)}</p>
+            <p><strong>window.APP_VERSION?.full:</strong> ${window.APP_VERSION?.full || 'undefined'}</p>
+            <p><strong>Final Version:</strong> ${window.APP_VERSION?.full || '0.7.0-alpha'}</p>
+        `;
+    </script>
+</body>
+</html> 

@@ -124,6 +124,14 @@ const API_ENDPOINT = import.meta.env.MODE === 'production'
   : `http://127.0.0.1:${import.meta.env.VITE_API_PORT || 3001}/api/moderate`;  // Use configurable port for development
 
 function App() {
+  // Debug version loading
+  console.log('🔍 Version Debug:', {
+    windowAPP_VERSION: window.APP_VERSION,
+    full: window.APP_VERSION?.full,
+    fallback: '0.7.0-alpha',
+    finalVersion: window.APP_VERSION?.full || '0.7.0-alpha'
+  });
+
   const [postContent, setPostContent] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState(null);
