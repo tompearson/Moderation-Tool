@@ -2,12 +2,12 @@
 // This file serves as the single source of truth for version information
 
 const VERSION = {
-  number: '0.8.3-alpha',
+  number: '0.8.4-alpha',
   major: 0,
   minor: 8,
-  patch: 3,
+  patch: 4,
   prerelease: 'alpha',
-  full: '0.8.3-alpha'
+  full: '0.8.4-alpha'
 };
 
 // Export for CommonJS (Node.js)
@@ -25,5 +25,7 @@ if (typeof window !== 'undefined') {
   window.APP_VERSION = VERSION;
 }
 
-// Default export for ES modules
-export default VERSION; 
+// Default export for ES modules (only if ES modules are supported)
+if (typeof exports !== 'undefined' && typeof module !== 'undefined') {
+  module.exports = VERSION;
+} 

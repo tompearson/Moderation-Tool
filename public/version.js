@@ -25,5 +25,7 @@ if (typeof window !== 'undefined') {
   window.APP_VERSION = VERSION;
 }
 
-// Default export for ES modules
-export default VERSION; 
+// Default export for ES modules (only if ES modules are supported)
+if (typeof exports !== 'undefined' && typeof module !== 'undefined') {
+  module.exports = VERSION;
+} 
