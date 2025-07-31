@@ -175,7 +175,7 @@
 								}
 							],
 							"cookie": [],
-							  "body": "{\n  \"status\": \"healthy\",\n  \"version\": \"0.7.0-alpha\",\n  \"timestamp\": \"2025-07-25T10:30:00Z\"\n}"
+							  "body": "{\n  \"status\": \"healthy\",\n  \"version\": \"0.8.7-alpha\",\n  \"timestamp\": \"2025-07-25T10:30:00Z\"\n}"
 						}
 					]
 				}
