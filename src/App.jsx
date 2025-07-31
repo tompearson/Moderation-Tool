@@ -399,7 +399,7 @@ function App() {
                 <small>Response: {result.characterCount || 0} / {result.characterLimit || characterLimit} characters • AI Model: {result.model}</small>
               </div>
             </div>
-            <h3>Moderation Result ({result.characterLimit || result.characterCount || characterLimit} chars)</h3>
+            <h3>Moderation Result</h3>
             <div className={`decision ${result.decision.toLowerCase()}`}>
               Decision: {result.decision}
             </div>

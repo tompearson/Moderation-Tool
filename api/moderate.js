@@ -292,7 +292,13 @@ Make your response similar in length and detail to this example.`;
     const parsedResult = parseModerationResponse(aiResponse.text, characterLimit);
     console.log('Parsed Result:', parsedResult);
     
-    res.status(200).json(parsedResult);
+    // Add model information to the response
+    const finalResult = {
+      ...parsedResult,
+      model: aiResponse.model
+    };
+    
+    res.status(200).json(finalResult);
   } catch (error) {
     console.error('Moderation error:', error);
     res.status(500).json({ error: error.message });

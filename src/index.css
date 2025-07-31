@@ -85,12 +85,16 @@ body {
   font-family: inherit;
   resize: vertical;
   transition: border-color 0.3s ease;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
 .form-group textarea:focus {
   outline: none;
   border-color: #667eea;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  font-size: 16px; /* Prevent zoom on iOS */
 }
 
 .button {
@@ -104,6 +108,8 @@ body {
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   width: 100%;
+  min-height: 44px; /* Better touch target */
+  -webkit-tap-highlight-color: transparent;
 }
 
 .button:hover {
@@ -281,6 +287,7 @@ body {
   z-index: 1000;
   padding: 20px;
   backdrop-filter: blur(4px);
+  overflow-y: auto;
 }
 
 .modal-content {
@@ -336,6 +343,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  min-width: 44px; /* Better touch target */
+  min-height: 44px; /* Better touch target */
+  -webkit-tap-highlight-color: transparent;
 }
 
 .modal-close:hover {
@@ -506,16 +516,30 @@ body {
 @media (max-width: 768px) {
   .button-group {
     flex-direction: column;
+    gap: 12px;
+  }
+  
+  .button-group .button {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 1rem;
   }
   
   .button-row {
     justify-content: center;
     flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .button-row button {
+    padding: 6px 12px;
+    font-size: 0.85rem;
   }
   
   .modal-content {
     margin: 10px;
     max-height: 95vh;
+    width: calc(100% - 20px);
   }
   
   .modal-header {
@@ -537,7 +561,184 @@ body {
   .rules-section h3 {
     font-size: 1.2rem;
   }
+  
+  .rule-item {
+    padding: 15px;
+  }
+  
+  .rule-item h4 {
+    font-size: 1rem;
+  }
 }
+
+@media (max-width: 768px) {
+  body {
+    padding: 10px;
+  }
+  
+  .container {
+    margin: 0;
+    border-radius: 8px;
+  }
+  
+  .header {
+    padding: 20px 15px;
+    padding-right: 80px; /* Adjust for mobile */
+    text-align: left;
+  }
+  
+  .header h1 {
+    font-size: 1.8rem;
+    margin-right: 0;
+    line-height: 1.2;
+  }
+  
+  .header p {
+    font-size: 1rem;
+    margin-top: 8px;
+  }
+  
+  .content {
+    padding: 20px 15px;
+  }
+  
+  .version {
+    top: 10px;
+    right: 10px;
+    font-size: 0.7rem;
+    padding: 3px 6px;
+  }
+  
+  .form-group textarea {
+    min-height: 150px;
+    padding: 12px;
+    font-size: 0.95rem;
+  }
+  
+  .form-group label {
+    font-size: 1rem;
+  }
+  
+  .result {
+    padding: 20px 15px;
+    margin-top: 20px;
+  }
+  
+  .result h3 {
+    font-size: 1.1rem;
+  }
+  
+  .result .decision {
+    font-size: 1.1rem;
+  }
+  
+  .character-info {
+    padding: 6px 10px;
+  }
+  
+  .character-info small {
+    font-size: 0.8rem;
+  }
+  
+  .copy-button {
+    width: 100%;
+    justify-content: center;
+    padding: 12px 20px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Extra small screens (phones) */
+@media (max-width: 480px) {
+  body {
+    padding: 5px;
+  }
+  
+  .header {
+    padding: 15px 10px;
+    padding-right: 70px;
+  }
+  
+  .header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .header p {
+    font-size: 0.9rem;
+  }
+  
+  .content {
+    padding: 15px 10px;
+  }
+  
+  .version {
+    top: 8px;
+    right: 8px;
+    font-size: 0.65rem;
+    padding: 2px 5px;
+  }
+  
+  .form-group textarea {
+    min-height: 120px;
+    padding: 10px;
+    font-size: 0.9rem;
+  }
+  
+  .button-group .button {
+    padding: 10px 15px;
+    font-size: 0.9rem;
+  }
+  
+  .button-row button {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+  }
+  
+  .modal-content {
+    margin: 5px;
+    width: calc(100% - 10px);
+  }
+  
+  .modal-header {
+    padding: 15px;
+  }
+  
+  .modal-header h2 {
+    font-size: 1.3rem;
+  }
+  
+  .modal-body {
+    padding: 15px;
+  }
+  
+  .rules-section h3 {
+    font-size: 1.1rem;
+  }
+  
+  .rule-item {
+    padding: 12px;
+  }
+  
+  .rule-item h4 {
+    font-size: 0.95rem;
+  }
+  
+  .result {
+    padding: 15px 10px;
+  }
+  
+  .result h3 {
+    font-size: 1rem;
+  }
+  
+  .result .decision {
+    font-size: 1rem;
+  }
+  
+  .character-info small {
+    font-size: 0.75rem;
+  }
+} 
 
 .button-row {
   display: flex;
@@ -556,6 +757,8 @@ body {
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  min-height: 36px; /* Better touch target */
+  -webkit-tap-highlight-color: transparent;
 }
 
 .paste-button:hover {
@@ -578,6 +781,8 @@ body {
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  min-height: 36px; /* Better touch target */
+  -webkit-tap-highlight-color: transparent;
 }
 
 .clear-button:hover {
@@ -618,33 +823,7 @@ body {
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
-@media (max-width: 768px) {
-  .container {
-    margin: 10px;
-    border-radius: 8px;
-  }
-  
-  .header {
-    padding: 20px;
-    padding-right: 100px; /* Adjust for mobile */
-  }
-  
-  .header h1 {
-    font-size: 2rem;
-    margin-right: 0;
-  }
-  
-  .content {
-    padding: 20px;
-  }
-  
-  .version {
-    top: 10px;
-    right: 15px;
-    font-size: 0.7rem;
-    padding: 3px 6px;
-  }
-} 
+ 
 
 .clear-paste-button {
   background: #8b5cf6;
@@ -656,6 +835,8 @@ body {
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  min-height: 36px; /* Better touch target */
+  -webkit-tap-highlight-color: transparent;
 }
 
 .clear-paste-button:hover {
