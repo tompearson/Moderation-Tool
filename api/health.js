@@ -1,4 +1,4 @@
-const VERSION = require('../version.js');
+const VERSION = require('../public/version.js');
 
 export default function handler(req, res) {
   if (req.method !== 'GET') {

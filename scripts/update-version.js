@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 // Read the current version from version.js
-const versionPath = path.join(__dirname, '..', 'version.js');
+const versionPath = path.join(__dirname, '..', 'public', 'version.js');
 const versionContent = fs.readFileSync(versionPath, 'utf8');
 
 // Extract version number using regex

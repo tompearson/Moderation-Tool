@@ -6,7 +6,7 @@ const { execSync } = require('child_process');
 
 class AutoVersioner {
   constructor() {
-    this.versionPath = path.join(__dirname, '..', 'version.js');
+    this.versionPath = path.join(__dirname, '..', 'public', 'version.js');
     this.packagePath = path.join(__dirname, '..', 'package.json');
   }
 

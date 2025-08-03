@@ -324,7 +324,7 @@ async function parseGuidelines() {
 
 // Get guidelines with version info for API responses
 async function getGuidelinesWithMetadata() {
-  const VERSION = require('../version.js');
+  const VERSION = require('../../public/version.js');
   const content = await loadGuidelines();
   
   return {

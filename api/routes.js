@@ -1,7 +1,7 @@
 const express = require('express');
 const { loadGuidelines, parseGuidelines } = require('./utils/guidelines');
 const { generateContent, parseModerationResponse } = require('./utils/ai');
-const VERSION = require('../version.js');
+const VERSION = require('../public/version.js');
 
 const router = express.Router();
 
