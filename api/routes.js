@@ -166,8 +166,25 @@ router.post('/moderate', async (req, res) => {
   }
   
   try {
-    // Load moderation rules from guidelines
-    const guidelinesData = parseGuidelines();
+    // Load moderation rules from guidelines with source tracking
+    let guidelinesData;
+    let ruleSource = 'embedded'; // Default source
+    
+    try {
+      guidelinesData = await parseGuidelines();
+      const guidelines = guidelinesData.rawContent;
+      
+      // Get the guidelines metadata to determine source
+      const { getGuidelinesWithMetadata } = require('./utils/guidelines.js');
+      const guidelinesMetadata = await getGuidelinesWithMetadata();
+      ruleSource = guidelinesMetadata.source || 'embedded';
+      console.log('📋 Rule source:', ruleSource);
+    } catch (error) {
+      console.log('⚠️ Failed to load guidelines, using fallback:', error.message);
+      guidelinesData = { rawContent: 'Fallback rules content' };
+      ruleSource = 'fallback';
+    }
+    
     const guidelines = guidelinesData.rawContent;
     
     // Construct the full moderation prompt
@@ -235,10 +252,11 @@ Make your response similar in length and detail to this example. REMEMBER: Your 
     // Parse the AI response to extract decision and reason
     const parsedResult = parseModerationResponse(aiResponse.text, characterLimit);
     
-    // Add the AI model information to the response
+    // Add the AI model information and rule source to the response
     const finalResult = {
       ...parsedResult,
-      model: aiResponse.model
+      model: aiResponse.model,
+      ruleSource: ruleSource
     };
     
     // Production-safe logging
