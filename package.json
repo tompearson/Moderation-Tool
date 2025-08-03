@@ -1,6 +1,6 @@
 {
   "name": "community-moderation-assistant",
-  "version": "0.8.27-alpha",
+  "version": "0.8.28-alpha",
   "description": "AI-powered community post moderation tool",
   "main": "index.js",
   "scripts": {
