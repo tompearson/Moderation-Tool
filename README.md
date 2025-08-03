@@ -13,7 +13,7 @@ An AI-powered web application for moderating community posts using Google's Gemi
 - 📱 Mobile-friendly design
 - 📋 Copy button for easy sharing of moderation results
 - 🧪 Comprehensive testing framework with 17+ test cases
-- 🏷️ **Version indicator** - Discrete version number display (v0.8.25-alpha)
+- 🏷️ **Version indicator** - Discrete version number display (v0.8.26-alpha)
 - ⚡ **Dynamic Character Limits** - Two analysis modes: Quick (300 chars) and Detailed (2000 chars)
 
 ## Prerequisites
