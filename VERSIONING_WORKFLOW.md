@@ -102,10 +102,22 @@ npm run dev:separate
 ## **Files That Get Updated:**
 
 - `package.json` - Project metadata and version
-- `public/version.js` - Frontend version display
+- `public/version.js` - Frontend version display (served as `/version.js` by Vite)
 
 - `README.md` - Documentation updates
 - `postman_collection.json` - API documentation
 - `postman_collection_production.json` - Production API docs
+
+## **Important Notes:**
+
+### **Vite File Serving**
+- Files in the `public/` directory are served at the root path
+- `public/version.js` is accessible as `/version.js` in the browser
+- Always reference version files as `/version.js` in HTML, not `/public/version.js`
+
+### **Version File Locations**
+- **Frontend**: `public/version.js` (served as `/version.js`)
+- **Backend**: `public/version.js` (imported as `../public/version.js`)
+- **Scripts**: `public/version.js` (referenced as `../public/version.js`)
 
 This ensures the frontend always shows the correct version that matches our git tags! 
