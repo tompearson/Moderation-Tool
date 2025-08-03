@@ -2,12 +2,12 @@
 // This file serves as the single source of truth for version information
 
 const VERSION = {
-  number: '0.8.26-alpha',
+  number: '0.8.27-alpha',
   major: 0,
   minor: 8,
-  patch: 26,
+  patch: 27,
   prerelease: 'alpha',
-  full: '0.8.26-alpha'
+  full: '0.8.27-alpha'
 };
 
 // Export for CommonJS (Node.js)
