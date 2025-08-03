@@ -2,7 +2,7 @@
   "info": {
     "name": "Community Moderation API - Production",
     "description": "AI-powered post moderation using Google's Gemini API and community guidelines - Production Environment",
-    "version": "0.8.24-alpha",
+    "version": "0.8.25-alpha",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
