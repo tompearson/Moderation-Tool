@@ -1,7 +1,8 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { loadGuidelines } from './utils/guidelines.js';
 
-// Import the guidelines directly as a string
-const MODERATION_RULES = `# Community Moderation Rules (.cursorrules)
+// Fallback rules in case guidelines loading fails
+const FALLBACK_RULES = `# Community Moderation Rules
 
 ## Purpose
 Check whether a flagged post violates community guidelines. 
@@ -160,6 +161,9 @@ async function generateContent(prompt) {
 
 // Parse AI response
 function parseModerationResponse(text, characterLimit) {
+  console.log('🚨 parseModerationResponse FUNCTION CALLED');
+  console.log('🚨 Input text:', text);
+  console.log('🚨 Character limit:', characterLimit);
   // Look for the decision pattern
   const decisionMatch = text.match(/\*\*Decision:\*\*\s*(Remove|Keep)/i);
   
@@ -180,11 +184,17 @@ function parseModerationResponse(text, characterLimit) {
     reason = reason.replace(/[.!?]+$/, '');
   }
 
+  // Extract rule information from the reason
+  console.log('🔍 Debug: About to extract rules from reason:', reason);
+  const rules = extractRulesFromReason(reason, decision);
+
   // Check if the full response exceeds character limit
   const fullResponse = `**Decision:** ${decision}\n**Reason:** ${reason}`;
   const responseLength = fullResponse.length;
   
   console.log(`Response length: ${responseLength} characters (limit: ${characterLimit})`);
+  console.log('🔍 TEST: This line should appear if updated code is running');
+  console.log('🚨 UPDATED CODE IS RUNNING - RULE EXTRACTION SHOULD WORK');
   
   if (responseLength > characterLimit) {
     // Truncate the reason to fit within the limit
@@ -200,10 +210,77 @@ function parseModerationResponse(text, characterLimit) {
     console.log(`Response truncated to fit ${characterLimit} character limit`);
   }
 
-  return { decision, reason, characterCount: fullResponse.length, characterLimit };
+  console.log('🔍 Debug: Rules extracted:', rules);
+  return { decision, reason, rules, characterCount: fullResponse.length, characterLimit };
 }
 
+// Extract rule information from the AI response
+function extractRulesFromReason(reason, decision) {
+  console.log('🔍 Debug: extractRulesFromReason called with:', { reason, decision });
+  const ruleMappings = {
+    'respectful': { id: 1, title: 'Be Respectful', emoji: '🤝' },
+    'relevant': { id: 2, title: 'Keep It Relevant', emoji: '🎯' },
+    'discriminate': { id: 3, title: 'Do Not Discriminate', emoji: '❌' },
+    'misinformation': { id: 4, title: 'No Misinformation', emoji: '✅' },
+    'privacy': { id: 5, title: 'Respect Privacy', emoji: '🔒' },
+    'prohibited': { id: 6, title: 'No Prohibited Content', emoji: '🚫' },
+    'civil': { id: 7, title: 'Civil Tone', emoji: '🗣️' },
+    'category': { id: 8, title: 'Incorrect Category', emoji: '❌' },
+    'hate speech': { id: 1, title: 'Be Respectful', emoji: '🤝' },
+    'harassment': { id: 1, title: 'Be Respectful', emoji: '🤝' },
+    'threats': { id: 1, title: 'Be Respectful', emoji: '🤝' },
+    'personal attacks': { id: 1, title: 'Be Respectful', emoji: '🤝' },
+    'profanity': { id: 1, title: 'Be Respectful', emoji: '🤝' },
+    'off-topic': { id: 2, title: 'Keep It Relevant', emoji: '🎯' },
+    'politics': { id: 2, title: 'Keep It Relevant', emoji: '🎯' },
+    'national': { id: 2, title: 'Keep It Relevant', emoji: '🎯' },
+    'false': { id: 4, title: 'No Misinformation', emoji: '✅' },
+    'misleading': { id: 4, title: 'No Misinformation', emoji: '✅' },
+    'doxxing': { id: 5, title: 'Respect Privacy', emoji: '🔒' },
+    'private information': { id: 5, title: 'Respect Privacy', emoji: '🔒' },
+    'violence': { id: 6, title: 'No Prohibited Content', emoji: '🚫' },
+    'criminal': { id: 6, title: 'No Prohibited Content', emoji: '🚫' },
+    'spam': { id: 6, title: 'No Prohibited Content', emoji: '🚫' },
+    'scam': { id: 6, title: 'No Prohibited Content', emoji: '🚫' },
+    'sale': { id: 8, title: 'Incorrect Category', emoji: '❌' },
+    'for sale': { id: 8, title: 'Incorrect Category', emoji: '❌' },
+    'free': { id: 8, title: 'Incorrect Category', emoji: '❌' }
+  };
+
+  const foundRules = new Set();
+  const reasonLower = reason.toLowerCase();
+
+  // Check for rule violations mentioned in the reason
+  for (const [keyword, rule] of Object.entries(ruleMappings)) {
+    if (reasonLower.includes(keyword)) {
+      foundRules.add(JSON.stringify(rule));
+    }
+  }
+
+  // If no specific rules found but decision is Remove, add a generic rule
+  if (foundRules.size === 0 && decision === 'Remove') {
+    foundRules.add(JSON.stringify({ id: 0, title: 'Rule Violation', emoji: '⚠️' }));
+  }
+
+  // If decision is Keep and no rules mentioned, add a "No Violations" indicator
+  if (foundRules.size === 0 && decision === 'Keep') {
+    foundRules.add(JSON.stringify({ id: 0, title: 'No Violations', emoji: '✅' }));
+  }
+
+  const result = Array.from(foundRules).map(rule => JSON.parse(rule));
+  console.log('🔍 Debug: extractRulesFromReason returning:', result);
+  return result;
+}
+
+// 🚨 UPDATED VERSION - RULE EXTRACTION ENABLED
+// 🚨 THIS IS THE NEW VERSION WITH RULE EXTRACTION
+// 🚨 FILE MODIFIED AT: 2025-08-02 16:30:00
 export default async function handler(req, res) {
+  console.log('🚨 UPDATED CODE IS RUNNING - RULE EXTRACTION ENABLED');
+  console.log('🚨 THIS IS THE NEW VERSION - RULE EXTRACTION SHOULD WORK');
+  console.log('🚨 FILE MODIFIED AT: 2025-08-02 16:30:00');
+  console.log('🚨 TIMESTAMP: ' + new Date().toISOString());
+  console.log('🚨 THIS IS A COMPLETELY NEW MESSAGE - IF YOU SEE THIS, THE CODE IS UPDATED');
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -246,6 +323,16 @@ export default async function handler(req, res) {
   }
   
   try {
+    // Load guidelines (with URL fallback)
+    let moderationRules;
+    try {
+      moderationRules = await loadGuidelines();
+      console.log('✅ Successfully loaded guidelines');
+    } catch (error) {
+      console.log('⚠️ Failed to load guidelines, using fallback:', error.message);
+      moderationRules = FALLBACK_RULES;
+    }
+    
     // Construct the full moderation prompt
     const prompt = `CRITICAL CHARACTER LIMIT INSTRUCTION: You MUST write a ${characterLimit <= 300 ? 'brief' : 'comprehensive and detailed'} response using MOST of the available ${characterLimit} characters. ${characterLimit <= 300 ? 'For brief responses, focus on key rule violations or reasons for keeping the post.' : 'For comprehensive responses, provide extensive analysis with specific rule evaluation, context analysis, and detailed reasoning.'} Always complete a thought and never truncate at the character limit.
 
@@ -253,7 +340,7 @@ SYSTEM: You are a community moderation AI. Your ONLY job is to analyze posts and
 
 TASK: Analyze the following post according to these community guidelines:
 
-${MODERATION_RULES}
+${moderationRules}
 
 POST TO MODERATE:
 "${content}"
@@ -289,8 +376,9 @@ Make your response similar in length and detail to this example.`;
     console.log('AI Response:', aiResponse.text);
     
     // Parse the AI response to extract decision and reason
+    console.log('🚨 ABOUT TO CALL parseModerationResponse');
     const parsedResult = parseModerationResponse(aiResponse.text, characterLimit);
-    console.log('Parsed Result:', parsedResult);
+    console.log('🚨 parseModerationResponse returned:', parsedResult);
     
     // Add model information to the response
     const finalResult = {
@@ -298,6 +386,7 @@ Make your response similar in length and detail to this example.`;
       model: aiResponse.model
     };
     
+    console.log('🔍 Debug: Final result being sent:', finalResult);
     res.status(200).json(finalResult);
   } catch (error) {
     console.error('Moderation error:', error);
