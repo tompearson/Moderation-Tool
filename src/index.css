@@ -188,6 +188,112 @@ body {
   color: #374151;
 }
 
+/* Rules Used Section */
+.rules-used {
+  margin: 20px 0;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+}
+
+.rules-used h4 {
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.rules-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.rule-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: 1px solid;
+}
+
+.rule-badge.remove {
+  background: #fee2e2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.rule-badge.keep {
+  background: #dcfce7;
+  color: #16a34a;
+  border-color: #bbf7d0;
+}
+
+.rule-emoji {
+  font-size: 1rem;
+}
+
+.rule-title {
+  white-space: nowrap;
+}
+.rules-used {
+  margin: 20px 0;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+}
+
+.rules-used h4 {
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.rules-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.rule-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: 1px solid;
+}
+
+.rule-badge.remove {
+  background: #fee2e2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.rule-badge.keep {
+  background: #dcfce7;
+  color: #16a34a;
+  border-color: #bbf7d0;
+}
+
+.rule-emoji {
+  font-size: 1rem;
+}
+
+.rule-title {
+  white-space: nowrap;
+}
+
 .character-info {
   margin-top: 10px;
   padding: 8px 12px;
@@ -632,6 +738,34 @@ body {
     font-size: 1.1rem;
   }
   
+  .rules-used {
+    margin: 15px 0;
+    padding: 12px;
+  }
+  
+  .rules-grid {
+    gap: 6px;
+  }
+  
+  .rule-badge {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+  }
+  
+  .rules-used {
+    margin: 15px 0;
+    padding: 12px;
+  }
+  
+  .rules-grid {
+    gap: 6px;
+  }
+  
+  .rule-badge {
+    padding: 5px 10px;
+    font-size: 0.8rem;
+  }
+  
   .character-info {
     padding: 6px 10px;
   }
@@ -733,6 +867,34 @@ body {
   
   .result .decision {
     font-size: 1rem;
+  }
+  
+  .rules-used {
+    margin: 12px 0;
+    padding: 10px;
+  }
+  
+  .rules-grid {
+    gap: 4px;
+  }
+  
+  .rule-badge {
+    padding: 4px 8px;
+    font-size: 0.75rem;
+  }
+  
+  .rules-used {
+    margin: 12px 0;
+    padding: 10px;
+  }
+  
+  .rules-grid {
+    gap: 4px;
+  }
+  
+  .rule-badge {
+    padding: 4px 8px;
+    font-size: 0.75rem;
   }
   
   .character-info small {

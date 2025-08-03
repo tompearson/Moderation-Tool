@@ -116,14 +116,192 @@ When you analyze a post, always respond like this:
 
 IMPORTANT: Keep your response brief and concise and limited to 300 characters. Focus on the most relevant rule violations or reasons for keeping the post. Avoid lengthy explanations unless necessary. Limit response to 300 characters.`;
 
-// Load community guidelines from embedded content
-function loadGuidelines() {
+// Configuration for external guidelines URL
+const GUIDELINES_CONFIG = {
+  url: process.env.GUIDELINES_URL || 'https://help.nextdoor.com/s/article/community-guidelines?language=en_GB',
+  cacheTimeout: 3600000, // 1 hour in milliseconds
+  timeout: 10000, // 10 seconds timeout for fetch
+  userAgent: 'Community-Moderation-Tool/1.0'
+};
+
+// Cache for fetched guidelines
+let guidelinesCache = {
+  content: null,
+  timestamp: null,
+  source: 'embedded'
+};
+
+// Fetch guidelines from external URL
+async function fetchGuidelinesFromURL(url) {
+  try {
+    console.log(`🔄 Fetching guidelines from: ${url}`);
+    
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), GUIDELINES_CONFIG.timeout);
+    
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Connection': 'keep-alive',
+        'Upgrade-Insecure-Requests': '1',
+        'Sec-Fetch-Dest': 'document',
+        'Sec-Fetch-Mode': 'navigate',
+        'Sec-Fetch-Site': 'none',
+        'Cache-Control': 'max-age=0'
+      },
+      signal: controller.signal
+    });
+    
+    clearTimeout(timeoutId);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+    
+    const html = await response.text();
+    
+    // Try multiple extraction strategies
+    let content = '';
+    
+    // Strategy 1: Look for specific content markers
+    const contentSelectors = [
+      /<main[^>]*>([\s\S]*?)<\/main>/i,
+      /<article[^>]*>([\s\S]*?)<\/article>/i,
+      /<div[^>]*class="[^"]*content[^"]*"[^>]*>([\s\S]*?)<\/div>/i,
+      /<div[^>]*id="[^"]*content[^"]*"[^>]*>([\s\S]*?)<\/div>/i,
+      /<div[^>]*class="[^"]*main[^"]*"[^>]*>([\s\S]*?)<\/div>/i
+    ];
+    
+    for (const selector of contentSelectors) {
+      const match = html.match(selector);
+      if (match && match[1]) {
+        content = match[1];
+        console.log('✅ Found content using selector strategy');
+        break;
+      }
+    }
+    
+    // Strategy 2: Extract body content if no specific content found
+    if (!content) {
+      const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+      if (bodyMatch) {
+        content = bodyMatch[1];
+        console.log('✅ Found content using body extraction');
+      }
+    }
+    
+    // Strategy 3: Use full HTML if no structured content found
+    if (!content) {
+      content = html;
+      console.log('⚠️ Using full HTML content');
+    }
+    
+    // Clean up the content
+    content = content
+      .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '') // Remove scripts
+      .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '') // Remove styles
+      .replace(/<nav[^>]*>[\s\S]*?<\/nav>/gi, '') // Remove navigation
+      .replace(/<header[^>]*>[\s\S]*?<\/header>/gi, '') // Remove headers
+      .replace(/<footer[^>]*>[\s\S]*?<\/footer>/gi, '') // Remove footers
+      .replace(/<[^>]+>/g, ' ') // Remove remaining HTML tags
+      .replace(/&nbsp;/g, ' ') // Replace HTML entities
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/&apos;/g, "'")
+      .replace(/&mdash;/g, '—')
+      .replace(/&ndash;/g, '–')
+      .replace(/\s+/g, ' ') // Normalize whitespace
+      .trim();
+    
+    // Enhanced validation - look for error patterns at the beginning of content
+    const errorPatterns = [
+      /^Loading/i,
+      /^Sorry to interrupt/i,
+      /^Error/i,
+      /^Page not found/i,
+      /^Access denied/i,
+      /^Forbidden/i,
+      /^Unauthorized/i,
+      /^Service unavailable/i,
+      /^<!DOCTYPE html>/i, // HTML error pages
+      /^<html[^>]*>/i     // HTML pages that might be error pages
+    ];
+    
+    const hasError = errorPatterns.some(pattern => 
+      pattern.test(content.substring(0, 500)) // Only check first 500 chars for errors
+    );
+    
+    // Check if content is meaningful
+    if (content.length < 200 || hasError) {
+      console.log(`⚠️ Fetched content appears to be invalid (length: ${content.length}, hasError: ${hasError})`);
+      console.log(`Content preview: ${content.substring(0, 200)}...`);
+      return null;
+    }
+    
+    console.log(`✅ Successfully fetched guidelines (${content.length} characters)`);
+    console.log(`Content preview: ${content.substring(0, 200)}...`);
+    return content;
+    
+  } catch (error) {
+    console.log(`❌ Failed to fetch guidelines from URL: ${error.message}`);
+    return null;
+  }
+}
+
+// Load community guidelines with URL fallback
+async function loadGuidelines() {
+  // Check if we have valid cached content
+  if (guidelinesCache.content && guidelinesCache.timestamp) {
+    const now = Date.now();
+    const age = now - guidelinesCache.timestamp;
+    
+    if (age < GUIDELINES_CONFIG.cacheTimeout) {
+      console.log(`📋 Using cached guidelines (age: ${Math.round(age / 1000)}s)`);
+      return guidelinesCache.content;
+    }
+  }
+  
+  // Try to fetch from URL if configured
+  if (GUIDELINES_CONFIG.url && GUIDELINES_CONFIG.url !== 'embedded') {
+    const fetchedContent = await fetchGuidelinesFromURL(GUIDELINES_CONFIG.url);
+    
+    if (fetchedContent) {
+      // Update cache with fetched content
+      guidelinesCache = {
+        content: fetchedContent,
+        timestamp: Date.now(),
+        source: 'url'
+      };
+      return fetchedContent;
+    }
+  }
+  
+  // Fall back to embedded rules
+  console.log('📋 Using embedded guidelines (fallback)');
+  guidelinesCache = {
+    content: MODERATION_RULES,
+    timestamp: Date.now(),
+    source: 'embedded'
+  };
+  
   return MODERATION_RULES;
 }
 
+// Load guidelines synchronously (for backward compatibility)
+function loadGuidelinesSync() {
+  return guidelinesCache.content || MODERATION_RULES;
+}
+
 // Parse guidelines into structured format
-function parseGuidelines() {
-  const rawContent = loadGuidelines();
+async function parseGuidelines() {
+  const rawContent = await loadGuidelines();
   
   return {
     rules: [
@@ -145,19 +323,50 @@ function parseGuidelines() {
 }
 
 // Get guidelines with version info for API responses
-function getGuidelinesWithMetadata() {
+async function getGuidelinesWithMetadata() {
   const VERSION = require('../version.js');
+  const content = await loadGuidelines();
   
   return {
-    rawContent: MODERATION_RULES,
+    rawContent: content,
     version: VERSION.full,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    source: guidelinesCache.source,
+    cacheAge: guidelinesCache.timestamp ? Math.round((Date.now() - guidelinesCache.timestamp) / 1000) : null
+  };
+}
+
+// Force refresh guidelines from URL
+async function refreshGuidelines() {
+  console.log('🔄 Forcing refresh of guidelines...');
+  guidelinesCache = {
+    content: null,
+    timestamp: null,
+    source: 'embedded'
+  };
+  return await loadGuidelines();
+}
+
+// Get cache status
+function getCacheStatus() {
+  return {
+    hasCache: !!guidelinesCache.content,
+    source: guidelinesCache.source,
+    age: guidelinesCache.timestamp ? Math.round((Date.now() - guidelinesCache.timestamp) / 1000) : null,
+    config: {
+      url: GUIDELINES_CONFIG.url,
+      cacheTimeout: GUIDELINES_CONFIG.cacheTimeout,
+      timeout: GUIDELINES_CONFIG.timeout
+    }
   };
 }
 
 module.exports = {
   loadGuidelines,
+  loadGuidelinesSync,
   parseGuidelines,
   getGuidelinesWithMetadata,
+  refreshGuidelines,
+  getCacheStatus,
   MODERATION_RULES // Export raw content for direct access
 }; 

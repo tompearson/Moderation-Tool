@@ -403,9 +403,28 @@ function App() {
             <div className={`decision ${result.decision.toLowerCase()}`}>
               Decision: {result.decision}
             </div>
+            
+
+            
             <div className="reason">
               {result.reason}
             </div>
+            
+            {/* Rules Applied Section */}
+            {result.rules && result.rules.length > 0 && (
+              <div className="rules-used">
+                <h4>Rules Applied:</h4>
+                <div className="rules-grid">
+                  {result.rules.map((rule, index) => (
+                    <div key={index} className={`rule-badge ${result.decision.toLowerCase()}`}>
+                      <span className="rule-emoji">{rule.emoji}</span>
+                      <span className="rule-title">{rule.title}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            
             <button 
               className="copy-button"
               onClick={() => {

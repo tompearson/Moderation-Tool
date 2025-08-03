@@ -43,9 +43,9 @@ router.get('/debug-env', (req, res) => {
 });
 
 // Get guidelines endpoint
-router.get('/guidelines', (req, res) => {
+router.get('/guidelines', async (req, res) => {
   try {
-    const guidelines = parseGuidelines();
+    const guidelines = await parseGuidelines();
     res.json({
       success: true,
       guidelines
@@ -54,6 +54,74 @@ router.get('/guidelines', (req, res) => {
     res.status(500).json({
       success: false,
       error: 'Failed to load guidelines'
+    });
+  }
+});
+
+// Guidelines endpoint with metadata and cache info
+router.get('/guidelines-endpoint', async (req, res) => {
+  try {
+    const { getGuidelinesWithMetadata, getCacheStatus } = require('./utils/guidelines.js');
+    
+    // Get guidelines with metadata
+    const guidelines = await getGuidelinesWithMetadata();
+    const cacheStatus = getCacheStatus();
+    
+    res.status(200).json({
+      success: true,
+      guidelines: {
+        content: guidelines.rawContent.substring(0, 500) + '...', // Preview only
+        fullContent: guidelines.rawContent,
+        version: guidelines.version,
+        timestamp: guidelines.timestamp,
+        source: guidelines.source,
+        cacheAge: guidelines.cacheAge
+      },
+      cache: cacheStatus,
+      config: {
+        url: process.env.GUIDELINES_URL || 'embedded',
+        cacheTimeout: 3600000, // 1 hour
+        timeout: 10000 // 10 seconds
+      }
+    });
+  } catch (error) {
+    console.error('Error getting guidelines:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
+
+// Force refresh guidelines
+router.post('/guidelines-endpoint', async (req, res) => {
+  try {
+    const { refreshGuidelines, getCacheStatus } = require('./utils/guidelines.js');
+    const { action } = req.body;
+    
+    if (action === 'refresh') {
+      // Force refresh guidelines from URL
+      const refreshedContent = await refreshGuidelines();
+      const cacheStatus = getCacheStatus();
+      
+      res.status(200).json({
+        success: true,
+        message: 'Guidelines refreshed successfully',
+        source: cacheStatus.source,
+        cacheAge: cacheStatus.age,
+        contentPreview: refreshedContent.substring(0, 500) + '...'
+      });
+    } else {
+      res.status(400).json({ 
+        success: false, 
+        error: 'Invalid action. Use "refresh" to force refresh guidelines.' 
+      });
+    }
+  } catch (error) {
+    console.error('Error refreshing guidelines:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
     });
   }
 });

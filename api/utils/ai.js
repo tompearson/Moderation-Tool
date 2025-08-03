@@ -49,6 +49,10 @@ async function generateContent(prompt) {
 
 // Parse AI response
 function parseModerationResponse(text, characterLimit) {
+  console.log('🚨 parseModerationResponse FUNCTION CALLED IN AI.JS');
+  console.log('🚨 Input text:', text);
+  console.log('🚨 Character limit:', characterLimit);
+  
   // Look for the decision pattern
   const decisionMatch = text.match(/\*\*Decision:\*\*\s*(Remove|Keep)/i);
   
@@ -69,31 +73,25 @@ function parseModerationResponse(text, characterLimit) {
     reason = reason.replace(/[.!?]+$/, '');
   }
 
+  // Extract rule information from the reason
+  console.log('🔍 Debug: About to extract rules from reason:', reason);
+  const rules = extractRulesFromReason(reason, decision);
+
   // Check if the full response exceeds character limit
   const fullResponse = `**Decision:** ${decision}\n**Reason:** ${reason}`;
   const responseLength = fullResponse.length;
   
   console.log(`Response length: ${responseLength} characters (limit: ${characterLimit})`);
+  console.log('🔍 TEST: This line should appear if updated code is running');
+  console.log('🚨 UPDATED CODE IS RUNNING - RULE EXTRACTION SHOULD WORK');
   
   if (responseLength > characterLimit) {
     // Truncate the reason to fit within the limit
     const decisionPart = `**Decision:** ${decision}\n**Reason:** `;
     const availableChars = characterLimit - decisionPart.length;
     
-    if (availableChars > 20) { // Ensure we have at least some space for reason
-      // Try to find a natural break point (sentence end)
-      const truncatedReason = reason.substring(0, availableChars - 3);
-      const lastPeriod = truncatedReason.lastIndexOf('.');
-      const lastExclamation = truncatedReason.lastIndexOf('!');
-      const lastQuestion = truncatedReason.lastIndexOf('?');
-      
-      const lastBreak = Math.max(lastPeriod, lastExclamation, lastQuestion);
-      
-      if (lastBreak > availableChars * 0.7) { // If we found a good break point
-        reason = truncatedReason.substring(0, lastBreak + 1);
-      } else {
-        reason = truncatedReason + '...';
-      }
+    if (availableChars > 10) { // Ensure we have at least some space for reason
+      reason = reason.substring(0, availableChars - 3) + '...';
     } else {
       reason = 'Response too long';
     }
@@ -101,7 +99,66 @@ function parseModerationResponse(text, characterLimit) {
     console.log(`Response truncated to fit ${characterLimit} character limit`);
   }
 
-  return { decision, reason, characterCount: fullResponse.length, characterLimit, model: null };
+  console.log('🔍 Debug: Rules extracted:', rules);
+  return { decision, reason, rules, characterCount: fullResponse.length, characterLimit };
+}
+
+// Extract rule information from the AI response
+function extractRulesFromReason(reason, decision) {
+  console.log('🔍 Debug: extractRulesFromReason called with:', { reason, decision });
+  const ruleMappings = {
+    'respectful': { id: 1, title: 'Be Respectful', emoji: '🤝' },
+    'relevant': { id: 2, title: 'Keep It Relevant', emoji: '🎯' },
+    'discriminate': { id: 3, title: 'Do Not Discriminate', emoji: '❌' },
+    'misinformation': { id: 4, title: 'No Misinformation', emoji: '✅' },
+    'privacy': { id: 5, title: 'Respect Privacy', emoji: '🔒' },
+    'prohibited': { id: 6, title: 'No Prohibited Content', emoji: '🚫' },
+    'civil': { id: 7, title: 'Civil Tone', emoji: '🗣️' },
+    'category': { id: 8, title: 'Incorrect Category', emoji: '❌' },
+    'hate speech': { id: 1, title: 'Be Respectful', emoji: '🤝' },
+    'harassment': { id: 1, title: 'Be Respectful', emoji: '🤝' },
+    'threats': { id: 1, title: 'Be Respectful', emoji: '🤝' },
+    'personal attacks': { id: 1, title: 'Be Respectful', emoji: '🤝' },
+    'profanity': { id: 1, title: 'Be Respectful', emoji: '🤝' },
+    'off-topic': { id: 2, title: 'Keep It Relevant', emoji: '🎯' },
+    'politics': { id: 2, title: 'Keep It Relevant', emoji: '🎯' },
+    'national': { id: 2, title: 'Keep It Relevant', emoji: '🎯' },
+    'false': { id: 4, title: 'No Misinformation', emoji: '✅' },
+    'misleading': { id: 4, title: 'No Misinformation', emoji: '✅' },
+    'doxxing': { id: 5, title: 'Respect Privacy', emoji: '🔒' },
+    'private information': { id: 5, title: 'Respect Privacy', emoji: '🔒' },
+    'violence': { id: 6, title: 'No Prohibited Content', emoji: '🚫' },
+    'criminal': { id: 6, title: 'No Prohibited Content', emoji: '🚫' },
+    'spam': { id: 6, title: 'No Prohibited Content', emoji: '🚫' },
+    'scam': { id: 6, title: 'No Prohibited Content', emoji: '🚫' },
+    'sale': { id: 8, title: 'Incorrect Category', emoji: '❌' },
+    'for sale': { id: 8, title: 'Incorrect Category', emoji: '❌' },
+    'free': { id: 8, title: 'Incorrect Category', emoji: '❌' }
+  };
+
+  const foundRules = new Set();
+  const reasonLower = reason.toLowerCase();
+
+  // Check for rule violations mentioned in the reason
+  for (const [keyword, rule] of Object.entries(ruleMappings)) {
+    if (reasonLower.includes(keyword)) {
+      foundRules.add(JSON.stringify(rule));
+    }
+  }
+
+  // If no specific rules found but decision is Remove, add a generic rule
+  if (foundRules.size === 0 && decision === 'Remove') {
+    foundRules.add(JSON.stringify({ id: 0, title: 'Rule Violation', emoji: '⚠️' }));
+  }
+
+  // If decision is Keep and no rules mentioned, add a "No Violations" indicator
+  if (foundRules.size === 0 && decision === 'Keep') {
+    foundRules.add(JSON.stringify({ id: 0, title: 'No Violations', emoji: '✅' }));
+  }
+
+  const result = Array.from(foundRules).map(rule => JSON.parse(rule));
+  console.log('🔍 Debug: extractRulesFromReason returning:', result);
+  return result;
 }
 
 module.exports = {
