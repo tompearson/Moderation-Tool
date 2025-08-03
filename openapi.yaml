@@ -42,7 +42,7 @@ paths:
                 apiKey:
                   type: string
                   description: Google AI API key (optional if configured server-side)
-                  example: "AIzaSyCjosDYs15EFppjV2iP2JNdkz5bU-5Qylc"
+                  example: "YOUR_API_KEY_HERE"
             examples:
               legitimate_post:
                 summary: Legitimate community post

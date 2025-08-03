@@ -361,7 +361,7 @@
 		},
 		{
 			"key": "apiKey",
-			"value": "AIzaSyCjosDYs15EFppjV2iP2JNdkz5bU-5Qylc",
+			"value": "YOUR_API_KEY_HERE",
 			"type": "string"
 		}
 	]

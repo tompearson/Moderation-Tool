@@ -5,7 +5,7 @@ This guide will help you import and set up the Community Moderation API in Postm
 ## 📋 What You Need
 
 1. **Postman Desktop App** (or Postman web)
-2. **Your Google AI API Key**: `AIzaSyCjosDYs15EFppjV2iP2JNdkz5bU-5Qylc`
+2. **Your Google AI API Key**: `YOUR_API_KEY_HERE`
 3. **Local Development Server**: Running on `http://localhost:3000`
 
 ## 🚀 Quick Start
