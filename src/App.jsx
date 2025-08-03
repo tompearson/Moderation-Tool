@@ -425,6 +425,25 @@ function App() {
               </div>
             )}
             
+            {/* Rule Source Information */}
+            {result.ruleSource && (
+              <div className="rule-source">
+                <h4>Rule Source:</h4>
+                <div className={`source-badge ${result.ruleSource}`}>
+                  <span className="source-icon">
+                    {result.ruleSource === 'url' ? '🌐' : 
+                     result.ruleSource === 'embedded' ? '📋' : 
+                     result.ruleSource === 'fallback' ? '⚠️' : '❓'}
+                  </span>
+                  <span className="source-text">
+                    {result.ruleSource === 'url' ? 'Dynamic Rules (Gist)' :
+                     result.ruleSource === 'embedded' ? 'Embedded Rules' :
+                     result.ruleSource === 'fallback' ? 'Fallback Rules' : 'Unknown Source'}
+                  </span>
+                </div>
+              </div>
+            )}
+            
             <button 
               className="copy-button"
               onClick={() => {

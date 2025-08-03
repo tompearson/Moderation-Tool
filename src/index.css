@@ -241,6 +241,60 @@ body {
 .rule-title {
   white-space: nowrap;
 }
+
+/* Rule Source Styles */
+.rule-source {
+  margin: 20px 0;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #6b7280;
+}
+
+.rule-source h4 {
+  margin: 0 0 10px 0;
+  color: #374151;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.source-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 1px solid;
+}
+
+.source-badge.url {
+  background: #dbeafe;
+  color: #1e40af;
+  border-color: #93c5fd;
+}
+
+.source-badge.embedded {
+  background: #f0f9ff;
+  color: #0c4a6e;
+  border-color: #7dd3fc;
+}
+
+.source-badge.fallback {
+  background: #fef3c7;
+  color: #92400e;
+  border-color: #fbbf24;
+}
+
+.source-icon {
+  font-size: 1rem;
+}
+
+.source-text {
+  font-weight: 600;
+}
+
 .rules-used {
   margin: 20px 0;
   padding: 15px;

@@ -325,12 +325,20 @@ export default async function handler(req, res) {
   try {
     // Load guidelines (with URL fallback)
     let moderationRules;
+    let ruleSource = 'embedded'; // Default source
     try {
       moderationRules = await loadGuidelines();
       console.log('✅ Successfully loaded guidelines');
+      
+      // Get the guidelines metadata to determine source
+      const { getGuidelinesWithMetadata } = await import('./utils/guidelines.js');
+      const guidelinesMetadata = await getGuidelinesWithMetadata();
+      ruleSource = guidelinesMetadata.source || 'embedded';
+      console.log('📋 Rule source:', ruleSource);
     } catch (error) {
       console.log('⚠️ Failed to load guidelines, using fallback:', error.message);
       moderationRules = FALLBACK_RULES;
+      ruleSource = 'fallback';
     }
     
     // Construct the full moderation prompt
@@ -380,10 +388,11 @@ Make your response similar in length and detail to this example.`;
     const parsedResult = parseModerationResponse(aiResponse.text, characterLimit);
     console.log('🚨 parseModerationResponse returned:', parsedResult);
     
-    // Add model information to the response
+    // Add model information and rule source to the response
     const finalResult = {
       ...parsedResult,
-      model: aiResponse.model
+      model: aiResponse.model,
+      ruleSource: ruleSource
     };
     
     console.log('🔍 Debug: Final result being sent:', finalResult);
