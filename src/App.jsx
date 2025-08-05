@@ -461,7 +461,7 @@ function App() {
                 });
               }}
             >
-              Copy Reason
+              Copy Moderation Result
             </button>
           </div>
         )}
