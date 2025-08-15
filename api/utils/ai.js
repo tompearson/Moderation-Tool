@@ -15,19 +15,21 @@ const MODELS = ['gemini-1.5-flash', 'gemini-1.5-pro'];
 
 // Generate content with fallback
 async function generateContent(prompt) {
+
+  
   let response = null;
   let usedModel = '';
+
+
 
   for (const modelName of MODELS) {
     try {
       const model = genAI.getGenerativeModel({ model: modelName });
       const result = await model.generateContent(prompt);
-      response = await result.response;
+      response = result.response;
       usedModel = modelName;
-      console.log(`✅ Successfully used model: ${modelName}`);
       break;
     } catch (error) {
-      console.log(`❌ Model ${modelName} failed:`, error.message);
       continue;
     }
   }
@@ -49,9 +51,6 @@ async function generateContent(prompt) {
 
 // Parse AI response
 function parseModerationResponse(text, characterLimit) {
-  console.log('🚨 parseModerationResponse FUNCTION CALLED IN AI.JS');
-  console.log('🚨 Input text:', text);
-  console.log('🚨 Character limit:', characterLimit);
   
   // Look for the decision pattern
   const decisionMatch = text.match(/\*\*Decision:\*\*\s*(Remove|Keep)/i);
@@ -74,16 +73,11 @@ function parseModerationResponse(text, characterLimit) {
   }
 
   // Extract rule information from the reason
-  console.log('🔍 Debug: About to extract rules from reason:', reason);
   const rules = extractRulesFromReason(reason, decision);
 
   // Check if the full response exceeds character limit
   const fullResponse = `**Decision:** ${decision}\n**Reason:** ${reason}`;
   const responseLength = fullResponse.length;
-  
-  console.log(`Response length: ${responseLength} characters (limit: ${characterLimit})`);
-  console.log('🔍 TEST: This line should appear if updated code is running');
-  console.log('🚨 UPDATED CODE IS RUNNING - RULE EXTRACTION SHOULD WORK');
   
   if (responseLength > characterLimit) {
     // Truncate the reason to fit within the limit
@@ -96,16 +90,13 @@ function parseModerationResponse(text, characterLimit) {
       reason = 'Response too long';
     }
     
-    console.log(`Response truncated to fit ${characterLimit} character limit`);
   }
 
-  console.log('🔍 Debug: Rules extracted:', rules);
   return { decision, reason, rules, characterCount: fullResponse.length, characterLimit };
 }
 
 // Extract rule information from the AI response
 function extractRulesFromReason(reason, decision) {
-  console.log('🔍 Debug: extractRulesFromReason called with:', { reason, decision });
   const ruleMappings = {
     'respectful': { id: 1, title: 'Be Respectful', emoji: '🤝' },
     'relevant': { id: 2, title: 'Keep It Relevant', emoji: '🎯' },
@@ -157,7 +148,6 @@ function extractRulesFromReason(reason, decision) {
   }
 
   const result = Array.from(foundRules).map(rule => JSON.parse(rule));
-  console.log('🔍 Debug: extractRulesFromReason returning:', result);
   return result;
 }
 

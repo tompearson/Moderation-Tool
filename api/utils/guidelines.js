@@ -118,15 +118,20 @@ IMPORTANT: Keep your response brief and concise and limited to 300 characters. F
 
 // Configuration for external guidelines URL
 const GUIDELINES_CONFIG = {
-  url: process.env.GUIDELINES_URL || 'https://help.nextdoor.com/s/article/community-guidelines?language=en_GB',
+  url: process.env.GUIDELINES_URL,
+  additionalUrl: process.env.ADDITIONAL_GUIDELINES_URL,
+  promptInstructionsUrl: process.env.SPECIAL_PROMPT_URL, // New third variable
   cacheTimeout: 3600000, // 1 hour in milliseconds
   timeout: 10000, // 10 seconds timeout for fetch
   userAgent: 'Community-Moderation-Tool/1.0'
 };
 
+
+
 // Cache for fetched guidelines
 let guidelinesCache = {
   content: null,
+  primaryContent: null, // Store primary content separately
   timestamp: null,
   source: 'embedded'
 };
@@ -143,15 +148,11 @@ async function fetchGuidelinesFromURL(url) {
       method: 'GET',
       headers: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'Accept': 'text/plain,text/markdown,*/*',
         'Accept-Language': 'en-US,en;q=0.9',
         'Accept-Encoding': 'gzip, deflate, br',
-        'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': '1',
-        'Sec-Fetch-Dest': 'document',
-        'Sec-Fetch-Mode': 'navigate',
-        'Sec-Fetch-Site': 'none',
-        'Cache-Control': 'max-age=0'
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache'
       },
       signal: controller.signal
     });
@@ -162,93 +163,19 @@ async function fetchGuidelinesFromURL(url) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
     
-    const html = await response.text();
-    
-    // Try multiple extraction strategies
-    let content = '';
-    
-    // Strategy 1: Look for specific content markers
-    const contentSelectors = [
-      /<main[^>]*>([\s\S]*?)<\/main>/i,
-      /<article[^>]*>([\s\S]*?)<\/article>/i,
-      /<div[^>]*class="[^"]*content[^"]*"[^>]*>([\s\S]*?)<\/div>/i,
-      /<div[^>]*id="[^"]*content[^"]*"[^>]*>([\s\S]*?)<\/div>/i,
-      /<div[^>]*class="[^"]*main[^"]*"[^>]*>([\s\S]*?)<\/div>/i
-    ];
-    
-    for (const selector of contentSelectors) {
-      const match = html.match(selector);
-      if (match && match[1]) {
-        content = match[1];
-        console.log('✅ Found content using selector strategy');
-        break;
-      }
-    }
-    
-    // Strategy 2: Extract body content if no specific content found
-    if (!content) {
-      const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
-      if (bodyMatch) {
-        content = bodyMatch[1];
-        console.log('✅ Found content using body extraction');
-      }
-    }
-    
-    // Strategy 3: Use full HTML if no structured content found
-    if (!content) {
-      content = html;
-      console.log('⚠️ Using full HTML content');
-    }
-    
-    // Clean up the content
-    content = content
-      .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '') // Remove scripts
-      .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '') // Remove styles
-      .replace(/<nav[^>]*>[\s\S]*?<\/nav>/gi, '') // Remove navigation
-      .replace(/<header[^>]*>[\s\S]*?<\/header>/gi, '') // Remove headers
-      .replace(/<footer[^>]*>[\s\S]*?<\/footer>/gi, '') // Remove footers
-      .replace(/<[^>]+>/g, ' ') // Remove remaining HTML tags
-      .replace(/&nbsp;/g, ' ') // Replace HTML entities
-      .replace(/&amp;/g, '&')
-      .replace(/&lt;/g, '<')
-      .replace(/&gt;/g, '>')
-      .replace(/&quot;/g, '"')
-      .replace(/&#39;/g, "'")
-      .replace(/&apos;/g, "'")
-      .replace(/&mdash;/g, '—')
-      .replace(/&ndash;/g, '–')
-      .replace(/\s+/g, ' ') // Normalize whitespace
-      .trim();
-    
-    // Enhanced validation - look for error patterns at the beginning of content
-    const errorPatterns = [
-      /^Loading/i,
-      /^Sorry to interrupt/i,
-      /^Error/i,
-      /^Page not found/i,
-      /^Access denied/i,
-      /^Forbidden/i,
-      /^Unauthorized/i,
-      /^Service unavailable/i,
-      /^<!DOCTYPE html>/i, // HTML error pages
-      /^<html[^>]*>/i     // HTML pages that might be error pages
-    ];
-    
-    const hasError = errorPatterns.some(pattern => 
-      pattern.test(content.substring(0, 500)) // Only check first 500 chars for errors
-    );
+    const content = await response.text();
     
     // Check if content is meaningful
-    if (content.length < 200 || hasError) {
-      console.log(`⚠️ Fetched content appears to be invalid (length: ${content.length}, hasError: ${hasError})`);
-      console.log(`Content preview: ${content.substring(0, 200)}...`);
+    if (!content || content.length < 50) {
+      console.log(`⚠️ Fetched content appears to be invalid (length: ${content?.length || 0})`);
+      console.log(`Content preview: ${content?.substring(0, 200) || 'No content'}...`);
       return null;
     }
     
     console.log(`✅ Successfully fetched guidelines (${content.length} characters)`);
     console.log(`Content preview: ${content.substring(0, 200)}...`);
-    return content;
     
+    return content;
   } catch (error) {
     console.log(`❌ Failed to fetch guidelines from URL: ${error.message}`);
     return null;
@@ -263,30 +190,58 @@ async function loadGuidelines() {
     const age = now - guidelinesCache.timestamp;
     
     if (age < GUIDELINES_CONFIG.cacheTimeout) {
-      console.log(`📋 Using cached guidelines (age: ${Math.round(age / 1000)}s)`);
       return guidelinesCache.content;
     }
   }
   
-  // Try to fetch from URL if configured
-  if (GUIDELINES_CONFIG.url && GUIDELINES_CONFIG.url !== 'embedded') {
-    const fetchedContent = await fetchGuidelinesFromURL(GUIDELINES_CONFIG.url);
-    
-    if (fetchedContent) {
-      // Update cache with fetched content
-      guidelinesCache = {
-        content: fetchedContent,
-        timestamp: Date.now(),
-        source: 'url'
-      };
-      return fetchedContent;
+      // Try to fetch from URLs if configured
+    if (GUIDELINES_CONFIG.url && GUIDELINES_CONFIG.url !== 'embedded') {
+      try {
+        let combinedContent = '';
+        
+        // Fetch prompt instructions first (to set the tone for AI responses)
+        if (GUIDELINES_CONFIG.promptInstructionsUrl) {
+          const promptInstructions = await fetchGuidelinesFromURL(GUIDELINES_CONFIG.promptInstructionsUrl);
+          if (promptInstructions) {
+            combinedContent += promptInstructions;
+            combinedContent += '\n\n---\n\n';
+          }
+        }
+        
+        // Fetch additional guidelines
+        if (GUIDELINES_CONFIG.additionalUrl) {
+          const additionalContent = await fetchGuidelinesFromURL(GUIDELINES_CONFIG.additionalUrl);
+          if (additionalContent) {
+            combinedContent += additionalContent;
+            combinedContent += '\n\n---\n\n';
+          }
+        }
+        
+        // Fetch primary guidelines last
+        const primaryContent = await fetchGuidelinesFromURL(GUIDELINES_CONFIG.url);
+        if (primaryContent) {
+          combinedContent += primaryContent;
+        }
+        
+        if (combinedContent) {
+          // Store combined content for both AI use and frontend display
+          guidelinesCache = {
+            content: combinedContent,
+            primaryContent: primaryContent, // Keep for backward compatibility
+            timestamp: Date.now(),
+            source: 'url'
+          };
+          return combinedContent; // Return combined content to match display order
+        }
+      } catch (error) {
+        console.log(`❌ Failed to fetch from URLs: ${error.message}`);
+      }
     }
-  }
   
   // Fall back to embedded rules
-  console.log('📋 Using embedded guidelines (fallback)');
   guidelinesCache = {
     content: MODERATION_RULES,
+    primaryContent: MODERATION_RULES,
     timestamp: Date.now(),
     source: 'embedded'
   };
@@ -322,13 +277,17 @@ async function parseGuidelines() {
   };
 }
 
-// Get guidelines with version info for API responses
+// Get guidelines with version info for API responses (for moderation - uses combined content for AI)
 async function getGuidelinesWithMetadata() {
   const VERSION = require('../../public/version.js');
   const content = await loadGuidelines();
   
+  // For moderation API calls, use the combined content from cache
+  const combinedContent = guidelinesCache.content;
+  const finalContent = combinedContent || content;
+  
   return {
-    rawContent: content,
+    rawContent: finalContent, // Use combined content for AI, fallback to display content
     version: VERSION.full,
     timestamp: new Date().toISOString(),
     source: guidelinesCache.source,
@@ -336,13 +295,62 @@ async function getGuidelinesWithMetadata() {
   };
 }
 
+// Get guidelines for frontend display (primary Gist only - for user viewing)
+async function getGuidelinesForDisplay() {
+  const VERSION = require('../../public/version.js');
+  
+  // Check if we have cached primary content
+  if (guidelinesCache.primaryContent && guidelinesCache.timestamp) {
+    const now = Date.now();
+    const age = now - guidelinesCache.timestamp;
+    
+    if (age < GUIDELINES_CONFIG.cacheTimeout) {
+      return {
+        rawContent: guidelinesCache.primaryContent,
+        version: VERSION.full,
+        timestamp: new Date().toISOString(),
+        source: guidelinesCache.source,
+        cacheAge: Math.round(age / 1000)
+      };
+    }
+  }
+  
+  // If no cache or cache expired, fetch fresh primary content only (for Show Guidelines button)
+  let displayContent = '';
+  
+  if (GUIDELINES_CONFIG.url && GUIDELINES_CONFIG.url !== 'embedded') {
+    try {
+      const primaryContent = await fetchGuidelinesFromURL(GUIDELINES_CONFIG.url);
+      if (primaryContent) {
+        displayContent = primaryContent;
+      }
+    } catch (error) {
+      console.log(`❌ Failed to fetch primary guidelines for display: ${error.message}`);
+    }
+  }
+  
+  // Fall back to embedded if primary fails
+  if (!displayContent) {
+    displayContent = MODERATION_RULES;
+  }
+  
+  return {
+    rawContent: displayContent,
+    version: VERSION.full,
+    timestamp: new Date().toISOString(),
+    source: displayContent === MODERATION_RULES ? 'embedded' : 'url',
+    cacheAge: null
+  };
+}
+
 // Force refresh guidelines from URL
 async function refreshGuidelines() {
-  console.log('🔄 Forcing refresh of guidelines...');
+  // Clear the cache to force a fresh fetch
   guidelinesCache = {
     content: null,
+    primaryContent: null,
     timestamp: null,
-    source: 'embedded'
+    source: 'refreshing'
   };
   return await loadGuidelines();
 }
@@ -366,6 +374,7 @@ module.exports = {
   loadGuidelinesSync,
   parseGuidelines,
   getGuidelinesWithMetadata,
+  getGuidelinesForDisplay,
   refreshGuidelines,
   getCacheStatus,
   MODERATION_RULES // Export raw content for direct access

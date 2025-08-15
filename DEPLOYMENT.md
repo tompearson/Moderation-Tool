@@ -8,6 +8,7 @@ This guide will help you deploy your Community Moderation Tool to production.
 - [Vercel Account](https://vercel.com/signup)
 - [GitHub Repository](https://github.com/tompearson/moderation-tool) (already set up)
 - Google Gemini API Key
+- Vercel CLI installed (`npm i -g vercel`)
 
 ### Step 1: Connect to Vercel
 
@@ -27,160 +28,212 @@ In the Vercel project settings:
 |------|-------|-------------|
 | `GEMINI_API_KEY` | `your_actual_api_key_here` | Production |
 | `NODE_ENV` | `production` | Production |
+| `GUIDELINES_URL` | `https://gist.githubusercontent.com/tompearson/87c37f055ee8220b421ce78c668c093b/raw/NextDoor-Guidelines-content.md` | Production |
+| `ADDITIONAL_GUIDELINES_URL` | `https://gist.githubusercontent.com/tompearson/659f1cedea8c6dca0879260051e65b67/raw/guidelines-content.md` | Production |
 
-### Step 3: Configure Build Settings
+**Important**: Use Gist URLs **without commit hashes** to automatically pick up updates.
 
-1. **Framework Preset**: `Node.js`
-2. **Build Command**: `npm run vercel-build`
-3. **Output Directory**: `dist`
-4. **Install Command**: `npm install`
+## 🔄 Automatic Gist Updates
 
-### Step 4: Deploy
+### How Gist URLs Work
 
-1. **Click "Deploy"**
-2. **Wait for build to complete**
-3. **Your app will be live at**: `https://your-project-name.vercel.app`
+The Gist URLs used in your environment variables are designed to **automatically fetch the latest content**:
 
-## 🔧 Alternative Deployment Options
-
-### Railway Deployment
-
-1. **Connect to [Railway](https://railway.app/)**
-2. **Import from GitHub**
-3. **Set environment variables**
-4. **Deploy automatically**
-
-### Render Deployment
-
-1. **Connect to [Render](https://render.com/)**
-2. **Create new Web Service**
-3. **Connect GitHub repository**
-4. **Set environment variables**
-5. **Deploy**
-
-### Heroku Deployment
-
-1. **Install Heroku CLI**
-2. **Create Heroku app**
-3. **Set environment variables**
-4. **Deploy with Git**
-
-## 📋 Environment Variables for Production
-
-### Required Variables
-```bash
-GEMINI_API_KEY=your_gemini_api_key_here
-NODE_ENV=production
+```
+https://gist.githubusercontent.com/tompearson/87c37f055ee8220b421ce78c668c093b/raw/NextDoor-Guidelines-content.md
+and 
+https://gist.githubusercontent.com/tompearson/ce350d09fa92673ec5efd2a0aa37cb72/raw/Nextdoor%2520Mods%2520for%2520West%2520of%2520Portland
 ```
 
-### Optional Variables
+**URL Structure Breakdown:**
+- **Gist ID**: `87c37f055ee8220b421ce78c668c093b` (unique identifier)
+- **Filename**: `NextDoor-Guidelines-content.md` (the actual file to fetch)
+- **No commit hash**: The URL automatically points to the latest version of this file
+
+**Key Points:**
+- ✅ **No commit hash** - URL always points to the latest version
+- ✅ **Real-time updates** - Changes appear immediately without redeployment
+- ✅ **Automatic refresh** - Backend fetches fresh content on each request
+- ✅ **No caching delays** - Guidelines are updated within minutes of Gist changes
+
+### Update Process
+
+1. **Edit your Gist** on GitHub (add/remove/modify content)
+2. **Save the Gist** - changes are immediately available
+3. **No redeployment needed** - production app automatically uses new content
+4. **Test in production** - verify updates are working
+
+### Why This Works
+
+- **Raw Gist URLs** bypass GitHub's versioning system
+- **No build process** - content is fetched at runtime
+- **Dynamic loading** - guidelines are loaded fresh for each moderation request
+- **Instant propagation** - changes are available as soon as you save the Gist
+- **No deployment required** - content updates are automatically available without redeploying the application
+
+### Step 3: Deploy to Production
+
+Use the correct deployment command for your project scope:
+
 ```bash
-PORT=3000
+vercel --prod --scope=tom-pearsons-projects-76b0a339
 ```
 
-## 🔒 Security Considerations
+**Note**: The `--scope` flag is required if you have multiple Vercel accounts or teams.
 
-### API Key Security
-- ✅ **Environment variables** - Never commit API keys to code
-- ✅ **Vercel secrets** - Use Vercel's secure environment variable storage
-- ✅ **HTTPS only** - All production deployments use HTTPS
+### Step 4: Verify Deployment
 
-### Rate Limiting
-- ⚠️ **Consider adding rate limiting** for production use
-- ⚠️ **Monitor API usage** to avoid quota exceeded errors
-- ⚠️ **Set up alerts** for high usage
+1. **Check your production URL**: `https://moderation-assistant-tool.vercel.app`
+2. **Test the "Show Guidelines" button** - should display primary Gist content
+3. **Verify AI moderation** - uses combined content from both Gists
 
-### CORS Configuration
-- ✅ **Configure CORS** for your production domain
-- ✅ **Limit origins** to trusted domains only
+## 🔧 Environment Variable Management
 
-## 🧪 Testing Production Deployment
+### Pull Production Environment Variables
 
-### Health Check
+Use the provided batch file to pull production environment variables:
+
 ```bash
-curl https://your-app.vercel.app/api/health
+# Run the batch file
+pull-env-production.bat
+
+# Or manually
+vercel env pull .env.production --environment=production
 ```
 
-### API Test
+**Important**: Always use `--environment=production` flag to get production variables, not development.
+
+### Add New Environment Variables
+
 ```bash
-curl -X POST https://your-app.vercel.app/api/moderate \
-  -H "Content-Type: application/json" \
-  -d '{"postContent": "Test post content"}'
+# Add to production environment
+vercel env add VARIABLE_NAME production
+
+# List all environment variables
+vercel env ls
+
+# Pull latest environment variables
+vercel env pull .env.production --environment=production
 ```
 
-### Frontend Test
-- Visit your production URL
-- Test the web interface
-- Verify all features work
+## 🎯 Dual Gist System
 
-## 📊 Monitoring and Analytics
+### How It Works
 
-### Vercel Analytics
-- **Enable Vercel Analytics** in project settings
-- **Monitor performance** and usage
-- **Track API calls** and response times
+The system uses **two GitHub Gists** for optimal moderation:
 
-### Error Monitoring
-- **Set up error tracking** (Sentry, LogRocket)
-- **Monitor API errors** and failures
-- **Track model fallback usage**
+1. **Primary Gist** (`GUIDELINES_URL`) - Displayed in frontend
+2. **Additional Gist** (`ADDITIONAL_GUIDELINES_URL`) - Combined with primary for AI
 
-## 🔄 Continuous Deployment
+### Frontend vs Backend
 
-### Automatic Deployments
-- ✅ **GitHub integration** - Automatic deploys on push
-- ✅ **Preview deployments** - Test changes before production
-- ✅ **Rollback capability** - Easy rollback to previous versions
+- **Frontend**: Shows only primary Gist content
+- **Backend**: Sends combined content to Gemini API
+- **Transparent**: Users don't see the dual Gist setup
 
-### Deployment Pipeline
-1. **Push to GitHub** → **Automatic build** → **Deploy to production**
-2. **Environment variables** automatically included
-3. **Build logs** available in Vercel dashboard
+### Benefits
+
+- ✅ **Comprehensive AI moderation** using both rule sets
+- ✅ **Clean frontend display** showing only primary guidelines
+- ✅ **Automatic updates** when either Gist changes
+- ✅ **No redeployment needed** for content updates
+
+## 📱 Mobile Responsiveness
+
+### Recent Improvements
+
+- **Rules Source and Refresh button** now stack properly on mobile
+- **Centered layout** prevents overlap with "Community Guidelines" text
+- **Responsive design** works on all screen sizes
+
+## 🔄 Update Process
+
+### When Guidelines Change
+
+1. **Update your Gist content** on GitHub
+2. **No redeployment needed** - changes are automatic
+3. **Test in production** to verify updates
+
+### When Environment Variables Change
+
+1. **Update in Vercel Dashboard** or via CLI
+2. **Redeploy with**: `vercel --prod --scope=tom-pearsons-projects-76b0a339`
+3. **Verify changes** are applied
+
+## 🚀 When to Deploy vs When Not To
+
+### ❌ **NO Deployment Needed** (Automatic Updates)
+
+**Gist Content Changes:**
+- ✅ **Adding new rules** to your Gist
+- ✅ **Modifying existing guidelines** 
+- ✅ **Removing outdated content**
+- ✅ **Updating documentation**
+
+---
+
+## Last Updated
+- **Date**: August 15, 2025
+- **Version 0.8.40-alpha
+- **Status**: Deployment documentation updated for Vercel
+- **Next Action**: Ready for production deployment
 
 ## 🚨 Troubleshooting
 
 ### Common Issues
 
-#### "Environment variable not found"
-- Check Vercel environment variables
-- Ensure variable names match exactly
-- Redeploy after adding variables
+#### "Show Guidelines shows wrong content"
+- Check `GUIDELINES_URL` in Vercel environment variables
+- Ensure it points to the correct primary Gist
+- Redeploy after fixing environment variables
 
-#### "Build failed"
-- Check build logs in Vercel dashboard
-- Verify all dependencies are in package.json
-- Ensure build script is correct
+#### "AI not using combined guidelines"
+- Verify `ADDITIONAL_GUIDELINES_URL` is set in production
+- Check backend logs for guidelines loading
+- Use debug endpoint: `/api/debug-guidelines`
 
-#### "API not responding"
-- Check server logs in Vercel dashboard
-- Verify API key is valid
-- Test locally first
+#### "Environment variables not updating"
+- Use `--environment=production` flag when pulling
+- Redeploy after environment variable changes
+- Check Vercel dashboard for current values
 
-#### "CORS errors"
-- Configure CORS for your domain
-- Check request origins
-- Update CORS settings in server.js
+#### "Project not found in Vercel"
+- Use correct scope: `--scope=tom-pearsons-projects-76b0a339`
+- Check project linking: `vercel link`
+- Verify project visibility in dashboard
 
-## 📈 Performance Optimization
+### Debug Commands
 
-### Vercel Optimizations
-- **Edge Functions** - Faster response times
-- **CDN** - Global content delivery
-- **Auto-scaling** - Handle traffic spikes
+```bash
+# Check project status
+vercel ls
 
-### Application Optimizations
-- **Caching** - Cache guidelines and responses
-- **Compression** - Enable gzip compression
-- **Minification** - Optimize bundle size
+# List environment variables
+vercel env ls
 
-## 🔗 Production URLs
+# Link to project
+vercel link
+
+# Check domain status
+vercel domains ls
+```
+
+## 📊 Production URLs
 
 After deployment, your app will be available at:
 
-- **Frontend**: `https://your-app.vercel.app`
-- **API Health**: `https://your-app.vercel.app/api/health`
-- **API Guidelines**: `https://your-app.vercel.app/api/guidelines`
-- **API Moderation**: `https://your-app.vercel.app/api/moderate`
+- **Frontend**: `https://moderation-assistant-tool.vercel.app`
+- **API Health**: `https://moderation-assistant-tool.vercel.app/api/health`
+- **API Guidelines**: `https://moderation-assistant-tool.vercel.app/api/guidelines-endpoint`
+- **API Moderation**: `https://moderation-assistant-tool.vercel.app/api/moderate`
+- **Debug Guidelines**: `https://moderation-assistant-tool.vercel.app/api/debug-guidelines`
+
+## 🛠️ Available Batch Files
+
+- **`pull-env-production.bat`** - Pull production environment variables
+- **`add-additional-guidelines-env.bat`** - Add additional guidelines environment variable
+- **`start-production.bat`** - Start production server locally
+- **`vercel --prod --scope=tom-pearsons-projects-76b0a339`** - Deploy to production
 
 ## 📞 Support
 
@@ -190,12 +243,12 @@ After deployment, your app will be available at:
 - **Status Page**: [vercel-status.com](https://vercel-status.com)
 
 ### Next Steps
-1. **Deploy to Vercel**
-2. **Test all endpoints**
+1. **Deploy to production** using the correct scope
+2. **Test all endpoints** and mobile responsiveness
 3. **Update Postman collection** with production URL
-4. **Share with your team**
-5. **Monitor usage and performance**
+4. **Monitor usage and performance**
+5. **Update guidelines** in Gists as needed
 
 ---
 
-**Your Community Moderation Tool is now ready for production deployment!** 🚀
+**Your Community Moderation Tool is now ready for production deployment with dual Gist support!** 🚀

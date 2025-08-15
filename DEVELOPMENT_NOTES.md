@@ -73,3 +73,17 @@
 - `npm run dev:backend` - Start backend only
 - `curl http://127.0.0.1:3001/api/health` - Test health endpoint
 - `curl http://127.0.0.1:3001/api/guidelines` - Test guidelines endpoint 
+
+## 🎯 **Next Steps**
+
+1. **Test the new routing** with clean URLs
+2. **Verify HTML pages** load correctly
+3. **Deploy to production** with `vercel --prod`
+
+---
+
+## Last Updated
+- **Date**: August 15, 2025
+- **Version 0.8.40-alpha
+- **Status**: Development notes updated for clean URL implementation
+- **Next Action**: Ready for production deployment 

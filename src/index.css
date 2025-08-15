@@ -453,14 +453,12 @@ body {
 .modal-content {
   background: white;
   border-radius: 16px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   max-width: 800px;
   width: 100%;
-  max-height: 95vh;
-  overflow: hidden;
-  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.25);
-  animation: modalSlideIn 0.3s ease-out;
-  display: flex;
-  flex-direction: column;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
 }
 
 @keyframes modalSlideIn {
@@ -475,63 +473,235 @@ body {
 }
 
 .modal-header {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  padding: 25px 30px;
   display: flex;
+  align-items: flex-start;
   justify-content: space-between;
-  align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 24px 24px 0 24px;
+  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 10;
 }
 
 .modal-header h2 {
-  font-size: 1.8rem;
-  font-weight: 700;
   margin: 0;
+  color: #111827;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.guidelines-source {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.source-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.source-badge.url {
+  background: #dbeafe;
+  color: #1e40af;
+  border: 1px solid #93c5fd;
+}
+
+.source-badge.embedded {
+  background: #f3e8ff;
+  color: #7c3aed;
+  border: 1px solid #c4b5fd;
+}
+
+.source-badge.fallback {
+  background: #fef3c7;
+  color: #d97706;
+  border: 1px solid #fbbf24;
 }
 
 .modal-close {
-  background: rgba(255, 255, 255, 0.2);
+  background: none;
   border: none;
+  font-size: 1.5rem;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.refresh-button {
+  background: #3498db;
   color: white;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  font-size: 1.2rem;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
-  justify-content: center;
-  min-width: 44px; /* Better touch target */
-  min-height: 44px; /* Better touch target */
-  -webkit-tap-highlight-color: transparent;
+  gap: 4px;
 }
 
-.modal-close:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: scale(1.1);
+.refresh-button:hover {
+  background: #2980b9;
+  transform: scale(1.05);
+}
+
+.refresh-button:disabled {
+  background: #bdc3c7;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .modal-body {
-  padding: 30px;
-  padding-bottom: 50px; /* Extra padding at bottom for last section */
-  max-height: calc(95vh - 120px);
-  overflow-y: auto;
-  flex: 1;
+  padding: 24px;
+}
+
+.loading-guidelines {
   display: flex;
   flex-direction: column;
-  min-height: 0; /* Allow flex item to shrink */
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  color: #6b7280;
+}
+
+.loading-guidelines .spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e5e7eb;
+  border-top: 3px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.guidelines-text {
+  line-height: 1.6;
+  color: #374151;
+}
+
+.guidelines-text p {
+  margin: 8px 0;
+}
+
+.guidelines-text p:empty {
+  display: none;
+}
+
+.guidelines-text strong {
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.guidelines-text h2 {
+  color: #2c3e50;
+  font-size: 1.5em;
+  margin: 1.5em 0 0.5em 0;
+  border-bottom: 2px solid #3498db;
+  padding-bottom: 0.3em;
+}
+
+.guidelines-text h3 {
+  color: #34495e;
+  font-size: 1.2em;
+  margin: 1.2em 0 0.5em 0;
+  border-bottom: 1px solid #bdc3c7;
+  padding-bottom: 0.2em;
+}
+
+.guidelines-text h4 {
+  color: #2c3e50;
+  font-size: 1.1em;
+  margin: 1em 0 0.5em 0;
+  font-weight: 600;
+}
+
+.guidelines-text p {
+  margin: 0.8em 0;
+  line-height: 1.6;
+}
+
+.guidelines-text ul {
+  margin: 0.8em 0;
+  padding-left: 1.5em;
+}
+
+.guidelines-text li {
+  margin: 0.4em 0;
+  line-height: 1.5;
+}
+
+.guidelines-text em {
+  font-style: italic;
+  color: #7f8c8d;
+}
+
+.guideline-item {
+  display: flex;
+  align-items: flex-start;
+  margin: 8px 0;
+  line-height: 1.6;
+}
+
+.guideline-item .bullet {
+  color: #059669;
+  font-weight: bold;
+  margin-right: 8px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.guideline-item .text {
+  color: #374151;
+  flex: 1;
 }
 
 .rules-content {
-  line-height: 1.6;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 0; /* Allow flex item to shrink */
-  overflow-y: auto; /* Ensure scrolling works */
-  height: auto; /* Allow natural height */
+  margin-top: 16px;
+}
+
+.rules-content .rule-item {
+  background: #f9fafb;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+  border-left: 4px solid #3b82f6;
+}
+
+.rules-content .rule-item h4 {
+  color: #1f2937;
+  margin: 0 0 12px 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.rules-content .rule-item:last-child {
+  margin-bottom: 0;
 }
 
 .rules-section {
@@ -885,18 +1055,70 @@ body {
   .modal-content {
     margin: 5px;
     width: calc(100% - 10px);
+    max-height: 98vh;
   }
   
   .modal-header {
     padding: 15px;
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
   }
   
   .modal-header h2 {
     font-size: 1.3rem;
+    margin-right: 0;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  
+  .guidelines-source {
+    position: static;
+    margin-bottom: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+  }
+  
+  .modal-actions {
+    position: static;
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  
+
+  
+  .source-badge {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    white-space: nowrap;
   }
   
   .modal-body {
     padding: 15px;
+    max-height: calc(98vh - 60px);
+    overflow-y: auto;
+  }
+  
+
+  
+  .refresh-button {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+  
+  .modal-close {
+    padding: 6px;
+    font-size: 1.1rem;
   }
   
   .rules-section h3 {

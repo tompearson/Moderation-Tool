@@ -42,6 +42,46 @@ router.get('/debug-env', (req, res) => {
   });
 });
 
+// Debug combined guidelines endpoint
+router.get('/debug-guidelines', async (req, res) => {
+  try {
+    const { getGuidelinesWithMetadata, getGuidelinesForDisplay, getCacheStatus } = require('./utils/guidelines.js');
+    
+    // Get both display and AI guidelines
+    const displayGuidelines = await getGuidelinesForDisplay();
+    const aiGuidelines = await getGuidelinesWithMetadata();
+    const cacheStatus = getCacheStatus();
+    
+    res.json({
+      success: true,
+      display: {
+        content: displayGuidelines.rawContent.substring(0, 1000) + '...',
+        length: displayGuidelines.rawContent.length,
+        source: displayGuidelines.source
+      },
+      ai: {
+        content: aiGuidelines.rawContent.substring(0, 1000) + '...',
+        length: aiGuidelines.rawContent.length,
+        source: aiGuidelines.source,
+        fullContent: aiGuidelines.rawContent // Full content for debugging
+      },
+      cache: cacheStatus,
+      comparison: {
+        displayLength: displayGuidelines.rawContent.length,
+        aiLength: aiGuidelines.rawContent.length,
+        isCombined: aiGuidelines.rawContent.length > displayGuidelines.rawContent.length,
+        difference: aiGuidelines.rawContent.length - displayGuidelines.rawContent.length
+      }
+    });
+  } catch (error) {
+    console.error('Error getting debug guidelines:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
+
 // Get guidelines endpoint
 router.get('/guidelines', async (req, res) => {
   try {
@@ -61,10 +101,10 @@ router.get('/guidelines', async (req, res) => {
 // Guidelines endpoint with metadata and cache info
 router.get('/guidelines-endpoint', async (req, res) => {
   try {
-    const { getGuidelinesWithMetadata, getCacheStatus } = require('./utils/guidelines.js');
+    const { getGuidelinesForDisplay, getCacheStatus } = require('./utils/guidelines.js');
     
-    // Get guidelines with metadata
-    const guidelines = await getGuidelinesWithMetadata();
+    // Get guidelines for frontend display (primary Gist only)
+    const guidelines = await getGuidelinesForDisplay();
     const cacheStatus = getCacheStatus();
     
     res.status(200).json({
@@ -96,20 +136,29 @@ router.get('/guidelines-endpoint', async (req, res) => {
 // Force refresh guidelines
 router.post('/guidelines-endpoint', async (req, res) => {
   try {
-    const { refreshGuidelines, getCacheStatus } = require('./utils/guidelines.js');
+    const { refreshGuidelines, getGuidelinesForDisplay, getCacheStatus } = require('./utils/guidelines.js');
     const { action } = req.body;
     
     if (action === 'refresh') {
-      // Force refresh guidelines from URL
+      // Force refresh guidelines from URL (populates cache with combined content for backend)
       const refreshedContent = await refreshGuidelines();
       const cacheStatus = getCacheStatus();
+      
+      // Get display guidelines (primary Gist only, ignoring cache)
+      const guidelines = await getGuidelinesForDisplay();
       
       res.status(200).json({
         success: true,
         message: 'Guidelines refreshed successfully',
-        source: cacheStatus.source,
-        cacheAge: cacheStatus.age,
-        contentPreview: refreshedContent.substring(0, 500) + '...'
+        guidelines: {
+          content: guidelines.rawContent.substring(0, 500) + '...', // Preview only
+          fullContent: guidelines.rawContent,
+          version: guidelines.version,
+          timestamp: guidelines.timestamp,
+          source: guidelines.source,
+          cacheAge: guidelines.cacheAge
+        },
+        cache: cacheStatus
       });
     } else {
       res.status(400).json({ 

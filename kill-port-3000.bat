@@ -31,4 +31,3 @@ for /f "tokens=5" %%a in ('netstat -aon ^| findstr :3001') do (
 )
 
 echo Done killing processes on ports 3000 and 3001.
-pause 

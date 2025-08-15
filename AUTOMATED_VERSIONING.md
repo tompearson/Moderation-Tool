@@ -9,13 +9,13 @@ This project now includes an automated versioning system that can automatically 
 ### Manual Version Bumping
 
 ```bash
-# Bump patch version (0.8.0-alpha → 0.8.1-alpha)
+# Bump patch version (0.8.40-alpha → 0.8.40-alpha)
 npm run bump-patch
 
-# Bump minor version (0.8.0-alpha → 0.9.0-alpha)
+# Bump minor version (0.8.40-alpha → 0.8.40-alpha)
 npm run bump-minor
 
-# Bump major version (0.8.0-alpha → 1.0.0-alpha)
+# Bump major version (0.8.40-alpha → 1.0.0-alpha)
 npm run bump-major
 
 # Default bump (patch)
@@ -102,7 +102,7 @@ When you run any version bump command:
 
 The system follows semantic versioning:
 - **Major.Minor.Patch-Prerelease**
-- Example: `0.8.0-alpha`
+- Example: `0.8.40-alpha`
 - **Major**: Breaking changes
 - **Minor**: New features, backward compatible
 - **Patch**: Bug fixes, backward compatible
@@ -115,8 +115,8 @@ The system follows semantic versioning:
 npm run bump-patch
 git add .
 git commit -m "fix: correct version display issue"
-git tag v0.8.1-alpha
-git push origin v0.8.1-alpha
+git tag v0.8.40-alpha
+git push origin v0.8.40-alpha
 ```
 
 ### Feature Release
@@ -124,17 +124,17 @@ git push origin v0.8.1-alpha
 npm run bump-minor
 git add .
 git commit -m "feat: add new moderation guidelines"
-git tag v0.9.0-alpha
-git push origin v0.9.0-alpha
+git tag v0.8.40-alpha
+git push origin v0.8.40-alpha
 ```
 
 ### With Pre-Commit Hook
 ```bash
 # Just commit normally - versioning happens automatically
 git commit -m "feat: add automated versioning system"
-# Hook automatically bumps to 0.9.0-alpha and stages changes
-git tag v0.9.0-alpha
-git push origin v0.9.0-alpha
+# Hook automatically bumps to 0.8.40-alpha and stages changes
+git tag v0.8.40-alpha
+git push origin v0.8.40-alpha
 ```
 
 ## Benefits
@@ -170,3 +170,11 @@ If automatic versioning fails, you can always:
 - [ ] Add release notes automation
 - [ ] Add version comparison tools
 - [ ] Add rollback functionality 
+
+---
+
+## Last Updated
+- **Date**: 08-15-2025
+- **Version 0.8.40-alpha
+- **Status**: Documentation updated for version 0.8.40-alpha
+- **Next Action**: Ready for production deployment

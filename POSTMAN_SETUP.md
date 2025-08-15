@@ -143,12 +143,19 @@ This guide will help you import and set up the Community Moderation API in Postm
 | 429 | Rate limit exceeded |
 | 500 | Internal server error - model unavailable |
 
-## 🎯 Next Steps
+## 🎯 **Next Steps**
 
-1. **Test the endpoints** with the provided examples
-2. **Create your own test cases** with different types of content
-3. **Set up automated tests** using Postman's test scripts
-4. **Share the collection** with your team
+1. **Test your API endpoints** with Postman
+2. **Verify responses** match expected format
+3. **Update collections** as needed
+
+---
+
+## Last Updated
+- **Date**: August 15, 2025
+- **Version 0.8.40-alpha
+- **Status**: Postman setup documentation complete
+- **Next Action**: Ready for production deployment
 
 ## 📚 Additional Resources
 
@@ -158,4 +165,4 @@ This guide will help you import and set up the Community Moderation API in Postm
 
 ---
 
-**Note**: This API is currently in development (v0.3.0-alpha). The endpoints and response formats may change in future versions. 
+**Note**: This API is currently in development (v0.8.40-alpha). The endpoints and response formats may change in future versions. 

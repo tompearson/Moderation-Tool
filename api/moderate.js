@@ -276,11 +276,6 @@ function extractRulesFromReason(reason, decision) {
 // 🚨 THIS IS THE NEW VERSION WITH RULE EXTRACTION
 // 🚨 FILE MODIFIED AT: 2025-08-02 16:30:00
 export default async function handler(req, res) {
-  console.log('🚨 UPDATED CODE IS RUNNING - RULE EXTRACTION ENABLED');
-  console.log('🚨 THIS IS THE NEW VERSION - RULE EXTRACTION SHOULD WORK');
-  console.log('🚨 FILE MODIFIED AT: 2025-08-02 16:30:00');
-  console.log('🚨 TIMESTAMP: ' + new Date().toISOString());
-  console.log('🚨 THIS IS A COMPLETELY NEW MESSAGE - IF YOU SEE THIS, THE CODE IS UPDATED');
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -295,17 +290,9 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  console.log('Received request body:', req.body);
-  console.log('Request body type:', typeof req.body);
-  console.log('Request body keys:', Object.keys(req.body || {}));
-  
   // Handle both 'content' and 'postContent' field names for flexibility
   const content = req.body.content || req.body.postContent;
   const characterLimit = req.body.characterLimit || 300; // Default to 300 if not provided
-  console.log('Extracted content:', content);
-  console.log('Content type:', typeof content);
-  console.log('Content length:', content ? content.length : 'null');
-  console.log('Character limit:', characterLimit);
   
   // Validate that we have content to moderate
   if (!content || typeof content !== 'string' || content.trim().length === 0) {
@@ -328,15 +315,14 @@ export default async function handler(req, res) {
     let ruleSource = 'embedded'; // Default source
     try {
       moderationRules = await loadGuidelines();
-      console.log('✅ Successfully loaded guidelines');
       
       // Get the guidelines metadata to determine source
       const { getGuidelinesWithMetadata } = await import('./utils/guidelines.js');
       const guidelinesMetadata = await getGuidelinesWithMetadata();
       ruleSource = guidelinesMetadata.source || 'embedded';
-      console.log('📋 Rule source:', ruleSource);
+      
+
     } catch (error) {
-      console.log('⚠️ Failed to load guidelines, using fallback:', error.message);
       moderationRules = FALLBACK_RULES;
       ruleSource = 'fallback';
     }

@@ -10,15 +10,31 @@
 - **Command**: `npm run server`
 
 ### ✅ Working: Vercel Production
-- **URL**: `https://moderation-tool.vercel.app/api/moderate`
-- **Status**: ✅ Working (SSO fixed)
-- **Issue**: Previously blocked by SSO authentication
-- **Solution**: SSO disabled in Vercel dashboard
+- **URL**: `https://moderation-assistant-tool.vercel.app/`
+- **Status**: ✅ Working with clean URLs
+- **Features**: React app + static HTML pages
+- **Clean URLs**: `/about`, `/docs`, `/contact` working
 
 ### 🔧 Environment Variables
 - **Local**: `.env` file with working API key
-- **Vercel**: Environment variable set but blocked by SSO
+- **Vercel**: Environment variables configured
 - **Command**: `vercel env ls` (shows all environments)
+
+## Production Deployment Status
+
+### ✅ Current Working Configuration
+- **Production URL**: https://moderation-assistant-tool.vercel.app/
+- **Version 0.8.40-alpha
+- **Build**: Vite optimized for Vercel
+- **Routing**: Clean URLs for HTML pages
+
+### 🌐 Clean URL Structure
+- **Main App**: `/` → React application
+- **About Page**: `/about` → About page (no .html needed)
+- **Docs Page**: `/docs` → Documentation page
+- **Contact Page**: `/contact` → Contact page
+- **Privacy Page**: `/privacy` → Privacy policy
+- **Terms Page**: `/terms` → Terms of service
 
 ## API Endpoints
 
@@ -28,9 +44,9 @@
 - **Moderate**: `http://localhost:3000/api/moderate`
 
 ### Production (Working)
-- **Health**: `https://moderation-tool.vercel.app/api/health`
-- **Guidelines**: `https://moderation-tool.vercel.app/api/guidelines`
-- **Moderate**: `https://moderation-tool.vercel.app/api/moderate`
+- **Health**: `https://moderation-assistant-tool.vercel.app/api/health`
+- **Guidelines**: `https://moderation-assistant-tool.vercel.app/api/guidelines`
+- **Moderate**: `https://moderation-assistant-tool.vercel.app/api/moderate`
 
 ## Gemini API Status
 
@@ -44,15 +60,44 @@
 - ✅ **Error handling** - gracefully handles model failures
 - ✅ **Local testing** - `gemini-1.5-flash` works for development
 
+## Vercel Configuration
+
+### Current vercel.json
+```json
+{
+  "version": 2,
+  "buildCommand": "npm run vercel-build",
+  "outputDirectory": "dist",
+  "installCommand": "npm install",
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/about", "destination": "/about.html" },
+    { "source": "/docs", "destination": "/docs.html" },
+    { "source": "/contact", "destination": "/contact.html" },
+    { "source": "/privacy", "destination": "/privacy.html" },
+    { "source": "/terms", "destination": "/terms.html" }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
+```
+
+### Build Process
+- **Command**: `npm run vercel-build`
+- **Output**: `dist/` folder
+- **Framework**: Vite
+- **Optimization**: Production-ready build
+
 ## Vercel Environments
 
 ### Three Available Environments
-1. **Production** ✅ (You have this)
-   - URL: `https://moderation-tool.vercel.app`
+1. **Production** ✅ (Working)
+   - URL: `https://moderation-assistant-tool.vercel.app`
    - Deploy: `vercel --prod`
-   - Status: Working (SSO fixed)
+   - Status: Working with clean URLs
 
-2. **Preview** ❌ (You're missing this)
+2. **Preview** ✅ (Available)
    - URL: `https://moderation-tool-[hash].vercel.app`
    - Deploy: `vercel` (without `--prod`)
    - Purpose: Test changes before production
@@ -64,30 +109,20 @@
 
 ## Next Steps
 
-### Immediate (Local Development)
+### Immediate (Production)
+1. ✅ **Production is working** - clean URLs functional
+2. ✅ **HTML pages accessible** - `/about`, `/docs`, `/contact`
+3. ✅ **React app loading** - main functionality working
+
+### Future Enhancements
+1. **Add more HTML pages** - create in `public/` folder
+2. **Update vercel.json** - add new routes
+3. **Build and deploy** - `npm run build && vercel --prod`
+
+### Local Development
 1. ✅ **Continue developing locally** - everything works
 2. ✅ **Test API endpoints** - use Postman with local environment
 3. ✅ **Use working API key** - from `.env` file
-
-### Production Deployment (SSO Fixed)
-1. **SSO Already Disabled**
-   - ✅ SSO protection has been disabled in Vercel dashboard
-   - ✅ Production environment is accessible
-
-2. **Deploy to Production**
-   ```bash
-   vercel --prod
-   ```
-
-3. **Test Production API**
-   - Use Postman with production environment
-   - Verify all endpoints work
-
-### Optional: Set Up Preview Environment
-1. **Create Git repository** (if not already done)
-2. **Push code to GitHub**
-3. **Vercel will auto-deploy previews** on each push
-4. **Test changes** before production deployment
 
 ## Commands Reference
 
@@ -98,35 +133,33 @@ npm run build          # Build React app
 npm run dev            # Start Vite dev server (if needed)
 ```
 
-### Vercel Deployment
+### Production Deployment
 ```bash
-vercel                 # Deploy to preview
+npm run build          # Build for production
 vercel --prod          # Deploy to production
-vercel env ls          # List environment variables
+vercel                 # Deploy to preview
 ```
 
-### Testing
-```bash
-# Test local API
-curl http://localhost:3000/api/health
+## Current Achievements
 
-# Test production API (SSO fixed)
-curl https://moderation-tool.vercel.app/api/health
-```
+- ✅ **Vercel deployment working**
+- ✅ **Clean URLs implemented**
+- ✅ **HTML pages accessible**
+- ✅ **React app functional**
+- ✅ **Build process optimized**
+- ✅ **Routing configuration working**
 
 ## File Structure
 ```
 ModerationTool/
-├── api/
-│   ├── routes.js          # API endpoints
-│   └── utils/
-│       └── ai.js          # Gemini AI integration
-├── src/                   # React frontend
-├── dist/                  # Built React app
-├── server.js              # Express server (local only)
-├── vercel.json            # Vercel configuration
-├── .env                   # Local environment variables
-└── package.json           # Dependencies and scripts
+├── public/              # Static HTML pages
+│   ├── about.html       # About page
+│   ├── docs.html        # Documentation
+│   ├── contact.html     # Contact page
+│   ├── privacy.html     # Privacy policy
+│   └── terms.html       # Terms of service
+├── vercel.json          # Vercel configuration
+└── dist/                # Build output
 ```
 
 ## Troubleshooting
@@ -147,7 +180,7 @@ taskkill /PID [PID] /F
 - **Production**: CORS allows `https://moderation-tool.vercel.app`
 
 ## Last Updated
-- **Date**: July 20, 2025
-- **Version**: v0.6.0-alpha
-- **Status**: Local development working, production working (SSO fixed)
+- **Date**: August 15, 2025
+- **Version 0.8.40-alpha
+- **Status**: Production working with clean URLs, local development working
 - **Next Action**: Ready for production deployment 

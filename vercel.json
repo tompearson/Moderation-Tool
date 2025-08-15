@@ -1,5 +1,16 @@
 {
   "version": 2,
+  "buildCommand": "npm run vercel-build",
+  "outputDirectory": "dist",
+  "installCommand": "npm install",
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/about", "destination": "/about.html" },
+    { "source": "/docs", "destination": "/docs.html" },
+    { "source": "/contact", "destination": "/contact.html" },
+    { "source": "/privacy", "destination": "/privacy.html" },
+    { "source": "/terms", "destination": "/terms.html" }
+  ],
   "env": {
     "NODE_ENV": "production"
   }

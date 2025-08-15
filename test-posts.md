@@ -150,3 +150,11 @@ This section contains real posts from users that need moderation decisions. Thes
 - **Borderline cases** help test AI judgment capabilities
 - **Complex cases** test AI's ability to identify multiple issues
 - **Update this file** with new test cases as needed 
+
+---
+
+## Last Updated
+- **Date**: 08-15-2025
+- **Version 0.8.40-alpha
+- **Status**: Documentation updated for version 0.8.40-alpha
+- **Next Action**: Ready for production deployment

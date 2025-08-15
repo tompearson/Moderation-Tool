@@ -1,0 +1,28 @@
+### Create the criteria document from all of the NextDoor rules ###
+I want you to build a pretty moderation document using the instructions:
+Be very detaild detailed. Do not leave out any information.
+Include every detail, break down all tables into readable text.
+Include all content (but not links) and break down all tables into the appropriate text.
+Include the section named "Our commitment to our neighbors" in https://help.nextdoor.com/s/article/Do-not-discriminate?language=en_US
+
+
+Here is the sources for you to input. Use all of these sources.
+https://help.nextdoor.com/s/article/Be-respectful-to-your-neighbors?language=en_US
+https://help.nextdoor.com/s/article/Do-not-discriminate?language=en_US
+https://help.nextdoor.com/s/article/Be-helpful-in-conversations?language=en_US
+https://help.nextdoor.com/s/article/use-your-true-identity?language=en_US
+https://help.nextdoor.com/s/article/Do-not-engage-in-harmful-activity?language=en_US
+https://help.nextdoor.com/s/article/Best-practices-For-Sale-Free?language=en_US&embedded_webview=true
+
+## Separately get the prompt below ##
+
+## Create the prompt for how to review tagged posts ##
+I would like  you to create a prompt about how a moderator should use this document to assess a flagged post and to decide that the post should be removed or kept.
+
+
+
+
+
+
+
+

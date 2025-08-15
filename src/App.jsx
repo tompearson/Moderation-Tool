@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './index.css';
 
 // Moderation rules (consolidated from .cursorrules)
 const MODERATION_RULES = `# Community Moderation Rules
@@ -118,10 +119,14 @@ When you analyze a post, always respond like this:
 
 IMPORTANT: Keep your response brief and concise. Focus on the most relevant rule violations or reasons for keeping the post. Avoid lengthy explanations unless necessary. The character limit will be specified in the moderation instructions.`;
 
-// API endpoint for moderation - use production URL when deployed
-const API_ENDPOINT = import.meta.env.MODE === 'production'
-  ? '/api/moderate'  // Use relative path for production (same domain)
-  : `http://127.0.0.1:${import.meta.env.VITE_API_PORT || 3001}/api/moderate`;  // Use configurable port for development
+// API endpoint configuration
+const API_ENDPOINT = process.env.NODE_ENV === 'production' 
+  ? '/api/moderate'
+  : 'http://127.0.0.1:3000/api/moderate';
+
+const GUIDELINES_ENDPOINT = process.env.NODE_ENV === 'production'
+  ? '/api/guidelines-endpoint'
+  : 'http://127.0.0.1:3000/api/guidelines-endpoint';
 
 function App() {
   // Debug version loading
@@ -137,7 +142,120 @@ function App() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
   const [showRules, setShowRules] = useState(false);
+  const [currentGuidelines, setCurrentGuidelines] = useState(null);
+  const [guidelinesLoading, setGuidelinesLoading] = useState(false);
   const [characterLimit, setCharacterLimit] = useState(300); // Default to 300 chars
+
+  // Function to get emoji for rule number
+  const getRuleEmoji = (number) => {
+    const emojis = {
+      '1': '🤝',
+      '2': '🎯', 
+      '3': '❌',
+      '4': '✅',
+      '5': '🔒',
+      '6': '🚫',
+      '7': '🗣️',
+      '8': '📦'
+    };
+    return emojis[number] || '📋';
+  };
+
+  // Function to fetch current guidelines
+  const fetchCurrentGuidelines = async () => {
+    try {
+      console.log('📋 Fetching current guidelines...');
+      setGuidelinesLoading(true);
+      const response = await fetch(GUIDELINES_ENDPOINT);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      console.log('Guidelines API response:', data);
+      console.log('Guidelines source:', data.guidelines?.source);
+      console.log('Guidelines content length:', data.guidelines?.fullContent?.length);
+      console.log('Guidelines content preview:', data.guidelines?.fullContent?.substring(0, 200));
+      console.log('Guidelines cache age:', data.cache?.age);
+      
+      setCurrentGuidelines(data);
+      console.log('✅ Guidelines updated in state');
+      return data;
+    } catch (err) {
+      console.error('Failed to fetch guidelines:', err);
+      // Fallback to embedded guidelines
+      setCurrentGuidelines({
+        guidelines: {
+          source: 'embedded',
+          fullContent: null
+        }
+      });
+    } finally {
+      setGuidelinesLoading(false);
+    }
+  };
+
+  // Function to format guidelines content for display
+  const formatGuidelinesContent = (content) => {
+    if (!content) return null;
+    
+    // Simple formatting: convert markdown to HTML-like elements
+    const formattedContent = content
+      // Convert #### headers to h4
+      .replace(/^#### (.*$)/gm, '<h4>$1</h4>')
+      // Convert ### headers to h3
+      .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+      // Convert ## headers to h2
+      .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+      // Convert # headers to h1  
+      .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+      // Convert **bold** to <strong>
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      // Convert *italic* to <em>
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      // Convert bullet points
+      .replace(/^[-*]\s+(.*$)/gm, '<li>$1</li>')
+      // Convert numbered lists
+      .replace(/^\d+\.\s+(.*$)/gm, '<li>$1</li>')
+      // Convert paragraphs
+      .replace(/^(?!<[h|li])(.*$)/gm, '<p>$1</p>')
+      // Clean up empty paragraphs
+      .replace(/<p><\/p>/g, '')
+      // Wrap lists
+      .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>');
+    
+    return formattedContent;
+  };
+
+  // Function to format text content with proper styling
+  const formatTextContent = (text) => {
+    if (!text) return [];
+    
+    return text.split('\n').map((line, index) => {
+      const trimmedLine = line.trim();
+      if (!trimmedLine) return null;
+      
+      // Handle bullet points
+      if (trimmedLine.startsWith('*') || trimmedLine.startsWith('-')) {
+        return (
+          <div key={index} className="guideline-item">
+            <span className="bullet">•</span>
+            <span className="text">{trimmedLine.replace(/^[-*]\s*/, '')}</span>
+          </div>
+        );
+      }
+      
+      // Handle bold text (markdown **text**)
+      if (trimmedLine.includes('**')) {
+        const formattedLine = trimmedLine.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        return <p key={index} dangerouslySetInnerHTML={{ __html: formattedLine }} />;
+      }
+      
+      // Regular paragraph
+      return <p key={index}>{trimmedLine}</p>;
+    }).filter(Boolean);
+  };
 
   const moderatePost = async (content, charLimit = 300) => {
     try {
@@ -216,11 +334,54 @@ function App() {
     setIsLoading(false);
   };
 
+  // Handle guidelines button click
+  const handleShowGuidelines = async () => {
+    if (!currentGuidelines) {
+      await fetchCurrentGuidelines();
+    }
+    setShowRules(true);
+  };
+
+  // Handle guidelines refresh button click
+  const handleRefreshGuidelines = async () => {
+    setGuidelinesLoading(true);
+    console.log('🔄 Starting guidelines refresh...');
+    
+    try {
+      // Force refresh by calling the API with POST
+      console.log('📡 Sending POST request to:', GUIDELINES_ENDPOINT);
+      const response = await fetch(GUIDELINES_ENDPOINT, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ action: 'refresh' })
+      });
+      
+      console.log('📡 Response status:', response.status);
+      const data = await response.json();
+      console.log('📡 Response data:', data);
+      
+      if (data.success) {
+        console.log('✅ Backend refresh successful, updating guidelines...');
+        // Use the refreshed content directly from the POST response
+        setCurrentGuidelines(data);
+        console.log('✅ Guidelines refreshed successfully');
+      } else {
+        console.error('❌ Failed to refresh guidelines:', data.error);
+      }
+    } catch (error) {
+      console.error('❌ Error refreshing guidelines:', error);
+    } finally {
+      setGuidelinesLoading(false);
+    }
+  };
+
   return (
     <div className="container">
               <div className="header">
           <h1>Community Moderation Assistant</h1>
-          <p>AI-powered post moderation using community guidelines</p>
+          <p>AI-powered Post Moderation Using Community Guidelines</p>
           <div className="version">v{window.APP_VERSION?.full || '0.7.0-alpha'}</div>
         </div>
       
@@ -378,7 +539,7 @@ function App() {
             <button 
               type="button" 
               className="button rules-button"
-              onClick={() => setShowRules(true)}
+              onClick={handleShowGuidelines}
               disabled={isLoading}
             >
               📋 Show Guidelines
@@ -473,159 +634,186 @@ function App() {
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h2>📋 Community Guidelines</h2>
-              <button 
-                className="modal-close"
-                onClick={() => setShowRules(false)}
-              >
-                ✕
-              </button>
+              <div className="guidelines-source">
+                {currentGuidelines?.guidelines?.source === 'url' ? (
+                  <span className="source-badge url">
+                    🌐 Dynamic Rules (Gist)
+                  </span>
+                ) : currentGuidelines?.guidelines?.source === 'embedded' ? (
+                  <span className="source-badge embedded">
+                    📋 Embedded Rules
+                  </span>
+                ) : (
+                  <span className="source-badge fallback">
+                    ⚠️ Fallback Rules
+                  </span>
+                )}
+              </div>
+              <div className="modal-actions">
+                <button 
+                  className="refresh-button"
+                  onClick={handleRefreshGuidelines}
+                  disabled={guidelinesLoading}
+                  title="Refresh guidelines from gist"
+                >
+                  🔄 Refresh
+                </button>
+                <button 
+                  className="modal-close"
+                  onClick={() => setShowRules(false)}
+                >
+                  ✕
+                </button>
+              </div>
             </div>
             
             <div className="modal-body">
-              <div className="rules-content">
-                <div className="rules-section">
-                  <h3>🎯 Purpose</h3>
-                  <p>Check whether the reported content violates community guidelines. 
-                    Decide if it should be removed or kept. 
-                    Always use your own discretion when evaluating. 
-                    You don't have to agree with the recommendation by this tool.</p>
+              {guidelinesLoading ? (
+                <div className="loading-guidelines">
+                  <div className="spinner"></div>
+                  <p>Loading guidelines...</p>
                 </div>
-
-                <div className="rules-section">
-                  <h3>⚠️ Limitations</h3>
-                  <p>This tool does not store any submitted posts and has no awareness of the origin of the input. 
-                    As a result, it cannot identify nuanced or repetitive submissions.</p>
+              ) : currentGuidelines?.guidelines?.fullContent ? (
+                <div className="rules-content">
+                  {/* Display dynamic guidelines content */}
+                  <div 
+                    className="guidelines-text"
+                    dangerouslySetInnerHTML={{ 
+                      __html: formatGuidelinesContent(currentGuidelines.guidelines.fullContent) 
+                    }}
+                  />
                 </div>
+              ) : (
+                <div className="rules-content">
+                  {/* Fallback to embedded guidelines */}
+                  <div className="rules-section">
+                    <h3>🎯 Purpose</h3>
+                    <p>Check whether the reported content violates community guidelines. 
+                      Decide if it should be removed or kept. 
+                      Always use your own discretion when evaluating. 
+                      You don't have to agree with the recommendation by this tool.</p>
+                  </div>
 
-                <div className="rules-section">
-                  <h3>📍 Local Coverage</h3>
-                  <div className="coverage-info">
-                    <h4>Counties:</h4>
-                    <div className="county-list">
-                      <div className="county-item">
-                        <strong>Washington County, OR</strong> - Includes all cities and zip codes within Washington County
+                  <div className="rules-section">
+                    <h3>⚠️ Limitations</h3>
+                    <p>This tool does not store any submitted posts and has no awareness of the origin of the input. 
+                      As a result, it cannot identify nuanced or repetitive submissions.</p>
+                  </div>
+
+                  <div className="rules-section">
+                    <h3>📍 Local Coverage</h3>
+                    <div className="coverage-info">
+                      <h4>Counties:</h4>
+                      <div className="county-list">
+                        <div className="county-item">
+                          <strong>Washington County, OR</strong> - Includes all cities and zip codes within Washington County
+                        </div>
+                      </div>
+                      
+                      <h4>Major Cities and Zip Codes:</h4>
+                      <div className="zip-grid">
+                        <div className="zip-group">
+                          <strong>Hillsboro:</strong> 97124
+                        </div>
+                        <div className="zip-group">
+                          <strong>Beaverton:</strong> 97006, 97003, 97078
+                        </div>
+                        <div className="zip-group">
+                          <strong>Cornelius:</strong> 97113
+                        </div>
+                        <div className="zip-group">
+                          <strong>Forest Grove:</strong> 97116
+                        </div>
+                        <div className="zip-group">
+                          <strong>Gaston:</strong> 97119
+                        </div>
+                        <div className="zip-group">
+                          <strong>Newburg:</strong> 97132
+                        </div>
+                        <div className="zip-group">
+                          <strong>Sherwood:</strong> 97140
+                        </div>
+                        <div className="zip-group">
+                          <strong>Portland:</strong> 97086, 97201-97206, 97209-97214, 97215-97220, 97221-97225, 97227, 97229-97233, 97236, 97252, 97253, 97267
+                        </div>
                       </div>
                     </div>
+                  </div>
+
+                  <div className="rules-section">
+                    <h3>📜 Community Rules</h3>
                     
-                    <h4>Major Cities and Zip Codes:</h4>
-                    <div className="zip-grid">
-                      <div className="zip-group">
-                        <strong>Hillsboro:</strong> 97124
-                      </div>
-                      <div className="zip-group">
-                        <strong>Beaverton:</strong> 97006, 97003, 97078
-                      </div>
-                      <div className="zip-group">
-                        <strong>Cornelius:</strong> 97113
-                      </div>
-                      <div className="zip-group">
-                        <strong>Forest Grove:</strong> 97116
-                      </div>
-                      <div className="zip-group">
-                        <strong>Gaston:</strong> 97119
-                      </div>
-                      <div className="zip-group">
-                        <strong>Newburg:</strong> 97132
-                      </div>
-                      <div className="zip-group">
-                        <strong>Sherwood:</strong> 97140
-                      </div>
-                      <div className="zip-group">
-                        <strong>Portland:</strong> 97086, 97201-97206, 97209-97214, 97215-97220, 97221-97225, 97227, 97229-97233, 97236, 97252, 97253, 97267
-                      </div>
+                    <div className="rule-item">
+                      <h4>1. 🤝 Be Respectful</h4>
+                      <ul>
+                        <li>No hate speech, slurs, or harassment</li>
+                        <li>No threats or intimidation</li>
+                        <li>No name-calling, personal attacks, or insults</li>
+                        <li>Excessive profanity aimed at others is not allowed</li>
+                      </ul>
+                    </div>
+
+                    <div className="rule-item">
+                      <h4>2. 🎯 Keep It Relevant</h4>
+                      <ul>
+                        <li>Posts must be relevant to the local community</li>
+                        <li>Do not share unrelated national politics or off-topic content</li>
+                      </ul>
+                    </div>
+
+                    <div className="rule-item">
+                      <h4>3. ❌ Do Not Discriminate</h4>
+                      <ul>
+                        <li>No content that discriminates or promotes hate based on race, ethnicity, religion, gender, sexual orientation, disability, or age</li>
+                      </ul>
+                    </div>
+
+                    <div className="rule-item">
+                      <h4>4. ✅ No Misinformation</h4>
+                      <ul>
+                        <li>Do not share false or misleading information that could harm others</li>
+                        <li>Health, safety, or crime claims must be accurate</li>
+                        <li>Do not allow misinformation about politics and election topics</li>
+                      </ul>
+                    </div>
+
+                    <div className="rule-item">
+                      <h4>5. 🔒 Respect Privacy</h4>
+                      <ul>
+                        <li>Do not share someone's private information without consent (addresses, phone numbers, etc.)</li>
+                        <li>No doxxing</li>
+                      </ul>
+                    </div>
+
+                    <div className="rule-item">
+                      <h4>6. 🚫 No Prohibited Content</h4>
+                      <ul>
+                        <li>No violence or calls for violence</li>
+                        <li>No promotion of criminal acts</li>
+                        <li>No adult sexual content or explicit material</li>
+                        <li>No spam, scams, or fraudulent schemes</li>
+                        <li>No public shaming</li>
+                        <li>No selling or promoting illegal goods or services</li>
+                      </ul>
+                    </div>
+
+                    <div className="rule-item">
+                      <h4>7. 🗣️ Civil Tone</h4>
+                      <ul>
+                        <li>Use civil language</li>
+                        <li>Avoid aggressive or offensive tone</li>
+                      </ul>
+                    </div>
+
+                    <div className="rule-item">
+                      <h4>8. 📦 Incorrect Category</h4>
+                      <ul>
+                        <li>Items offered for sale or free are considered 'Posted In Error' and should not be in the main feed</li>
+                      </ul>
                     </div>
                   </div>
                 </div>
-
-                <div className="rules-section">
-                  <h3>📜 Community Rules</h3>
-                  
-                  <div className="rule-item">
-                    <h4>1. 🤝 Be Respectful</h4>
-                    <ul>
-                      <li>No hate speech, slurs, or harassment</li>
-                      <li>No threats or intimidation</li>
-                      <li>No name-calling, personal attacks, or insults</li>
-                      <li>Excessive profanity aimed at others is not allowed</li>
-                    </ul>
-                  </div>
-
-                  <div className="rule-item">
-                    <h4>2. 🎯 Keep It Relevant</h4>
-                    <ul>
-                      <li>Posts must be relevant to the local community</li>
-                      <li>Do not share unrelated national politics or off-topic content</li>
-                    </ul>
-                  </div>
-
-                  <div className="rule-item">
-                    <h4>3. ❌ Do Not Discriminate</h4>
-                    <ul>
-                      <li>No content that discriminates or promotes hate based on race, ethnicity, religion, gender, sexual orientation, disability, or age</li>
-                    </ul>
-                  </div>
-
-                  <div className="rule-item">
-                    <h4>4. ✅ No Misinformation</h4>
-                    <ul>
-                      <li>Do not share false or misleading information that could harm others</li>
-                      <li>Health, safety, or crime claims must be accurate</li>
-                      <li>Do not allow misinformation about politics and election topics</li>
-                    </ul>
-                  </div>
-
-                  <div className="rule-item">
-                    <h4>5. 🔒 Respect Privacy</h4>
-                    <ul>
-                      <li>Do not share someone's private information without consent (addresses, phone numbers, etc.)</li>
-                      <li>No doxxing</li>
-                    </ul>
-                  </div>
-
-                  <div className="rule-item">
-                    <h4>6. 🚫 No Prohibited Content</h4>
-                    <ul>
-                      <li>No violence or calls for violence</li>
-                      <li>No promotion of criminal acts</li>
-                      <li>No adult sexual content or explicit material</li>
-                      <li>No spam, scams, or fraudulent schemes</li>
-                      <li>No public shaming</li>
-                      <li>No selling or promoting illegal goods or services</li>
-                    </ul>
-                  </div>
-
-                  <div className="rule-item">
-                    <h4>7. 🗣️ Civil Tone</h4>
-                    <ul>
-                      <li>Use civil language</li>
-                      <li>Avoid aggressive or offensive tone</li>
-                    </ul>
-                  </div>
-
-                  <div className="rule-item">
-                    <h4>8. ❌ Incorrect Category</h4>
-                    <ul>
-                      <li>Items offered for sale or free are considered 'Posted In Error'</li>
-                      <li>Should not be in the main feed and should not be allowed</li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="rules-section">
-                  <h3>⚖️ Moderation Approach</h3>
-                  <div className="moderation-guidelines">
-                    <p><strong>Our AI uses a balanced, lenient approach:</strong></p>
-                    <ul>
-                      <li>When in doubt, err on the side of keeping posts</li>
-                      <li>Only remove posts that clearly and definitively violate rules</li>
-                      <li>Consider context and intent of the post</li>
-                      <li>Allow legitimate expression of concerns, even if emotional</li>
-                      <li>Be especially lenient with local community content</li>
-                      <li>Minor violations are generally kept with warnings</li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
