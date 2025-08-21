@@ -1,0 +1,3 @@
+[submodule "protected/prompts"]
+	path = protected/prompts
+	url = ./protected/prompts
