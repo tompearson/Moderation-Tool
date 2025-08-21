@@ -1,0 +1,85 @@
+{
+  "version": "1.0.0",
+  "description": "AI Prompt Configuration for Community Moderation Tool",
+  "prompts": [
+    {
+      "id": "ai-instructions",
+      "path": "ai-instructions.md",
+      "enabled": true,
+      "order": 1,
+      "required": true,
+      "description": "AI system instructions and workflow",
+      "analysisTypes": [
+        "quick",
+        "detailed"
+      ]
+    },
+    {
+      "id": "moderation-guidelines",
+      "path": "moderation-guidelines-AI.md",
+      "enabled": true,
+      "order": 2,
+      "required": true,
+      "description": "Core moderation rules and community guidelines",
+      "analysisTypes": [
+        "quick",
+        "detailed"
+      ]
+    },
+    {
+      "id": "nextdoor-guidelines",
+      "path": "nextdoor-guidelines.md",
+      "enabled": true,
+      "order": 3,
+      "required": false,
+      "description": "Nextdoor-specific community standards",
+      "analysisTypes": [
+        "quick",
+        "detailed"
+      ]
+    },
+    {
+      "id": "contextual-moderation-prompt",
+      "path": "contextual-moderation-prompt.md",
+      "enabled": true,
+      "order": 4,
+      "required": false,
+      "description": "Contextual moderation approach with balanced consideration of tone and civic value",
+      "analysisTypes": [
+        "quick",
+        "detailed"
+      ]
+    }
+  ],
+  "analysisTypes": {
+    "quick": {
+      "description": "Quick analysis for immediate moderation decisions",
+      "promptIds": [
+        "ai-instructions",
+        "moderation-guidelines",
+        "nextdoor-guidelines",
+        "contextual-moderation-prompt"
+      ],
+      "maxTokens": 100,
+      "temperature": 0.3,
+      "notes": "maxTokens controls AI response length (output). Set to 100 tokens to ensure responses stay within 300 character limit for quick analysis text box."
+    },
+    "detailed": {
+      "description": "Comprehensive analysis with detailed reasoning",
+      "promptIds": [
+        "ai-instructions",
+        "moderation-guidelines",
+        "nextdoor-guidelines",
+        "contextual-moderation-prompt"
+      ],
+      "maxTokens": 800,
+      "temperature": 0.2,
+      "notes": "maxTokens controls AI response length (output). Set to 800 tokens to allow responses up to ~2000 characters for detailed analysis text box."
+    }
+  },
+  "metadata": {
+    "created": "2025-08-17",
+    "lastUpdated": "2025-08-19",
+    "author": "Community Moderation Tool"
+  }
+}
