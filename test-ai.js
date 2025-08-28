@@ -12,7 +12,7 @@ async function testAI() {
 
 "Lost my keys near the park on Main Street. If anyone finds them, please let me know. Thanks neighbors!"
 
-**Decision:** [Remove] or [Keep]  
+**Decision:** [Remove], [Keep], or [Maybe Remove]  
 **Reason:** [State the specific rule(s) and exactly why this post violates or does not violate them.]`;
 
     console.log('\n🤖 Testing AI generation...');

@@ -1,5 +1,5 @@
 // Test script for guidelines fetching functionality
-import { loadGuidelines, getCacheStatus, refreshGuidelines } from './api/utils/guidelines.js';
+const { loadGuidelines, getCacheStatus, refreshGuidelines } = require('./api/utils/guidelines.js');
 
 async function testGuidelines() {
   console.log('🧪 Testing Guidelines Fetching...\n');

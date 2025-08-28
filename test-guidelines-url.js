@@ -7,7 +7,7 @@ console.log('- NODE_ENV:', process.env.NODE_ENV);
 console.log('- GUIDELINES_URL:', process.env.GUIDELINES_URL);
 
 // Test the fetch function
-const { fetchGuidelinesFromURL } = require('./api/utils/guidelines.js');
+const { loadGuidelines } = require('./api/utils/guidelines.js');
 
 async function testFetch() {
   const url = process.env.GUIDELINES_URL;
@@ -19,7 +19,7 @@ async function testFetch() {
   console.log(`🔄 Testing fetch from: ${url}`);
   
   try {
-    const content = await fetchGuidelinesFromURL(url);
+    const content = await loadGuidelines();
     if (content) {
       console.log('✅ Fetch successful!');
       console.log(`📏 Content length: ${content.length} characters`);
