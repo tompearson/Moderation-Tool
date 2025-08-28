@@ -1,0 +1,275 @@
+{
+  "timestamp": "2025-08-24T20:44:42.984Z",
+  "totalTests": 38,
+  "passed": 28,
+  "failed": 7,
+  "warnings": 3,
+  "details": [
+    {
+      "test": "AI Config File",
+      "status": "success",
+      "message": "AI configuration file loaded successfully",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:42.988Z"
+    },
+    {
+      "test": "Prompt Configuration",
+      "status": "success",
+      "message": "1 prompts configured",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:42.989Z"
+    },
+    {
+      "test": "Prompt File: nextdoor-research",
+      "status": "success",
+      "message": "File exists at staging/NextDoor/research/token-optimized-nextdoor-community-moderation-instructions.json",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:42.989Z"
+    },
+    {
+      "test": "Analysis Types",
+      "status": "success",
+      "message": "2 analysis types configured: quick, detailed",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:42.990Z"
+    },
+    {
+      "test": "API Key: GOOGLE_GENERATIVE_AI_API_KEY",
+      "status": "warning",
+      "message": "Not set",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:42.990Z"
+    },
+    {
+      "test": "API Key: GEMINI_API_KEY",
+      "status": "success",
+      "message": "Found (39 characters)",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:42.990Z"
+    },
+    {
+      "test": "API Key: GOOGLE_API_KEY",
+      "status": "warning",
+      "message": "Not set",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:42.991Z"
+    },
+    {
+      "test": "API Key Status",
+      "status": "success",
+      "message": "At least one API key is available",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:42.991Z"
+    },
+    {
+      "test": "NODE_ENV",
+      "status": "success",
+      "message": "Set to: development",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:42.991Z"
+    },
+    {
+      "test": "GUIDELINES_URL",
+      "status": "success",
+      "message": "Set to: https://gist.githubusercontent.com/tompearson/87c37f055ee8220b421ce78c668c093b/raw/NextDoor-Guidelines-content.md",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:42.991Z"
+    },
+    {
+      "test": "Directory: protected/prompts",
+      "status": "success",
+      "message": "Directory exists",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:42.992Z"
+    },
+    {
+      "test": "Directory: protected/prompts/staging",
+      "status": "success",
+      "message": "Directory exists",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:42.992Z"
+    },
+    {
+      "test": "Directory: protected/prompts/staging/NextDoor",
+      "status": "success",
+      "message": "Directory exists",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:42.992Z"
+    },
+    {
+      "test": "Directory: protected/prompts/staging/NextDoor/json",
+      "status": "success",
+      "message": "Directory exists",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:42.992Z"
+    },
+    {
+      "test": "Directory: api",
+      "status": "success",
+      "message": "Directory exists",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:42.993Z"
+    },
+    {
+      "test": "Directory: api/utils",
+      "status": "success",
+      "message": "Directory exists",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:42.993Z"
+    },
+    {
+      "test": "Directory: public",
+      "status": "success",
+      "message": "Directory exists",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:42.994Z"
+    },
+    {
+      "test": "File: protected/prompts/ai.json",
+      "status": "success",
+      "message": "File exists",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:42.994Z"
+    },
+    {
+      "test": "File: api/utils/guidelines.js",
+      "status": "success",
+      "message": "File exists",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:42.994Z"
+    },
+    {
+      "test": "File: api/utils/ai.js",
+      "status": "success",
+      "message": "File exists",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:42.995Z"
+    },
+    {
+      "test": "File: package.json",
+      "status": "success",
+      "message": "File exists",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:42.995Z"
+    },
+    {
+      "test": "Cache Status",
+      "status": "success",
+      "message": "Cache initialized: {\n  \"hasCache\": false,\n  \"source\": null,\n  \"age\": null,\n  \"config\": {\n    \"url\": \"https://gist.githubusercontent.com/tompearson/87c37f055ee8220b421ce78c668c093b/raw/NextDoor-Guidelines-content.md\",\n    \"cacheTimeout\": 3600000,\n    \"timeout\": 10000\n  }\n}",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:42.996Z"
+    },
+    {
+      "test": "Guidelines Loading",
+      "status": "success",
+      "message": "Guidelines loaded (957 characters)",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:42.997Z"
+    },
+    {
+      "test": "Display Guidelines",
+      "status": "success",
+      "message": "Display guidelines available (4738 characters)",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:43.225Z"
+    },
+    {
+      "test": "Quick Analysis Prompt",
+      "status": "success",
+      "message": "Built successfully (5681 characters)",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:43.236Z"
+    },
+    {
+      "test": "Detailed Analysis Prompt",
+      "status": "success",
+      "message": "Built successfully (5681 characters)",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:43.240Z"
+    },
+    {
+      "test": "Test Case K1",
+      "status": "success",
+      "message": "Expected: Keep, Got: Keep - Post describes a personal experience related to car repair and shares helpful advice. No community guidelines are violated.",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:43.241Z"
+    },
+    {
+      "test": "Test Case K2",
+      "status": "success",
+      "message": "Expected: Keep, Got: Keep - Post highlights positive neighborhood engagement and encourages helpful activity. No rules are violated.",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:43.349Z"
+    },
+    {
+      "test": "Test Case K3",
+      "status": "success",
+      "message": "Expected: Keep, Got: Keep - Post describes safe and positive community activity. No violations found.",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:43.451Z"
+    },
+    {
+      "test": "Test Case R1",
+      "status": "failed",
+      "message": "Expected: Remove, Got: Keep - Post contains hate speech and discriminatory content based on race and nationality.",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:43.563Z"
+    },
+    {
+      "test": "Test Case R2",
+      "status": "failed",
+      "message": "Expected: Remove, Got: Keep - Post threatens or encourages harassment and potentially doxxing of a neighbor.",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:43.668Z"
+    },
+    {
+      "test": "Test Case R3",
+      "status": "failed",
+      "message": "Expected: Remove, Got: Keep - Post promotes illegal activity and deceptive practices.",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:43.783Z"
+    },
+    {
+      "test": "Test Case B1",
+      "status": "failed",
+      "message": "Expected: Maybe Remove, Got: Keep - Post discusses a potentially sensitive situation without violating rules, but may raise safety concerns.",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:43.884Z"
+    },
+    {
+      "test": "Test Case B2",
+      "status": "failed",
+      "message": "Expected: Maybe Remove, Got: Keep - Post involves vulnerable populations; intention is helpful but could be interpreted negatively.",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:43.999Z"
+    },
+    {
+      "test": "Test Case B3",
+      "status": "failed",
+      "message": "Expected: Maybe Remove, Got: Keep - Post discusses political topics; content is civil but may provoke debate or conflict.",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:44.101Z"
+    },
+    {
+      "test": "Test Case B4",
+      "status": "failed",
+      "message": "Expected: Maybe Remove, Got: Keep - Post alerts neighbors to a potential issue without identifying anyone; could be seen as overly alarming.",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:44.203Z"
+    },
+    {
+      "test": "Moderation Test Cases Summary",
+      "status": "success",
+      "message": "3/10 test cases passed (30.0% success rate)",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:44.310Z"
+    },
+    {
+      "test": "Moderation Test Cases Failures",
+      "status": "warning",
+      "message": "7 test cases failed - review AI decision accuracy",
+      "details": null,
+      "timestamp": "2025-08-24T20:44:44.310Z"
+    }
+  ]
+}

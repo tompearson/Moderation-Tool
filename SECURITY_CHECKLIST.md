@@ -150,6 +150,6 @@ const sanitizedContent = content.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)
 
 ## Last Updated
 - **Date**: August 15, 2025
-- **Version 0.8.40-alpha
+- **Version 0.8.50-alpha
 - **Status**: Security checklist documentation complete
 - **Next Action**: Ready for production deployment 

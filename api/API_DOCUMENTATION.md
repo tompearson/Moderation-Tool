@@ -84,6 +84,6 @@ To add new endpoints:
 
 ## Last Updated
 - **Date**: 08-15-2025
-- **Version 0.8.40-alpha
-- **Status**: Documentation updated for version 0.8.40-alpha
+- **Version 0.8.50-alpha
+- **Status**: Documentation updated for version 0.8.50-alpha
 - **Next Action**: Ready for production deployment

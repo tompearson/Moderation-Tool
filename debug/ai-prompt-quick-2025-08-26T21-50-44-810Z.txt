@@ -1,0 +1,297 @@
+# AI Prompt Debug - quick Analysis
+Generated: 2025-08-26T21:50:44.810Z
+Analysis Type: quick
+Prompt IDs: nextdoor-research
+Total Length: 5103 characters
+
+## Configuration
+{
+  "description": "Quick analysis for immediate moderation decisions",
+  "promptIds": [
+    "nextdoor-research"
+  ],
+  "maxTokens": 100,
+  "temperature": 0.3,
+  "notes": "maxTokens controls AI response length (output). Set to 100 tokens to ensure responses stay within 300 character limit for quick analysis text box."
+}
+
+## Combined Prompt
+# NextDoor Community Moderation Instructions - Research Version
+# Source: staging/NextDoor/research/token-optimized-nextdoor-community-moderation-instructions.json
+
+{
+  "title": "Nextdoor Community Guidelines – Moderation Schema",
+  "description": "Structured rules distilled from Nextdoor’s Community Guidelines for use in automated moderation.",
+  "source": "Nextdoor Community Guidelines",
+  "source_urls": [
+    "https://help.nextdoor.com/s/article/community-guidelines"
+  ],
+  "version_date": "2025-08-24",
+  "principles": {
+    "kindness": "Treat everyone with respect. Personal attacks, harassment, and hate speech are not allowed.",
+    "relevance": "Keep discussions local, neighborly, and relevant to community life.",
+    "safety": "Maintain trust and safety by avoiding harmful, threatening, or exploitative content.",
+    "authenticity": "Use your real identity and share genuine information."
+  },
+  "categories": [
+    {
+      "id": "H1",
+      "title": "Harassment & Hate",
+      "remove_if": [
+        "Targeted harassment, bullying, or abusive behavior.",
+        "Hate speech or derogatory attacks based on race, ethnicity, religion, gender, sexual orientation, disability, or other protected traits."
+      ],
+      "examples": [
+        "Insulting a neighbor by name in a degrading way.",
+        "Using slurs to describe a protected group."
+      ],
+      "refs": [
+        "https://help.nextdoor.com/s/article/community-guidelines#respect"
+      ]
+    },
+    {
+      "id": "M1",
+      "title": "Misinformation",
+      "remove_if": [
+        "False or misleading information that could cause harm (e.g., public health or safety misinformation)."
+      ],
+      "examples": [
+        "Posting that a natural disaster is happening in the area when it is not.",
+        "Claiming a false cure for a medical condition."
+      ],
+      "refs": [
+        "https://help.nextdoor.com/s/article/community-guidelines#trust"
+      ]
+    },
+    {
+      "id": "V1",
+      "title": "Violence & Threats",
+      "remove_if": [
+        "Threats of physical harm or incitement to violence.",
+        "Content glorifying or encouraging violent acts."
+      ],
+      "examples": [
+        "Threatening to harm a neighbor over a dispute.",
+        "Encouraging others to vandalize property."
+      ],
+      "refs": [
+        "https://help.nextdoor.com/s/article/community-guidelines#safety"
+      ]
+    },
+    {
+      "id": "P1",
+      "title": "Privacy Violations",
+      "remove_if": [
+        "Sharing private or personally identifiable information (PII) without consent.",
+        "Posting photos of neighbors without permission in a harmful or harassing context."
+      ],
+      "examples": [
+        "Posting someone’s address and urging neighbors to confront them.",
+        "Sharing a neighbor’s photo to ridicule them."
+      ],
+      "refs": [
+        "https://help.nextdoor.com/s/article/community-guidelines#privacy"
+      ]
+    },
+    {
+      "id": "S1",
+      "title": "Spam & Solicitation",
+      "remove_if": [
+        "Unwanted advertising or spammy promotions.",
+        "Irrelevant solicitations that disrupt neighborhood discussions."
+      ],
+      "allow_if": [
+        "Local business recommendations or event promotions shared in a neighborly manner."
+      ],
+      "examples": [
+        "Posting repetitive ads for non-local services.",
+        "Mass-posting referral links for profit."
+      ],
+      "refs": [
+        "https://help.nextdoor.com/s/article/community-guidelines#spam"
+      ]
+    },
+    {
+      "id": "N1",
+      "title": "Neighborhood Relevance",
+      "remove_if": [
+        "Off-topic political rants, conspiracy theories, or irrelevant national news not tied to local life."
+      ],
+      "examples": [
+        "Posting partisan content unrelated to neighborhood issues.",
+        "Starting arguments about non-local political figures."
+      ],
+      "refs": [
+        "https://help.nextdoor.com/s/article/community-guidelines#relevance"
+      ]
+    }
+  ],
+  "enforcement": {
+    "actions": [
+      "Remove content",
+      "Issue warnings",
+      "Feature limits or temporary restrictions",
+      "Account suspension or removal for repeated violations"
+    ],
+    "considerations": [
+      "Severity, intent, target status (minor/private/public), recency, and risk of harm"
+    ]
+  },
+  "output_contract": {
+    "format": "json_only",
+    "required_fields": ["Decision", "Reason"],
+    "decision_enum": ["Remove", "Keep", "Maybe Remove"],
+    "rules": [
+      "No advice, solutions, or edit suggestions.",
+      "No qualifiers like 'may', 'might', 'consider', 'possibly'.",
+      "No meta-comments about context being insufficient.",
+      "If uncertain, use 'Maybe Remove' but still provide a clear reason.",
+      "Reason must end with a period."
+    ],
+    "example": {
+      "Decision": "Keep",
+      "Reason": "The post shares a personal story about car repair without violating community guidelines."
+    }
+  }
+}
+
+
+## Individual Prompts
+### nextdoor-research
+Length: 4938 chars
+{
+  "title": "Nextdoor Community Guidelines – Moderation Schema",
+  "description": "Structured rules distilled from Nextdoor’s Community Guidelines for use in automated moderation.",
+  "source": "Nextdoor Community Guidelines",
+  "source_urls": [
+    "https://help.nextdoor.com/s/article/community-guidelines"
+  ],
+  "version_date": "2025-08-24",
+  "principles": {
+    "kindness": "Treat everyone with respect. Personal attacks, harassment, and hate speech are not allowed.",
+    "relevance": "Keep discussions local, neighborly, and relevant to community life.",
+    "safety": "Maintain trust and safety by avoiding harmful, threatening, or exploitative content.",
+    "authenticity": "Use your real identity and share genuine information."
+  },
+  "categories": [
+    {
+      "id": "H1",
+      "title": "Harassment & Hate",
+      "remove_if": [
+        "Targeted harassment, bullying, or abusive behavior.",
+        "Hate speech or derogatory attacks based on race, ethnicity, religion, gender, sexual orientation, disability, or other protected traits."
+      ],
+      "examples": [
+        "Insulting a neighbor by name in a degrading way.",
+        "Using slurs to describe a protected group."
+      ],
+      "refs": [
+        "https://help.nextdoor.com/s/article/community-guidelines#respect"
+      ]
+    },
+    {
+      "id": "M1",
+      "title": "Misinformation",
+      "remove_if": [
+        "False or misleading information that could cause harm (e.g., public health or safety misinformation)."
+      ],
+      "examples": [
+        "Posting that a natural disaster is happening in the area when it is not.",
+        "Claiming a false cure for a medical condition."
+      ],
+      "refs": [
+        "https://help.nextdoor.com/s/article/community-guidelines#trust"
+      ]
+    },
+    {
+      "id": "V1",
+      "title": "Violence & Threats",
+      "remove_if": [
+        "Threats of physical harm or incitement to violence.",
+        "Content glorifying or encouraging violent acts."
+      ],
+      "examples": [
+        "Threatening to harm a neighbor over a dispute.",
+        "Encouraging others to vandalize property."
+      ],
+      "refs": [
+        "https://help.nextdoor.com/s/article/community-guidelines#safety"
+      ]
+    },
+    {
+      "id": "P1",
+      "title": "Privacy Violations",
+      "remove_if": [
+        "Sharing private or personally identifiable information (PII) without consent.",
+        "Posting photos of neighbors without permission in a harmful or harassing context."
+      ],
+      "examples": [
+        "Posting someone’s address and urging neighbors to confront them.",
+        "Sharing a neighbor’s photo to ridicule them."
+      ],
+      "refs": [
+        "https://help.nextdoor.com/s/article/community-guidelines#privacy"
+      ]
+    },
+    {
+      "id": "S1",
+      "title": "Spam & Solicitation",
+      "remove_if": [
+        "Unwanted advertising or spammy promotions.",
+        "Irrelevant solicitations that disrupt neighborhood discussions."
+      ],
+      "allow_if": [
+        "Local business recommendations or event promotions shared in a neighborly manner."
+      ],
+      "examples": [
+        "Posting repetitive ads for non-local services.",
+        "Mass-posting referral links for profit."
+      ],
+      "refs": [
+        "https://help.nextdoor.com/s/article/community-guidelines#spam"
+      ]
+    },
+    {
+      "id": "N1",
+      "title": "Neighborhood Relevance",
+      "remove_if": [
+        "Off-topic political rants, conspiracy theories, or irrelevant national news not tied to local life."
+      ],
+      "examples": [
+        "Posting partisan content unrelated to neighborhood issues.",
+        "Starting arguments about non-local political figures."
+      ],
+      "refs": [
+        "https://help.nextdoor.com/s/article/community-guidelines#relevance"
+      ]
+    }
+  ],
+  "enforcement": {
+    "actions": [
+      "Remove content",
+      "Issue warnings",
+      "Feature limits or temporary restrictions",
+      "Account suspension or removal for repeated violations"
+    ],
+    "considerations": [
+      "Severity, intent, target status (minor/private/public), recency, and risk of harm"
+    ]
+  },
+  "output_contract": {
+    "format": "json_only",
+    "required_fields": ["Decision", "Reason"],
+    "decision_enum": ["Remove", "Keep", "Maybe Remove"],
+    "rules": [
+      "No advice, solutions, or edit suggestions.",
+      "No qualifiers like 'may', 'might', 'consider', 'possibly'.",
+      "No meta-comments about context being insufficient.",
+      "If uncertain, use 'Maybe Remove' but still provide a clear reason.",
+      "Reason must end with a period."
+    ],
+    "example": {
+      "Decision": "Keep",
+      "Reason": "The post shares a personal story about car repair without violating community guidelines."
+    }
+  }
+}
+

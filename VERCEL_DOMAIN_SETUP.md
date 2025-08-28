@@ -290,6 +290,6 @@ vercel project inspect
 
 ## Last Updated
 - **Date**: August 15, 2025
-- **Version 0.8.40-alpha
+- **Version 0.8.50-alpha
 - **Status**: Vercel domain setup documentation complete
 - **Next Action**: Ready for production deployment 

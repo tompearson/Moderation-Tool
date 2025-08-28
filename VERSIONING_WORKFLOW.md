@@ -57,21 +57,21 @@ npm run dev:separate
 3. **Tag should match the version in both `package.json` and `public/version.js`**
 4. **Restart dev server after version changes** to see frontend updates
 
-## **Example for Next Version 0.8.40-alpha):**
+## **Example for Next Version 0.8.50-alpha):**
 
 ```bash
 # 1. Bump version
 npm run bump-patch
 
-# 2. Verify both files show 0.8.40-alpha
+# 2. Verify both files show 0.8.50-alpha
 # 3. Add and commit
 git add package.json package-lock.json public/version.js README.md postman_collection.json postman_collection_production.json
-git commit -m "chore: bump version to 0.8.40-alpha"
+git commit -m "chore: bump version to 0.8.50-alpha"
 
 # 4. Create and push tag
-git tag v0.8.40-alpha
+git tag v0.8.50-alpha
 git push origin master
-git push origin v0.8.40-alpha
+git push origin v0.8.50-alpha
 
 # 5. Restart server and verify frontend
 npm run dev:separate
@@ -132,6 +132,6 @@ This ensures the frontend always shows the correct version that matches our git 
 
 ## Last Updated
 - **Date**: August 15, 2025
-- **Version 0.8.40-alpha
+- **Version 0.8.50-alpha
 - **Status**: Versioning workflow documentation complete
 - **Next Action**: Ready for production deployment 

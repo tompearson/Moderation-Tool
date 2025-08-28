@@ -153,7 +153,7 @@ This guide will help you import and set up the Community Moderation API in Postm
 
 ## Last Updated
 - **Date**: August 15, 2025
-- **Version 0.8.40-alpha
+- **Version 0.8.50-alpha
 - **Status**: Postman setup documentation complete
 - **Next Action**: Ready for production deployment
 
@@ -165,4 +165,4 @@ This guide will help you import and set up the Community Moderation API in Postm
 
 ---
 
-**Note**: This API is currently in development (v0.8.40-alpha). The endpoints and response formats may change in future versions. 
+**Note**: This API is currently in development (v0.8.50-alpha). The endpoints and response formats may change in future versions. 

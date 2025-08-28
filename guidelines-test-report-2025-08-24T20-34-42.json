@@ -1,0 +1,191 @@
+{
+  "timestamp": "2025-08-24T20:34:42.433Z",
+  "totalTests": 26,
+  "passed": 24,
+  "failed": 0,
+  "warnings": 2,
+  "details": [
+    {
+      "test": "AI Config File",
+      "status": "success",
+      "message": "AI configuration file loaded successfully",
+      "details": null,
+      "timestamp": "2025-08-24T20:34:42.438Z"
+    },
+    {
+      "test": "Prompt Configuration",
+      "status": "success",
+      "message": "1 prompts configured",
+      "details": null,
+      "timestamp": "2025-08-24T20:34:42.439Z"
+    },
+    {
+      "test": "Prompt File: nextdoor-research",
+      "status": "success",
+      "message": "File exists at staging/NextDoor/research/token-optimized-nextdoor-community-moderation-instructions.json",
+      "details": null,
+      "timestamp": "2025-08-24T20:34:42.439Z"
+    },
+    {
+      "test": "Analysis Types",
+      "status": "success",
+      "message": "2 analysis types configured: quick, detailed",
+      "details": null,
+      "timestamp": "2025-08-24T20:34:42.440Z"
+    },
+    {
+      "test": "API Key: GOOGLE_GENERATIVE_AI_API_KEY",
+      "status": "warning",
+      "message": "Not set",
+      "details": null,
+      "timestamp": "2025-08-24T20:34:42.440Z"
+    },
+    {
+      "test": "API Key: GEMINI_API_KEY",
+      "status": "success",
+      "message": "Found (39 characters)",
+      "details": null,
+      "timestamp": "2025-08-24T20:34:42.440Z"
+    },
+    {
+      "test": "API Key: GOOGLE_API_KEY",
+      "status": "warning",
+      "message": "Not set",
+      "details": null,
+      "timestamp": "2025-08-24T20:34:42.440Z"
+    },
+    {
+      "test": "API Key Status",
+      "status": "success",
+      "message": "At least one API key is available",
+      "details": null,
+      "timestamp": "2025-08-24T20:34:42.440Z"
+    },
+    {
+      "test": "NODE_ENV",
+      "status": "success",
+      "message": "Set to: development",
+      "details": null,
+      "timestamp": "2025-08-24T20:34:42.440Z"
+    },
+    {
+      "test": "GUIDELINES_URL",
+      "status": "success",
+      "message": "Set to: https://gist.githubusercontent.com/tompearson/87c37f055ee8220b421ce78c668c093b/raw/NextDoor-Guidelines-content.md",
+      "details": null,
+      "timestamp": "2025-08-24T20:34:42.441Z"
+    },
+    {
+      "test": "Directory: protected/prompts",
+      "status": "success",
+      "message": "Directory exists",
+      "details": null,
+      "timestamp": "2025-08-24T20:34:42.441Z"
+    },
+    {
+      "test": "Directory: protected/prompts/staging",
+      "status": "success",
+      "message": "Directory exists",
+      "details": null,
+      "timestamp": "2025-08-24T20:34:42.441Z"
+    },
+    {
+      "test": "Directory: protected/prompts/staging/NextDoor",
+      "status": "success",
+      "message": "Directory exists",
+      "details": null,
+      "timestamp": "2025-08-24T20:34:42.441Z"
+    },
+    {
+      "test": "Directory: protected/prompts/staging/NextDoor/json",
+      "status": "success",
+      "message": "Directory exists",
+      "details": null,
+      "timestamp": "2025-08-24T20:34:42.442Z"
+    },
+    {
+      "test": "Directory: api",
+      "status": "success",
+      "message": "Directory exists",
+      "details": null,
+      "timestamp": "2025-08-24T20:34:42.442Z"
+    },
+    {
+      "test": "Directory: api/utils",
+      "status": "success",
+      "message": "Directory exists",
+      "details": null,
+      "timestamp": "2025-08-24T20:34:42.442Z"
+    },
+    {
+      "test": "Directory: public",
+      "status": "success",
+      "message": "Directory exists",
+      "details": null,
+      "timestamp": "2025-08-24T20:34:42.442Z"
+    },
+    {
+      "test": "File: protected/prompts/ai.json",
+      "status": "success",
+      "message": "File exists",
+      "details": null,
+      "timestamp": "2025-08-24T20:34:42.442Z"
+    },
+    {
+      "test": "File: api/utils/guidelines.js",
+      "status": "success",
+      "message": "File exists",
+      "details": null,
+      "timestamp": "2025-08-24T20:34:42.443Z"
+    },
+    {
+      "test": "File: api/utils/ai.js",
+      "status": "success",
+      "message": "File exists",
+      "details": null,
+      "timestamp": "2025-08-24T20:34:42.443Z"
+    },
+    {
+      "test": "File: package.json",
+      "status": "success",
+      "message": "File exists",
+      "details": null,
+      "timestamp": "2025-08-24T20:34:42.443Z"
+    },
+    {
+      "test": "Cache Status",
+      "status": "success",
+      "message": "Cache initialized: {\n  \"hasCache\": false,\n  \"source\": null,\n  \"age\": null,\n  \"config\": {\n    \"url\": \"https://gist.githubusercontent.com/tompearson/87c37f055ee8220b421ce78c668c093b/raw/NextDoor-Guidelines-content.md\",\n    \"cacheTimeout\": 3600000,\n    \"timeout\": 10000\n  }\n}",
+      "details": null,
+      "timestamp": "2025-08-24T20:34:42.445Z"
+    },
+    {
+      "test": "Guidelines Loading",
+      "status": "success",
+      "message": "Guidelines loaded (957 characters)",
+      "details": null,
+      "timestamp": "2025-08-24T20:34:42.445Z"
+    },
+    {
+      "test": "Display Guidelines",
+      "status": "success",
+      "message": "Display guidelines available (4738 characters)",
+      "details": null,
+      "timestamp": "2025-08-24T20:34:42.533Z"
+    },
+    {
+      "test": "Quick Analysis Prompt",
+      "status": "success",
+      "message": "Built successfully (5681 characters)",
+      "details": null,
+      "timestamp": "2025-08-24T20:34:42.547Z"
+    },
+    {
+      "test": "Detailed Analysis Prompt",
+      "status": "success",
+      "message": "Built successfully (5681 characters)",
+      "details": null,
+      "timestamp": "2025-08-24T20:34:42.552Z"
+    }
+  ]
+}

@@ -24,7 +24,7 @@
 
 ### ✅ Current Working Configuration
 - **Production URL**: https://moderation-assistant-tool.vercel.app/
-- **Version 0.8.40-alpha
+- **Version 0.8.50-alpha
 - **Build**: Vite optimized for Vercel
 - **Routing**: Clean URLs for HTML pages
 
@@ -181,6 +181,6 @@ taskkill /PID [PID] /F
 
 ## Last Updated
 - **Date**: August 15, 2025
-- **Version 0.8.40-alpha
+- **Version 0.8.50-alpha
 - **Status**: Production working with clean URLs, local development working
 - **Next Action**: Ready for production deployment 

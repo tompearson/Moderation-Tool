@@ -6,7 +6,7 @@ This project now uses a centralized version management system to prevent version
 
 ## Current Version
 
-**v0.8.40-alpha** - Successfully deployed to Vercel with clean URLs
+**v0.8.50-alpha** - Successfully deployed to Vercel with clean URLs
 
 ## How It Works
 
@@ -31,19 +31,19 @@ This project now uses a centralized version management system to prevent version
 2. **Run update script** - `npm run update-version`
 3. **Test the application** - Ensure everything works
 4. **Build and deploy** - `npm run build && vercel --prod`
-5. **Commit changes** - `git add . && git commit -m "v0.8.40-alpha: New features"`
-6. **Create git tag** - `git tag v0.8.40-alpha && git push origin v0.8.40-alpha`
+5. **Commit changes** - `git add . && git commit -m "v0.8.50-alpha: New features"`
+6. **Create git tag** - `git tag v0.8.50-alpha && git push origin v0.8.50-alpha`
 
 #### Example Version Update:
 ```javascript
 // In public/version.js
 const VERSION = {
-  number: '0.8.40-alpha',  // ← Change this line
+  number: '0.8.50-alpha',  // ← Change this line
   major: 0,
   minor: 8,                // ← Update these accordingly
   patch: 31,
   prerelease: 'alpha',
-  full: '0.8.40-alpha'     // ← This will be auto-generated
+  full: '0.8.50-alpha'     // ← This will be auto-generated
 };
 ```
 
@@ -60,7 +60,7 @@ The `npm run update-version` script automatically:
 
 The version follows semantic versioning:
 - **Major.Minor.Patch-Prerelase**
-- Example: `0.8.40-alpha`
+- Example: `0.8.50-alpha`
 - **Major**: Breaking changes
 - **Minor**: New features, backward compatible
 - **Patch**: Bug fixes, backward compatible
@@ -69,7 +69,7 @@ The version follows semantic versioning:
 ## Production Deployment
 
 ### Current Status
-- ✅ **Version 0.8.40-alpha
+- ✅ **Version 0.8.50-alpha
 - ✅ **Production URL**: https://moderation-assistant-tool.vercel.app/
 - ✅ **Deployment**: Working with clean URLs
 - ✅ **Build Process**: Optimized for Vercel
@@ -119,6 +119,6 @@ The version follows semantic versioning:
 
 ## Last Updated
 - **Date**: August 15, 2025
-- **Version 0.8.40-alpha
+- **Version 0.8.50-alpha
 - **Status**: Version management system working with centralized control
 - **Next Action**: Ready for production deployment 
