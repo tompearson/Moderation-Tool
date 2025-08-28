@@ -1,0 +1,247 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏘️ Nextdoor Moderation Criteria - Community Moderation Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+        
+        .sidebar h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        .nav-links {
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav-links a {
+            display: block;
+            padding: 0.75rem 1rem;
+            text-decoration: none;
+            color: #555;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            background: #3498db;
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .nav-links a.active {
+            background: #3498db;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .main-content {
+            flex: 1;
+            background: white;
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .main-content h1 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            font-size: 2.5rem;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .main-content h2 {
+            color: #34495e;
+            margin: 2rem 0 1rem 0;
+            font-size: 1.8rem;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 0.5rem;
+        }
+        
+        .main-content h3 {
+            color: #34495e;
+            margin: 1.5rem 0 1rem 0;
+            font-size: 1.4rem;
+        }
+        
+        .main-content p {
+            margin-bottom: 1rem;
+            color: #555;
+        }
+        
+        .main-content ul, .main-content ol {
+            margin: 1rem 0 1rem 2rem;
+            color: #555;
+        }
+        
+        .main-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .main-content code {
+            background: #f8f9fa;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #e74c3c;
+        }
+        
+        .main-content pre {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .main-content pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .main-content blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 1rem;
+            margin: 1rem 0;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .main-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        
+        .main-content th, .main-content td {
+            border: 1px solid #ecf0f1;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        
+        .main-content th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .main-content tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: white;
+            border: none;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.1rem;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #ecf0f1;
+            color: #7f8c8d;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            
+            .sidebar {
+                width: 100%;
+                position: static;
+            }
+            
+            .main-content {
+                padding: 2rem;
+            }
+            
+            .main-content h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h3>📚 Documentation</h3>
+            <ul class="nav-links">
+                <li><a href="Facebook1.html">Facebook1</a></li><li><a href="Facebook2.html">Facebook2</a></li><li><a href="Nexdoor.html" class="active">Nexdoor</a></li>
+            </ul>
+        </div>
+        
+        <div class="main-content">
+            <div class="header">
+                <h1>🏘️ Nextdoor Moderation Criteria</h1>
+                <p>Community Moderation Tool Documentation</p>
+            </div>
+            
+            <p>Certainly! Here's the <strong>Nextdoor Moderation Criteria</strong> converted into Markdown format for easy viewing and editing:</p><br><br><p>---</p><br><br><h1>🏘️ Nextdoor Moderation Criteria</h1><br><br><p><strong>Community guidelines for respectful, inclusive, and constructive interactions</strong></p><br><br><p><em>Current version: Loading</em></p><br><br><p><em>Last updated: August 15, 2025</em></p><br><br><p><a href="https://moderation-assistant-tool.vercel.app/">← Back to Main App</a></p><br><br><p>---</p><br><br><h2>Our Commitment to Our Neighbors</h2><br><br><p>Nextdoor is committed to cultivating a welcoming and inclusive environment for all neighbors. We believe that everyone deserves to feel safe, respected, and heard. Discrimination, hate, and harassment have no place on our platform.</p><br><br><p>We are committed to:</p><br><br><ul><li>Ensuring that everyone has equal access to Nextdoor, regardless of race, ethnicity, national origin, gender, gender identity, sexual orientation, religion, immigration status, ability, or any other protected characteristic.</li></ul><br><ul><li>Removing content and behavior that violates this commitment.</li></ul><br><ul><li>Supporting moderators and community members in upholding these values.</li></ul><br><br><p>---</p><br><br><h2>1. Be Respectful to Your Neighbors</h2><br><br><p>Respect is the foundation of a healthy community. All members are expected to treat each other with kindness and civility.</p><br><br><h3>Prohibited Behavior</h3><br><br><ul><li>Personal attacks, name-calling, or insults</li></ul><br><ul><li>Harassment or bullying</li></ul><br><ul><li>Profanity or vulgar language</li></ul><br><ul><li>Content that shames, belittles, or mocks others</li></ul><br><ul><li>Demeaning or disrespectful comments about someone's appearance, beliefs, or lifestyle</li></ul><br><br><h3>✅ Additional Notes</h3><br><br><ul><li>Disagreements are allowed, but they must be expressed respectfully.</li></ul><br><ul><li>Humor and sarcasm should not be used to belittle others.</li></ul><br><ul><li>Posts that provoke or escalate conflict may be removed.</li></ul><br><br><p>---</p><br><br><h2>2. Do Not Discriminate</h2><br><br><p>Discrimination of any kind is strictly prohibited.</p><br><br><h3>Protected Characteristics</h3><br><br><p>Members may not discriminate based on:</p><br><br><ul><li>Race or ethnicity</li></ul><br><ul><li>National origin</li></ul><br><ul><li>Gender or gender identity</li></ul><br><ul><li>Sexual orientation</li></ul><br><ul><li>Religion</li></ul><br><ul><li>Immigration status</li></ul><br><ul><li>Ability or disability</li></ul><br><ul><li>Age</li></ul><br><ul><li>Veteran status</li></ul><br><ul><li>Any other legally protected status</li></ul><br><br><h3>Examples of Violations</h3><br><br><ul><li>Derogatory comments about a group of people</li></ul><br><ul><li>Stereotyping or generalizing based on race, religion, or other protected traits</li></ul><br><ul><li>Advocating for exclusion or segregation</li></ul><br><ul><li>Hate speech or coded language that targets marginalized groups</li></ul><br><br><p>---</p><br><br><h2>3. Be Helpful in Conversations</h2><br><br><p>Nextdoor is a place for constructive and neighborly dialogue.</p><br><br><h3>✅ Best Practices</h3><br><br><ul><li>Stay on topic and contribute meaningfully</li></ul><br><ul><li>Share accurate information and avoid spreading rumors</li></ul><br><ul><li>Use clear and respectful language</li></ul><br><ul><li>Ask questions and offer support when appropriate</li></ul><br><br><h3>Prohibited Behavior</h3><br><br><ul><li>Hijacking threads with unrelated content</li></ul><br><ul><li>Repetitive or spammy posts</li></ul><br><ul><li>Misinformation or conspiracy theories</li></ul><br><ul><li>Overly negative or cynical commentary that derails discussion</li></ul><br><br><p>---</p><br><br><h2>4. Use Your True Identity</h2><br><br><p>Nextdoor is built on trust, and that starts with authenticity.</p><br><br><h3>✅ Requirements</h3><br><br><ul><li>Use your real name and address</li></ul><br><ul><li>Do not impersonate others</li></ul><br><ul><li>Do not create multiple accounts</li></ul><br><ul><li>Do not use fake or misleading profile information</li></ul><br><br><h3>Violations Include</h3><br><br><ul><li>Pseudonyms or nicknames in place of real names</li></ul><br><ul><li>Accounts created to evade moderation</li></ul><br><ul><li>Misrepresentation of identity or location</li></ul><br><br><p>---</p><br><br><h2>5. Do Not Engage in Harmful Activity</h2><br><br><p>Safety is a top priority. Harmful behavior will not be tolerated.</p><br><br><h3>Prohibited Actions</h3><br><br><ul><li>Threats of violence or intimidation</li></ul><br><ul><li>Encouraging self-harm or suicide</li></ul><br><ul><li>Sharing private information without consent (doxxing)</li></ul><br><ul><li>Promoting illegal activity</li></ul><br><ul><li>Posting graphic or violent content</li></ul><br><ul><li>Scams, fraud, or deceptive practices</li></ul><br><br><h3>✅ Additional Notes</h3><br><br><ul><li>Content that glorifies or trivializes harm may be removed.</li></ul><br><ul><li>Moderators may escalate serious threats to Nextdoor staff or law enforcement.</li></ul><br><br><p>---</p><br><br><h2>6. Best Practices for For Sale & Free Posts</h2><br><br><p>The For Sale & Free section is for neighborly exchange of goods and services.</p><br><br><h3>✅ Guidelines</h3><br><br><ul><li>Include clear photos and descriptions</li></ul><br><ul><li>Set a fair and honest price</li></ul><br><ul><li>Indicate pickup or delivery options</li></ul><br><ul><li>Mark items as sold or taken when no longer available</li></ul><br><br><h3>Prohibited Content</h3><br><br><ul><li>Counterfeit or illegal items</li></ul><br><ul><li>Weapons, drugs, or adult content</li></ul><br><ul><li>Spam or promotional posts</li></ul><br><ul><li>Misleading listings or bait-and-switch tactics</li></ul><br><ul><li>Profanity: The use of explicit, obscene, or profane language is not tolerated. Keep language clean and appropriate for all audiences.</li></ul><br><br><h3>✅ Tips for Success</h3><br><br><ul><li>Be responsive to inquiries</li></ul><br><ul><li>Communicate clearly and politely</li></ul><br><ul><li>Meet in safe, public locations when exchanging items</li></ul><br><br><p>---</p><br><br><h2>✅ Enforcement & Moderation</h2><br><br><h3>Moderation Actions</h3><br><br><p>Moderators and Nextdoor staff may take action when guidelines are violated. This includes:</p><br><br><ul><li>Removing content</li></ul><br><ul><li>Issuing warnings</li></ul><br><ul><li>Restricting or suspending accounts</li></ul><br><ul><li>Reporting to law enforcement when necessary</li></ul><br><br><h3>Considerations</h3><br><br><p>Moderation decisions are based on:</p><br><br><ul><li>Severity of the violation</li></ul><br><ul><li>Intent and context</li></ul><br><ul><li>Frequency of violations</li></ul><br><ul><li>Impact on the community</li></ul><br><br><p>---</p><br><br><p>Feel free to copy and paste this Markdown into your preferred Markdown viewer or editor for easy access and reference.</p><br>
+            
+            <div class="footer">
+                <p>Generated from Markdown • Community Moderation Tool</p>
+                <p>Last updated: 8/24/2025</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

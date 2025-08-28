@@ -1,0 +1,247 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook (Meta) Community Standards – Moderation Schema - Community Moderation Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+        
+        .sidebar h3 {
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #3498db;
+        }
+        
+        .nav-links {
+            list-style: none;
+        }
+        
+        .nav-links li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .nav-links a {
+            display: block;
+            padding: 0.75rem 1rem;
+            text-decoration: none;
+            color: #555;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-links a:hover {
+            background: #3498db;
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .nav-links a.active {
+            background: #3498db;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .main-content {
+            flex: 1;
+            background: white;
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .main-content h1 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            font-size: 2.5rem;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 0.5rem;
+        }
+        
+        .main-content h2 {
+            color: #34495e;
+            margin: 2rem 0 1rem 0;
+            font-size: 1.8rem;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 0.5rem;
+        }
+        
+        .main-content h3 {
+            color: #34495e;
+            margin: 1.5rem 0 1rem 0;
+            font-size: 1.4rem;
+        }
+        
+        .main-content p {
+            margin-bottom: 1rem;
+            color: #555;
+        }
+        
+        .main-content ul, .main-content ol {
+            margin: 1rem 0 1rem 2rem;
+            color: #555;
+        }
+        
+        .main-content li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .main-content code {
+            background: #f8f9fa;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #e74c3c;
+        }
+        
+        .main-content pre {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        
+        .main-content pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+        
+        .main-content blockquote {
+            border-left: 4px solid #3498db;
+            padding-left: 1rem;
+            margin: 1rem 0;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        .main-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        
+        .main-content th, .main-content td {
+            border: 1px solid #ecf0f1;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        
+        .main-content th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .main-content tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: white;
+            border: none;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.1rem;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid #ecf0f1;
+            color: #7f8c8d;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            
+            .sidebar {
+                width: 100%;
+                position: static;
+            }
+            
+            .main-content {
+                padding: 2rem;
+            }
+            
+            .main-content h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h3>📚 Documentation</h3>
+            <ul class="nav-links">
+                <li><a href="Facebook1.html">Facebook1</a></li><li><a href="Facebook2.html" class="active">Facebook2</a></li><li><a href="Nexdoor.html">Nexdoor</a></li>
+            </ul>
+        </div>
+        
+        <div class="main-content">
+            <div class="header">
+                <h1>Facebook (Meta) Community Standards – Moderation Schema</h1>
+                <p>Community Moderation Tool Documentation</p>
+            </div>
+            
+            <h1>Facebook (Meta) Community Standards – Moderation Schema</h1><br><br><p><strong>Description:</strong> Structured rules distilled from Meta’s Community Standards for use in automated moderation.  </p><br><p><strong>Source:</strong> <a href="https://transparency.meta.com/policies/community-standards/">Meta Transparency Center</a>  </p><br><p><strong>Version Date:</strong> 2025-08-24  </p><br><br><p>---</p><br><br><h2>Principles</h2><br><br><ul><li><strong>Expression:</strong> Enable expression while protecting safety and dignity.  </li></ul><br><ul><li><strong>Equity:</strong> Heightened protections for minors and private individuals.  </li></ul><br><ul><li><strong>Context:</strong> Consider context for newsworthy, educational, or counter-speech allowances.  </li></ul><br><br><p>---</p><br><br><h2>Global Allowances</h2><br><br><ul><li><strong>Newsworthy:</strong> Content may be allowed if newsworthy and in the public interest, with warning screens when appropriate.  </li></ul><br><ul><li><strong>Counter-Speech:</strong> Contextual counterspeech or condemnation of harmful conduct can be allowed.  </li></ul><br><ul><li><strong>Awareness:</strong> Sharing experiences of abuse or harassment to raise awareness can be allowed if non-glorifying.  </li></ul><br><br><p>---</p><br><br><h2>Content Categories</h2><br><br><h3>V1 – Violence and Incitement</h3><br><p><strong>Remove if:</strong>  </p><br><ul><li>Credible threats of violence or serious harm against a person or group.  </li></ul><br><ul><li>Calls for violence, incitement, or instructions to commit violence.  </li></ul><br><ul><li>Admissions or advocacy of violent criminal acts.  </li></ul><br><br><p><strong>Examples:</strong>  </p><br><ul><li>"We should bomb that school tomorrow."  </li></ul><br><ul><li>Instructions for making a weapon to harm others.  </li></ul><br><br><p><a href="https://transparency.meta.com/policies/community-standards/violence-incitement/">Reference</a></p><br><br><p>---</p><br><br><h3>D1 – Dangerous Individuals & Organizations</h3><br><p><strong>Remove if:</strong>  </p><br><ul><li>Praise, support, or representation of designated dangerous organizations or individuals.  </li></ul><br><ul><li>Coordination, recruitment, or funding for extremist/terror activities.  </li></ul><br><br><p><strong>Examples:</strong>  </p><br><ul><li>Posting logos of a terrorist organization with supportive captions.  </li></ul><br><ul><li>Fundraising for sanctioned extremist groups.  </li></ul><br><br><p><a href="https://transparency.meta.com/policies/community-standards/dangerous-individuals-organizations/">Reference</a></p><br><br><p>---</p><br><br><h3>H1 – Hateful Conduct</h3><br><p><strong>Remove if:</strong>  </p><br><ul><li>Direct attacks against protected characteristics (race, religion, sexual orientation, gender identity, disability, nationality).  </li></ul><br><ul><li>Dehumanizing, inferiority, or calls for exclusion targeting protected classes.  </li></ul><br><br><p><strong>Examples:</strong>  </p><br><ul><li>Calling immigrants "animals" in a derogatory sense.  </li></ul><br><ul><li>Advocating exclusion of a religion from public spaces.  </li></ul><br><br><p><a href="https://transparency.meta.com/policies/community-standards/hate-speech/">Reference</a></p><br><br><p>---</p><br><br><h3>B1 – Bullying & Harassment</h3><br><p><strong>Remove if:</strong>  </p><br><ul><li>Targeted insults or degrading attacks at private individuals or minors.  </li></ul><br><ul><li>Sexual harassment or unwanted sexual remarks.  </li></ul><br><ul><li>Coordinated harassment, pile-ons, or repeated unwanted contact.  </li></ul><br><ul><li>Doxxing: sharing or threatening to share private info.  </li></ul><br><ul><li>Manipulated media to ridicule or dehumanize.  </li></ul><br><br><p><strong>Heightened Protection:</strong> minors, private individuals, involuntary public figures  </p><br><br><p><strong>Examples:</strong>  </p><br><ul><li>Posting altered photos to mock a classmate.  </li></ul><br><ul><li>Publishing a minor’s home address with threats.  </li></ul><br><br><p><a href="https://transparency.meta.com/policies/community-standards/bullying-harassment/">Reference</a></p><br><br><p>---</p><br><br><h3>S1 – Suicide & Self-Injury</h3><br><p><strong>Remove if:</strong>  </p><br><ul><li>Content encouraging, instructing, or praising suicide or self-harm.  </li></ul><br><br><p><strong>Allow if:</strong>  </p><br><ul><li>Non-graphic self-harm discussion seeking support or resources.  </li></ul><br><br><p><strong>Examples:</strong>  </p><br><ul><li>Posts instructing ways to commit suicide.  </li></ul><br><ul><li>Images glorifying self-harm scars.  </li></ul><br><br><p><a href="https://transparency.meta.com/policies/community-standards/suicide-self-injury/">Reference</a></p><br><br><p>---</p><br><br><h3>CSE1 – Child Sexual Exploitation, Abuse & Nudity</h3><br><p><strong>Remove if:</strong>  </p><br><ul><li>Any sexualized content involving minors, including implied sexualization.  </li></ul><br><ul><li>Solicitation of minors or grooming behaviors.  </li></ul><br><br><p><strong>Escalate:</strong> Report to appropriate authorities when required.  </p><br><br><p><strong>Examples:</strong>  </p><br><ul><li>Sexualized cartoon of a child.  </li></ul><br><ul><li>Soliciting private chats with minors.  </li></ul><br><br><p><a href="https://transparency.meta.com/policies/community-standards/child-sexual-exploitation-abuse-nudity/">Reference</a></p><br><br><p>---</p><br><br><h3>N1 – Adult Sexual Content & Nudity</h3><br><p><strong>Remove if:</strong>  </p><br><ul><li>Explicit sexual activity or pornographic content.  </li></ul><br><ul><li>Non-consensual intimate imagery or threats to share it.  </li></ul><br><br><p><strong>Allow if:</strong>  </p><br><ul><li>Non-sexual nudity in art, health, or breastfeeding contexts.  </li></ul><br><br><p><strong>Examples:</strong>  </p><br><ul><li>Posting pornographic videos.  </li></ul><br><ul><li>Threatening to leak someone’s intimate photos.  </li></ul><br><br><p><a href="https://transparency.meta.com/policies/community-standards/adult-nudity-sexual-activity/">Reference</a></p><br><br><p>---</p><br><br><h3>HE1 – Human Exploitation</h3><br><p><strong>Remove if:</strong>  </p><br><ul><li>Content facilitating trafficking, sexual exploitation, or forced labor.  </li></ul><br><ul><li>Offers/requests for commercial sexual services.  </li></ul><br><br><p><strong>Examples:</strong>  </p><br><ul><li>Posts advertising human trafficking.  </li></ul><br><ul><li>Offering sexual services for money.  </li></ul><br><br><p><a href="https://transparency.meta.com/policies/community-standards/human-exploitation/">Reference</a></p><br><br><p>---</p><br><br><h3>P1 – Privacy Violations & Image Privacy Rights</h3><br><p><strong>Remove if:</strong>  </p><br><ul><li>Sharing personally identifiable info (PII) or sensitive records without consent.  </li></ul><br><ul><li>Non-consensual imagery, including humiliating deepfakes.  </li></ul><br><br><p><strong>Examples:</strong>  </p><br><ul><li>Sharing someone’s government ID without consent.  </li></ul><br><ul><li>Posting a deepfake video to shame a colleague.  </li></ul><br><br><p><a href="https://transparency.meta.com/policies/community-standards/privacy-violations/">Reference</a></p><br><br><p>---</p><br><br><h3>IP1 – Intellectual Property</h3><br><p><strong>Remove if:</strong>  </p><br><ul><li>Reported or corroborated copyright or trademark infringement.  </li></ul><br><br><p><strong>Examples:</strong>  </p><br><ul><li>Uploading movies without rights.  </li></ul><br><ul><li>Selling counterfeit branded clothing.  </li></ul><br><br><p><a href="https://transparency.meta.com/policies/community-standards/intellectual-property/">Reference</a></p><br><br><p>---</p><br><br><h3>F1 – Fraud, Deception & Spam</h3><br><p><strong>Remove if:</strong>  </p><br><ul><li>Scams, phishing, or impersonation for fraud.  </li></ul><br><ul><li>Mass posting, engagement bait, or deceptive amplification.  </li></ul><br><br><p><strong>Examples:</strong>  </p><br><ul><li>Fake giveaways requiring credit card numbers.  </li></ul><br><ul><li>Bots posting the same ad across multiple groups.  </li></ul><br><br><p><a href="https://transparency.meta.com/policies/community-standards/fraud-deception-spam/">Reference</a></p><br><br><p>---</p><br><br><h3>M1 – Misinformation</h3><br><p><strong>Remove if:</strong>  </p><br><ul><li>Content that could contribute to imminent harm (e.g., false dangerous health claims).  </li></ul><br><br><p><strong>Reduce or Label if:</strong>  </p><br><ul><li>Other misinformation may be downranked, labeled, or fact-checked per policy.  </li></ul><br><br><p><strong>Examples:</strong>  </p><br><ul><li>False claims about drinking bleach curing disease.  </li></ul><br><ul><li>Election-day false info about polling places.  </li></ul><br><br><p><a href="https://transparency.meta.com/policies/community-standards/misinformation/">Reference</a></p><br><br><p>---</p><br><br><h3>CIV1 – Civic Integrity & Elections</h3><br><p><strong>Remove if:</strong>  </p><br><ul><li>Content that interferes with civic processes, misrepresents voting, or intimidates participants.  </li></ul><br><br><p><strong>Examples:</strong>  </p><br><ul><li>Telling voters they can cast ballots via text.  </li></ul><br><ul><li>Threatening violence against election officials.  </li></ul><br><br><p><a href="https://transparency.meta.com/policies/community-standards/civic-integrity/">Reference</a></p><br><br><p>---</p><br><br><h3>RG1 – Restricted Goods & Services</h3><br><p><strong>Remove if:</strong>  </p><br><ul><li>Trade/sale of firearms, certain drugs, or prohibited goods/services.  </li></ul><br><ul><li>Attempts to buy/sell regulated items outside allowed contexts.  </li></ul><br><br><p><strong>Examples:</strong>  </p><br><ul><li>Selling firearms directly on Marketplace.  </li></ul><br><ul><li>Offering prescription drugs without authorization.  </li></ul><br><br><p><a href="https://transparency.meta.com/policies/community-standards/restricted-goods-services/">Reference</a></p><br><br><p>---</p><br><br><h3>CR1 – Coordinating Harm or Criminal Activity</h3><br><p><strong>Remove if:</strong>  </p><br><ul><li>Facilitation, admission, or instruction for non-violent criminal activity.  </li></ul><br><ul><li>Harmful conspiracies encouraging real-world harm.  </li></ul><br><br><p><strong>Examples:</strong>  </p><br><ul><li>Organizing property theft rings.  </li></ul><br><ul><li>Groups encouraging conspiracy-driven violence.  </li></ul><br><br><p><a href="https://transparency.meta.com/policies/community-standards/criminal-activity/">Reference</a></p><br><br><p>---</p><br><br><h3>A1 – Authenticity & Identity Misrepresentation</h3><br><p><strong>Remove if:</strong>  </p><br><ul><li>Impersonation of individuals or entities.  </li></ul><br><ul><li>Inauthentic behavior, including coordinated networks.  </li></ul><br><br><p><strong>Examples:</strong>  </p><br><ul><li>Creating fake accounts pretending to be celebrities.  </li></ul><br><ul><li>Running multiple pages to boost content artificially.  </li></ul><br><br><p><a href="https://transparency.meta.com/policies/community-standards/authentic-identity/">Reference</a></p><br><br><p>---</p><br><br><h3>VG1 – Violent & Graphic Content</h3><br><p><strong>Remove if:</strong>  </p><br><ul><li>Gratuitous or glorifying depictions of extreme gore or injury.  </li></ul><br><br><p><strong>Allow if:</strong>  </p><br><ul><li>Newsworthy or condemning context with warning screens.  </li></ul><br><br><p><strong>Examples:</strong>  </p><br><ul><li>Videos glorifying decapitations.  </li></ul><br><ul><li>Posting gore images for shock value.  </li></ul><br><br><p><a href="https://transparency.meta.com/policies/community-standards/violent-graphic-content/">Reference</a></p><br><br><p>---</p><br><br><h2>Enforcement</h2><br><br><p><strong>Actions:</strong>  </p><br><ul><li>Remove content  </li></ul><br><ul><li>Feature limits or temporary restrictions  </li></ul><br><ul><li>Account suspension or termination  </li></ul><br><ul><li>Referral to law enforcement when legally required  </li></ul><br><br><p><strong>Considerations:</strong>  </p><br><ul><li>Severity, intent, target status (minor/private/public), recency, and risk of harm  </li></ul><br><br><p>---</p><br><br><h2>Output Contract for Automated Moderation</h2><br><br><ul><li><strong>Format:</strong> JSON only  </li></ul><br><ul><li><strong>Required Fields:</strong> <code>Decision</code>, <code>Reason</code>  </li></ul><br><ul><li><strong>Decision Options:</strong> <code>Remove</code>, <code>Keep</code>, <code>Maybe Remove</code>  </li></ul><br><ul><li><strong>Rules:</strong>  </li></ul><br><p>  - No advice, solutions, or edit suggestions.  </p><br><p>  - No qualifiers like "may", "might", "consider", "possibly".  </p><br><p>  - Reason <strong>must end with a period</strong>.  </p><br><br><p><strong>Example:</strong>  </p><br><p>```json</p><br><p>{</p><br><p>  "Decision": "Remove",</p><br><p>  "Reason": "Contains targeted harassment and doxxing against a private individual."</p><br><p>}</p><br>
+            
+            <div class="footer">
+                <p>Generated from Markdown • Community Moderation Tool</p>
+                <p>Last updated: 8/24/2025</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moderation Guide: Public Safety vs. Public Shaming</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 3px solid #6f42c1;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #6f42c1;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .version-info {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            color: #666;
+        }
+
+        .nav {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .nav a {
+            color: #6f42c1;
+            text-decoration: none;
+            margin: 0 15px;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .nav a:hover {
+            background-color: #e9ecef;
+        }
+
+        .content h2 {
+            color: #6f42c1;
+            font-size: 1.8em;
+            margin: 30px 0 15px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .content h3 {
+            color: #495057;
+            font-size: 1.4em;
+            margin: 25px 0 12px 0;
+        }
+
+        .content p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .content ul {
+            margin: 15px 0 15px 30px;
+        }
+
+        .content li {
+            margin-bottom: 8px;
+        }
+
+        .philosophy {
+            background-color: #e3f2fd;
+            border: 1px solid #bbdefb;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .philosophy h4 {
+            color: #1565c0;
+            margin-bottom: 10px;
+        }
+
+        .moderator-prompts {
+            background-color: #fff3e0;
+            border: 1px solid #ffcc02;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .moderator-prompts h4 {
+            color: #e65100;
+            margin-bottom: 10px;
+        }
+
+        .allow {
+            background-color: #e8f5e8;
+            border: 1px solid #c8e6c9;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .allow h4 {
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+
+        .remove {
+            background-color: #ffebee;
+            border: 1px solid #ffcdd2;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .remove h4 {
+            color: #c62828;
+            margin-bottom: 10px;
+        }
+
+        .test-case {
+            background-color: #f3e5f5;
+            border: 1px solid #e1bee7;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .test-case h4 {
+            color: #7b1fa2;
+            margin-bottom: 15px;
+        }
+
+        .test-case table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .test-case th, .test-case td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .test-case th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        .test-case .strict { background-color: #ffebee; }
+        .test-case .contextual { background-color: #fff3e0; }
+        .test-case .hybrid { background-color: #e8f5e8; }
+
+        .usage-notes {
+            background-color: #f1f8e9;
+            border: 1px solid #c5e1a5;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .usage-notes h4 {
+            color: #558b2f;
+            margin-bottom: 10px;
+        }
+
+        .table-of-contents {
+            background-color: #f8f9fa;
+            border: 2px solid #6f42c1;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 30px 0;
+        }
+
+        .table-of-contents h3 {
+            color: #6f42c1;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 1.4em;
+        }
+
+        .toc-links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .toc-links a {
+            color: #6f42c1;
+            text-decoration: none;
+            padding: 10px 15px;
+            background-color: white;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .toc-links a:hover {
+            background-color: #6f42c1;
+            color: white;
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(111, 66, 193, 0.3);
+        }
+
+        .emoji {
+            font-size: 1.2em;
+            margin-right: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .nav a {
+                display: block;
+                margin: 5px 0;
+            }
+
+            .test-case table {
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧭 Moderation Guide: Public Safety vs. Public Shaming</h1>
+            <p>Curated with Copilot - August 14, 2025</p>
+        </div>
+
+        <div class="version-info">
+            <p>Current version: <span id="version">Loading...</span></p>
+            <p><em>Last updated: August 15, 2025</em></p>
+        </div>
+
+        <div class="nav">
+            <a href="/">← Back to Main App</a>
+            <a href="/about">About</a>
+            <a href="/community-guidelines">Community Guidelines</a>
+            <a href="/docs">Documentation</a>
+        </div>
+
+        <div class="content">
+            <p>This guide helps moderators navigate the gray area between civic engagement and public shaming—especially when posts involve sensitive topics like homeless encampments or suspected illegal activity. It includes three moderation approaches, prompting questions, and test examples for training.</p>
+
+            <div class="table-of-contents">
+                <h3>📋 Table of Contents</h3>
+                <div class="toc-links">
+                    <a href="#moderation-philosophies">🔀 Moderation Philosophies</a>
+                    <a href="#strict-interpretation">🛑 Option A: Strict Interpretation</a>
+                    <a href="#contextual-interpretation">⚖️ Option B: Contextual Interpretation</a>
+                    <a href="#hybrid-approach">🧪 Option C: Hybrid Approach</a>
+                    <a href="#test-examples">🧪 Moderation Test Examples</a>
+                </div>
+            </div>
+
+            <h2 id="moderation-philosophies">🔀 Moderation Philosophies</h2>
+
+            <h3 id="strict-interpretation">🛑 Option A: Strict Interpretation</h3>
+            <div class="philosophy">
+                <h4>Philosophy</h4>
+                <p>Prioritize protection from public shaming. Posts with geo-tagging or identifying details are removed regardless of tone.</p>
+            </div>
+
+            <div class="moderator-prompts">
+                <h4>🔍 Moderator Prompts</h4>
+                <ul>
+                    <li>Does the post include a specific location (e.g. address, coordinates, nearby landmarks) tied to a complaint or accusation?</li>
+                    <li>Is there any identifying detail (e.g. license plate, tent description, photos of people or property)?</li>
+                    <li>Even if the language is civil, does the post imply wrongdoing or invite judgment?</li>
+                    <li>Would a reasonable reader interpret this as targeting or stigmatizing a person or group?</li>
+                    <li>Is the issue better suited for direct reporting to city officials than public posting?</li>
+                </ul>
+            </div>
+
+            <div class="allow">
+                <h4>✅ Allow Only If</h4>
+                <ul>
+                    <li>The post shares general safety tips or resources without referencing specific locations or individuals.</li>
+                    <li>The post encourages civic engagement without identifying or describing people or places.</li>
+                </ul>
+            </div>
+
+            <div class="remove">
+                <h4>🚫 Remove If</h4>
+                <ul>
+                    <li>Any geo-tagging or identifying detail is present.</li>
+                    <li>The post includes accusations, even if phrased politely.</li>
+                    <li>The subject is a vulnerable population (e.g. homeless individuals) and the tone could be interpreted as stigmatizing.</li>
+                </ul>
+            </div>
+
+            <h3 id="contextual-interpretation">⚖️ Option B: Contextual Interpretation</h3>
+            <div class="philosophy">
+                <h4>Philosophy</h4>
+                <p>Allow posts that are respectful, civic-minded, and avoid identifying individuals. Tone and intent matter.</p>
+            </div>
+
+            <div class="moderator-prompts">
+                <h4>🔍 Moderator Prompts</h4>
+                <ul>
+                    <li>Is the post written in neutral, factual language?</li>
+                    <li>Does it avoid naming individuals or showing identifying details?</li>
+                    <li>Is the purpose clearly civic (e.g. encouraging outreach to officials, raising awareness)?</li>
+                    <li>Are comments respectful and constructive—or are they escalating into shaming or hostility?</li>
+                    <li>Would removing this post silence a legitimate concern, or prevent stigmatization?</li>
+                </ul>
+            </div>
+
+            <div class="allow">
+                <h4>✅ Allow If</h4>
+                <ul>
+                    <li>The post avoids personal identifiers and uses neutral tone.</li>
+                    <li>It encourages civic action (e.g. reporting to city services) rather than public judgment.</li>
+                    <li>Comments remain civil and focused on solutions.</li>
+                </ul>
+            </div>
+
+            <div class="remove">
+                <h4>🚫 Remove If</h4>
+                <ul>
+                    <li>The post includes accusations or identifying details (even if tone is respectful).</li>
+                    <li>Comments escalate into shaming or hostile speculation.</li>
+                    <li>The subject is a vulnerable group and the post risks amplifying stigma.</li>
+                </ul>
+            </div>
+
+            <h3 id="hybrid-approach">🧪 Option C: Hybrid Approach</h3>
+            <div class="philosophy">
+                <h4>Philosophy</h4>
+                <p>Allow posts that meet strict criteria, but monitor and moderate comments to prevent escalation.</p>
+            </div>
+
+            <div class="moderator-prompts">
+                <h4>🔍 Moderator Prompts</h4>
+                <ul>
+                    <li>Does the post meet baseline criteria: neutral tone, no identifiers, civic purpose?</li>
+                    <li>Is the location shared general (e.g. "near Main & 5th") rather than precise?</li>
+                    <li>Are commenters maintaining a respectful tone—or veering into speculation or judgment?</li>
+                    <li>Has the post sparked concern or confusion among neighbors?</li>
+                </ul>
+            </div>
+
+            <div class="allow">
+                <h4>✅ Allow If</h4>
+                <ul>
+                    <li>The post is respectful, avoids identifiers, and encourages civic engagement.</li>
+                    <li>Location is shared only to help neighbors report to officials—not to shame or speculate.</li>
+                    <li>Moderator is prepared to monitor and intervene in comments.</li>
+                </ul>
+            </div>
+
+            <div class="remove">
+                <h4>🚫 Remove or Intervene If</h4>
+                <ul>
+                    <li>Comments begin to include accusations, personal details, or hostile language.</li>
+                    <li>The post is being used as a platform for venting or targeting rather than informing.</li>
+                    <li>The subject is a vulnerable population and the conversation risks stigmatization.</li>
+                </ul>
+            </div>
+
+            <h2 id="test-examples">🧪 Moderation Test Examples</h2>
+
+            <div class="usage-notes">
+                <h4>✅ Usage Notes</h4>
+                <ul>
+                    <li>These test cases are designed to reinforce consistency across moderation styles.</li>
+                    <li>Comments should be evaluated separately from posts when tone diverges.</li>
+                    <li>Use these cases in training, onboarding, or calibration exercises.</li>
+                </ul>
+                <p>Each test case includes:</p>
+                <ul>
+                    <li><strong>Scenario</strong>: A post or comment from the community</li>
+                    <li><strong>Expected Action</strong>: What each moderation style would do</li>
+                    <li><strong>Rationale</strong>: Why that action aligns with the philosophy</li>
+                </ul>
+            </div>
+
+            <div class="test-case">
+                <h4>✅ Test Case 1: Vague Concern Near Landmark</h4>
+                <p><strong>Post</strong>: "Something feels off near the old train station. Lots of people loitering and strange behavior. Just be careful."</p>
+                <table>
+                    <tr>
+                        <th>Moderation Style</th>
+                        <th>Action</th>
+                        <th>Rationale</th>
+                    </tr>
+                    <tr class="strict">
+                        <td>🛑 Strict</td>
+                        <td>🚫 Remove</td>
+                        <td>Mentions a specific location and implies wrongdoing</td>
+                    </tr>
+                    <tr class="contextual">
+                        <td>⚖️ Contextual</td>
+                        <td>✅ Allow</td>
+                        <td>No identifiers; tone is cautious but not accusatory</td>
+                    </tr>
+                    <tr class="hybrid">
+                        <td>🧪 Hybrid</td>
+                        <td>✅ Allow</td>
+                        <td>Location is general; monitor comments for escalation</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="test-case">
+                <h4>✅ Test Case 2: Direct Accusation Without Details</h4>
+                <p><strong>Post</strong>: "Someone in this neighborhood is selling drugs. I've seen shady exchanges but no proof."</p>
+                <table>
+                    <tr>
+                        <th>Moderation Style</th>
+                        <th>Action</th>
+                        <th>Rationale</th>
+                    </tr>
+                    <tr class="strict">
+                        <td>🛑 Strict</td>
+                        <td>🚫 Remove</td>
+                        <td>Implies criminal behavior without evidence</td>
+                    </tr>
+                    <tr class="contextual">
+                        <td>⚖️ Contextual</td>
+                        <td>🚫 Remove</td>
+                        <td>Accusatory tone, even without identifiers</td>
+                    </tr>
+                    <tr class="hybrid">
+                        <td>🧪 Hybrid</td>
+                        <td>🚫 Remove</td>
+                        <td>Risks speculation and stigma without civic value</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="test-case">
+                <h4>✅ Test Case 3: Civic Resource Sharing</h4>
+                <p><strong>Post</strong>: "If you're worried about safety, check out the city's new reporting app. It's a great way to stay involved."</p>
+                <table>
+                    <tr>
+                        <th>Moderation Style</th>
+                        <th>Action</th>
+                        <th>Rationale</th>
+                    </tr>
+                    <tr class="strict">
+                        <td>🛑 Strict</td>
+                        <td>✅ Allow</td>
+                        <td>No identifiers or accusations</td>
+                    </tr>
+                    <tr class="contextual">
+                        <td>⚖️ Contextual</td>
+                        <td>✅ Allow</td>
+                        <td>Encourages civic engagement respectfully</td>
+                    </tr>
+                    <tr class="hybrid">
+                        <td>🧪 Hybrid</td>
+                        <td>✅ Allow</td>
+                        <td>Fully aligned with all criteria</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="test-case">
+                <h4>✅ Test Case 4: Comment Veers into Shaming</h4>
+                <p><strong>Original Post</strong>: "There's a group camping near the library. Just a heads-up."</p>
+                <p><strong>Comment</strong>: "They're disgusting. Always leaving trash and yelling at people."</p>
+                <table>
+                    <tr>
+                        <th>Moderation Style</th>
+                        <th>Action</th>
+                        <th>Rationale</th>
+                    </tr>
+                    <tr class="strict">
+                        <td>🛑 Strict</td>
+                        <td>🚫 Remove Entire Thread</td>
+                        <td>Identifying location + hostile comment</td>
+                    </tr>
+                    <tr class="contextual">
+                        <td>⚖️ Contextual</td>
+                        <td>🚫 Remove Comment, Possibly Post</td>
+                        <td>Comment escalates tone</td>
+                    </tr>
+                    <tr class="hybrid">
+                        <td>🧪 Hybrid</td>
+                        <td>✅ Allow Post, 🚫 Remove Comment</td>
+                        <td>Post is neutral; comment violates tone standards</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="test-case">
+                <h4>✅ Test Case 5: Photo Without Identifiers</h4>
+                <p><strong>Post</strong>: <em>Photo of a park bench</em> "This is where I saw someone passed out yesterday. Not sure what's going on."</p>
+                <table>
+                    <tr>
+                        <th>Moderation Style</th>
+                        <th>Action</th>
+                        <th>Rationale</th>
+                    </tr>
+                    <tr class="strict">
+                        <td>🛑 Strict</td>
+                        <td>🚫 Remove</td>
+                        <td>Implies wrongdoing, location is specific</td>
+                    </tr>
+                    <tr class="contextual">
+                        <td>⚖️ Contextual</td>
+                        <td>🚫 Remove</td>
+                        <td>Tone invites speculation, even without identifiers</td>
+                    </tr>
+                    <tr class="hybrid">
+                        <td>🧪 Hybrid</td>
+                        <td>🚫 Remove</td>
+                        <td>Risks stigmatization and lacks civic purpose</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="test-case">
+                <h4>✅ Test Case 6: Respectful Outreach</h4>
+                <p><strong>Post</strong>: "There's a tent near the trail. If you're concerned, contact outreach services. Let's be kind."</p>
+                <table>
+                    <tr>
+                        <th>Moderation Style</th>
+                        <th>Action</th>
+                        <th>Rationale</th>
+                    </tr>
+                    <tr class="strict">
+                        <td>🛑 Strict</td>
+                        <td>🚫 Remove</td>
+                        <td>Mentions location and vulnerable population</td>
+                    </tr>
+                    <tr class="contextual">
+                        <td>⚖️ Contextual</td>
+                        <td>✅ Allow</td>
+                        <td>Tone is respectful, purpose is civic</td>
+                    </tr>
+                    <tr class="hybrid">
+                        <td>🧪 Hybrid</td>
+                        <td>✅ Allow</td>
+                        <td>Meets criteria; monitor comments if needed</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="test-case">
+                <h4>✅ Test Case 7: Subtle Implication of Criminal Activity</h4>
+                <p><strong>Post</strong>: "I've noticed a lot of people hanging around the corner of 5th and Main late at night. It's making me uneasy."</p>
+                <table>
+                    <tr>
+                        <th>Moderation Style</th>
+                        <th>Action</th>
+                        <th>Rationale</th>
+                    </tr>
+                    <tr class="strict">
+                        <td>🛑 Strict</td>
+                        <td>🚫 Remove</td>
+                        <td>Mentions a specific location and implies wrongdoing</td>
+                    </tr>
+                    <tr class="contextual">
+                        <td>⚖️ Contextual</td>
+                        <td>✅ Allow</td>
+                        <td>No direct accusations; tone is cautious but not inflammatory</td>
+                    </tr>
+                    <tr class="hybrid">
+                        <td>🧪 Hybrid</td>
+                        <td>✅ Allow</td>
+                        <td>Location is specific but does not explicitly accuse anyone; monitor for escalation in comments</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="test-case">
+                <h4>✅ Test Case 8: Sharing a News Article with a Loaded Caption</h4>
+                <p><strong>Post</strong>: <em>Shares a news article about a local crime</em> "This is why our neighborhood is going downhill. We need to do something about these people."</p>
+                <table>
+                    <tr>
+                        <th>Moderation Style</th>
+                        <th>Action</th>
+                        <th>Rationale</th>
+                    </tr>
+                    <tr class="strict">
+                        <td>🛑 Strict</td>
+                        <td>🚫 Remove</td>
+                        <td>Caption is inflammatory and risks targeting specific groups</td>
+                    </tr>
+                    <tr class="contextual">
+                        <td>⚖️ Contextual</td>
+                        <td>🚫 Remove</td>
+                        <td>Tone of the caption invites divisive or harmful discussion</td>
+                    </tr>
+                    <tr class="hybrid">
+                        <td>🧪 Hybrid</td>
+                        <td>🚫 Remove</td>
+                        <td>While the article itself is neutral, the caption violates tone standards</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="test-case">
+                <h4>✅ Test Case 9: Hypothetical Scenario with Negative Implications</h4>
+                <p><strong>Post</strong>: "What if someone set up a tent in front of your house? How would you feel about that?"</p>
+                <table>
+                    <tr>
+                        <th>Moderation Style</th>
+                        <th>Action</th>
+                        <th>Rationale</th>
+                    </tr>
+                    <tr class="strict">
+                        <td>🛑 Strict</td>
+                        <td>🚫 Remove</td>
+                        <td>Hypothetical question invites divisive or inflammatory responses</td>
+                    </tr>
+                    <tr class="contextual">
+                        <td>⚖️ Contextual</td>
+                        <td>🚫 Remove</td>
+                        <td>While not directly accusatory, the tone is provocative and risks escalating tension</td>
+                    </tr>
+                    <tr class="hybrid">
+                        <td>🧪 Hybrid</td>
+                        <td>🚫 Remove</td>
+                        <td>Risks unproductive or harmful discussion without adding civic value</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="test-case">
+                <h4>✅ Test Case 10: Positive Post with a Specific Location</h4>
+                <p><strong>Post</strong>: "Shoutout to the volunteers cleaning up the park near 8th Street! You're making a difference!"</p>
+                <table>
+                    <tr>
+                        <th>Moderation Style</th>
+                        <th>Action</th>
+                        <th>Rationale</th>
+                    </tr>
+                    <tr class="strict">
+                        <td>🛑 Strict</td>
+                        <td>🚫 Remove</td>
+                        <td>Mentions a specific location, even though the tone is positive</td>
+                    </tr>
+                    <tr class="contextual">
+                        <td>⚖️ Contextual</td>
+                        <td>✅ Allow</td>
+                        <td>Positive tone and civic engagement outweigh location mention</td>
+                    </tr>
+                    <tr class="hybrid">
+                        <td>🧪 Hybrid</td>
+                        <td>✅ Allow</td>
+                        <td>Fully aligned with all criteria; no risk of harm or speculation</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="test-case">
+                <h4>✅ Test Case 11: Comment with Veiled Insult</h4>
+                <p><strong>Original Post</strong>: "There's a group of people near the library. Just a heads-up."</p>
+                <p><strong>Comment</strong>: "Well, some people just don't know how to behave in public."</p>
+                <table>
+                    <tr>
+                        <th>Moderation Style</th>
+                        <th>Action</th>
+                        <th>Rationale</th>
+                    </tr>
+                    <tr class="strict">
+                        <td>🛑 Strict</td>
+                        <td>🚫 Remove Entire Thread</td>
+                        <td>Location mention + comment with veiled insult</td>
+                    </tr>
+                    <tr class="contextual">
+                        <td>⚖️ Contextual</td>
+                        <td>🚫 Remove Comment, Possibly Post</td>
+                        <td>Comment escalates tone; post may invite further negativity</td>
+                    </tr>
+                    <tr class="hybrid">
+                        <td>🧪 Hybrid</td>
+                        <td>✅ Allow Post, 🚫 Remove Comment</td>
+                        <td>Post is neutral; comment violates tone standards</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="test-case">
+                <h4>✅ Test Case 12: Sharing a Resource with a Negative Anecdote</h4>
+                <p><strong>Post</strong>: "I saw someone struggling near the bus stop today. If you see this kind of thing, here's a hotline you can call to help."</p>
+                <table>
+                    <tr>
+                        <th>Moderation Style</th>
+                        <th>Action</th>
+                        <th>Rationale</th>
+                    </tr>
+                    <tr class="strict">
+                        <td>🛑 Strict</td>
+                        <td>🚫 Remove</td>
+                        <td>Mentions a specific location and vulnerable population</td>
+                    </tr>
+                    <tr class="contextual">
+                        <td>⚖️ Contextual</td>
+                        <td>✅ Allow</td>
+                        <td>Tone is compassionate and provides a helpful resource</td>
+                    </tr>
+                    <tr class="hybrid">
+                        <td>🧪 Hybrid</td>
+                        <td>✅ Allow</td>
+                        <td>Meets criteria; monitor comments for potential escalation</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="test-case">
+                <h4>✅ Test Case 13: Sarcastic Comment on a Neutral Post</h4>
+                <p><strong>Original Post</strong>: "There's a new community garden opening downtown. Check it out!"</p>
+                <p><strong>Comment</strong>: "Great, another place for people to trash."</p>
+                <table>
+                    <tr>
+                        <th>Moderation Style</th>
+                        <th>Action</th>
+                        <th>Rationale</th>
+                    </tr>
+                    <tr class="strict">
+                        <td>🛑 Strict</td>
+                        <td>🚫 Remove Entire Thread</td>
+                        <td>Sarcastic comment undermines positive post</td>
+                    </tr>
+                    <tr class="contextual">
+                        <td>⚖️ Contextual</td>
+                        <td>🚫 Remove Comment</td>
+                        <td>Comment is unnecessarily negative but post is neutral</td>
+                    </tr>
+                    <tr class="hybrid">
+                        <td>🧪 Hybrid</td>
+                        <td>✅ Allow Post, 🚫 Remove Comment</td>
+                        <td>Post is positive; comment violates tone standards</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="test-case">
+                <h4>✅ Test Case 14: Vague Concern About a Group</h4>
+                <p><strong>Post</strong>: "There's a group of people hanging out near the park. Not sure what they're up to."</p>
+                <table>
+                    <tr>
+                        <th>Moderation Style</th>
+                        <th>Action</th>
+                        <th>Rationale</th>
+                    </tr>
+                    <tr class="strict">
+                        <td>🛑 Strict</td>
+                        <td>🚫 Remove</td>
+                        <td>Mentions a specific location and implies wrongdoing</td>
+                    </tr>
+                    <tr class="contextual">
+                        <td>⚖️ Contextual</td>
+                        <td>🚫 Remove</td>
+                        <td>Tone invites speculation, even without direct accusations</td>
+                    </tr>
+                    <tr class="hybrid">
+                        <td>🧪 Hybrid</td>
+                        <td>🚫 Remove</td>
+                        <td>Risks stigmatization and lacks civic purpose</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="test-case">
+                <h4>✅ Test Case 15: Encouraging Civic Engagement with a Specific Location</h4>
+                <p><strong>Post</strong>: "The city is holding a meeting at the community center on 3rd Street to discuss safety concerns. Let's show up and share our thoughts!"</p>
+                <table>
+                    <tr>
+                        <th>Moderation Style</th>
+                        <th>Action</th>
+                        <th>Rationale</th>
+                    </tr>
+                    <tr class="strict">
+                        <td>🛑 Strict</td>
+                        <td>🚫 Remove</td>
+                        <td>Mentions a specific location, even though the tone is positive</td>
+                    </tr>
+                    <tr class="contextual">
+                        <td>⚖️ Contextual</td>
+                        <td>✅ Allow</td>
+                        <td>Encourages civic engagement respectfully and constructively</td>
+                    </tr>
+                    <tr class="hybrid">
+                        <td>🧪 Hybrid</td>
+                        <td>✅ Allow</td>
+                        <td>Fully aligned with civic purpose; no risk of harm or speculation</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load version from your version.js file
+        fetch('/version.js')
+            .then(response => response.text())
+            .then(data => {
+                // Extract version from the version.js content
+                const versionMatch = data.match(/number:\s*['"]([^'"]+)['"]/);
+                if (versionMatch) {
+                    document.getElementById('version').textContent = versionMatch[1];
+                }
+            })
+            .catch(() => {
+                document.getElementById('version').textContent = 'Unknown';
+            });
+    </script>
+</body>
+</html>

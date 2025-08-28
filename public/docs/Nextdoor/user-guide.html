@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Moderation Tool - User Guide</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            padding-left: 10px;
+            border-left: 4px solid #3498db;
+        }
+        h3 {
+            color: #2c3e50;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+        .last-updated {
+            font-style: italic;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+            padding: 10px;
+            background-color: #ecf0f1;
+            border-radius: 4px;
+        }
+        .intro {
+            background-color: #e8f4fd;
+            padding: 20px;
+            border-radius: 6px;
+            border-left: 4px solid #3498db;
+            margin-bottom: 30px;
+        }
+        .step {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+            border-left: 4px solid #27ae60;
+        }
+        .step-number {
+            background-color: #27ae60;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+        .interface-element {
+            background-color: #fff3cd;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 4px solid #ffc107;
+        }
+        .decision-type {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin: 5px;
+            font-weight: bold;
+        }
+        .allow { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .remove { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .maybe-remove { background-color: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        .debug-feature {
+            background-color: #e2e3e5;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 4px solid #6c757d;
+        }
+        .best-practice {
+            background-color: #d1ecf1;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 4px solid #17a2b8;
+        }
+        .troubleshooting {
+            background-color: #f8d7da;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 4px solid #dc3545;
+        }
+        .disclaimer {
+            background-color: #fff3cd;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 20px 0;
+            border-left: 4px solid #ffc107;
+            border: 2px solid #ffc107;
+        }
+        .tips {
+            background-color: #d4edda;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 4px solid #28a745;
+        }
+        .debug-files {
+            background-color: #e2e3e5;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            border-left: 4px solid #6c757d;
+        }
+        .ready {
+            background-color: #d1ecf1;
+            padding: 20px;
+            border-radius: 6px;
+            margin: 30px 0;
+            border-left: 4px solid #17a2b8;
+            text-align: center;
+        }
+        .interface-screenshot {
+            text-align: center;
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+        .interface-screenshot img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .interface-screenshot p {
+            margin-top: 15px;
+            color: #6c757d;
+            font-style: italic;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin: 8px 0;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #7f8c8d;
+            border-top: 1px solid #ecf0f1;
+        }
+        .nav-buttons {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .nav-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 0 10px;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .nav-button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Community Moderation Tool - User Guide</h1>
+        
+        <div class="last-updated">
+            <strong>Last Updated:</strong> August 24, 2025
+        </div>
+
+        <div class="intro">
+            The Community Moderation Tool is designed to be simple and effective. Start with Quick Analysis for routine decisions, and use Detailed Analysis when you need full context. The debug features help you understand how the AI makes decisions, making you a more effective moderator.
+        </div>
+
+        <div class="interface-screenshot">
+            <img src="Screenshot 2025-08-23 123156.jpg" alt="Community Moderation Tool Interface" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
+            <p><em>The Community Moderation Tool interface showing the main workspace for moderating content</em></p>
+        </div>
+
+        <div class="disclaimer">
+            <h2>⚠️ Important Disclaimer</h2>
+            
+            <p><strong>AI Response Reliability:</strong> While this tool provides AI-powered moderation analysis, AI responses may occasionally contain errors, inconsistencies, or unexpected behavior. The AI analysis is intended to assist your decision-making process, not replace human judgment.</p>
+            
+            <p><strong>Use Your Own Judgment:</strong> Always review the AI's recommendations carefully and apply your own judgment when handling flagged content. Consider the context, community standards, and specific circumstances of each case. The final moderation decision and responsibility rests with you as the human moderator.</p>
+            
+            <p><strong>Tool Limitations:</strong> This tool is designed to support moderation workflows but should not be used as the sole basis for content decisions. Use it as part of a broader moderation strategy that includes human oversight and community guidelines.</p>
+        </div>
+
+        <div class="best-practice">
+            <h2>📱 Responsive Design & Device Compatibility</h2>
+            
+            <p><strong>Universal Access:</strong> The Community Moderation Tool is built with responsive design principles and works seamlessly across all device types and screen sizes.</p>
+            
+            <h3>Supported Devices:</h3>
+            <ul>
+                <li><strong>🖥️ Desktop Computers</strong> - Full-featured experience with large screens</li>
+                <li><strong>💻 Laptops</strong> - Optimized for productivity and portability</li>
+                <li><strong>📱 Mobile Phones</strong> - Touch-friendly interface for on-the-go moderation</li>
+                <li><strong>📱 Tablets</strong> - Perfect balance of portability and screen real estate</li>
+                <li><strong>🖥️ Smart TVs</strong> - Accessible for team collaboration and training</li>
+            </ul>
+            
+            <h3>Responsive Features:</h3>
+            <ul>
+                <li><strong>Adaptive Layout</strong> - Automatically adjusts to your screen size</li>
+                <li><strong>Touch-Friendly</strong> - Optimized for mobile and tablet interactions</li>
+                <li><strong>Readable Text</strong> - Scales appropriately for all device types</li>
+                <li><strong>Efficient Navigation</strong> - Streamlined interface for small screens</li>
+                <li><strong>Cross-Platform</strong> - Works in any modern web browser</li>
+            </ul>
+            
+            <h3>Mobile Moderation:</h3>
+            <p>Perfect for moderators who need to review content while away from their desk. The mobile interface maintains all core functionality while ensuring ease of use on smaller screens.</p>
+        </div>
+
+
+        <h2>🚀 Getting Started</h2>
+        <p>The Community Moderation Tool is ready to use! Simply open the application in your web browser to start moderating content.</p>
+
+        <h2>🏠 Home Screen Overview</h2>
+        <p>The home screen is your main workspace for moderating community content. Here's what you'll see:</p>
+
+        <h3>Main Interface Elements</h3>
+        <div class="interface-element">
+            <ul>
+                <li><strong>Flagged Post Content:</strong> Large text box where you paste the content you want to moderate</li>
+                <li><strong>Analysis Buttons:</strong> Select which button you want to click depending on what type of analysis you desire:
+                    <ul>
+                        <li><strong>Quick Analysis:</strong> Fast decision with brief reasoning (under 300 characters)</li>
+                        <li><strong>Detailed Analysis:</strong> Comprehensive analysis with full explanation (up to 2000 characters)</li>
+                    </ul>
+                </li>
+                <li><strong>Results Display:</strong> Shows the AI's moderation decision and reasoning</li>
+            </ul>
+        </div>
+
+        <h3>Additional Features</h3>
+        <div class="interface-element">
+            <ul>
+                <li><strong>Save AI Prompt:</strong> Downloads the complete AI prompt used for analysis (debug feature)</li>
+                <li><strong>Download AI Prompt:</strong> Saves the AI prompt to a local file (debug feature)</li>
+            </ul>
+        </div>
+
+        <h2>📝 How to Use the App</h2>
+
+        <div class="step">
+            <h3><span class="step-number">1</span>Get text into the app</h3>
+            <ol>
+                <li>Text from a moderation team associated with a social media platform
+                    <ul>
+                        <li>Copy text from the external app and paste it to the Flagged Post Content area by clicking the Paste Content Button</li>
+                    </ul>
+                </li>
+                <li>Or it can be adhoc content you want to evaluate. Just type it in</li>
+            </ol>
+        </div>
+
+        <div class="step">
+            <h3><span class="step-number">2</span>Choose Analysis Type</h3>
+            <ul>
+                <li><strong>Quick Analysis:</strong> Use when you need a fast decision
+                    <ul>
+                        <li>Best for: Urgent moderation decisions</li>
+                        <li>Response: Brief decision + key rule violations</li>
+                        <li>Character limit: 300 characters</li>
+                    </ul>
+                </li>
+                <li><strong>Detailed Analysis:</strong> Use when you need full reasoning
+                    <ul>
+                        <li>Best for: Complex cases, training, documentation</li>
+                        <li>Response: Complete decision + detailed reasoning + rule citations</li>
+                        <li>Character limit: 2000 characters</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="step">
+            <h3><span class="step-number">3</span>Run Moderation</h3>
+            <ol>
+                <li>Click either the <strong>"Quick Analysis"</strong> or <strong>"Detailed Analysis"</strong> button based on your chosen analysis type</li>
+                <li>Wait for the AI to analyze the content (usually 2-5 seconds)</li>
+                <li>Review the results displayed in the <strong>"Moderation Results"</strong> area of the screen</li>
+            </ol>
+        </div>
+
+        <h2>📊 Understanding Results</h2>
+
+        <h3>Decision Types</h3>
+        <p>The AI will return one of these decisions:</p>
+        <div class="decision-type allow">✅ Allow</div>
+        <div class="decision-type remove">🚫 Remove</div>
+        <div class="decision-type maybe-remove">⚠️ Maybe Remove</div>
+
+        <h3>Result Information</h3>
+        <p>Each result includes:</p>
+        <ul>
+            <li><strong>Decision:</strong> The AI's recommendation</li>
+            <li><strong>Reasoning:</strong> Explanation of why the decision was made</li>
+            <li><strong>Rules Cited:</strong> Specific community guidelines that apply</li>
+            <li><strong>Source:</strong> Indicates the analysis type used</li>
+        </ul>
+
+        <h2>🔧 Debug Features</h2>
+
+        <div class="debug-feature">
+            <h3>Save AI Prompt</h3>
+            <ul>
+                <li><strong>Purpose:</strong> See exactly what instructions the AI received</li>
+                <li><strong>Use Case:</strong> Debug unexpected AI behavior, verify prompt content</li>
+                <li><strong>Output:</strong> Downloads a text file with the complete AI prompt</li>
+            </ul>
+        </div>
+
+        <div class="debug-feature">
+            <h3>Download AI Prompt</h3>
+            <ul>
+                <li><strong>Purpose:</strong> Save AI prompts for later analysis</li>
+                <li><strong>Use Case:</strong> Training, documentation, troubleshooting</li>
+                <li><strong>Output:</strong> Saves to local debug folder with timestamp</li>
+            </ul>
+        </div>
+
+        <h2>🎯 Best Practices</h2>
+
+        <div class="best-practice">
+            <h3>For Quick Analysis</h3>
+            <ul>
+                <li>Use for routine moderation decisions</li>
+                <li>Perfect for high-volume content screening</li>
+                <li>Results are concise and actionable</li>
+            </ul>
+        </div>
+
+        <div class="best-practice">
+            <h3>For Detailed Analysis</h3>
+            <ul>
+                <li>Use for complex or controversial content</li>
+                <li>Helpful for training new moderators</li>
+                <li>Provides complete reasoning for documentation</li>
+            </ul>
+        </div>
+
+        <div class="best-practice">
+            <h3>AI Reliability and Human Judgment</h3>
+            <ul>
+                <li><strong>Always review AI recommendations</strong> before making final decisions</li>
+                <li><strong>Consider context</strong> that the AI might not understand</li>
+                <li><strong>Apply community standards</strong> and local knowledge</li>
+                <li><strong>Use AI as a tool</strong>, not as the final authority</li>
+                <li><strong>Trust your judgment</strong> when AI recommendations seem questionable</li>
+            </ul>
+        </div>
+
+        <h2>🚨 Troubleshooting</h2>
+
+        <h3>Common Issues</h3>
+
+        <div class="troubleshooting">
+            <p><strong>"Failed to moderate content"</strong></p>
+            <ul>
+                <li>Check your internet connection</li>
+                <li>Try refreshing the page</li>
+                <li>Contact support if the issue persists</li>
+            </ul>
+        </div>
+
+        <div class="troubleshooting">
+            <p><strong>"AI models are currently unavailable"</strong></p>
+            <ul>
+                <li>Check your internet connection</li>
+                <li>Try refreshing the page</li>
+                <li>Contact support if the issue persists</li>
+            </ul>
+        </div>
+
+        <div class="troubleshooting">
+            <p><strong>Unexpected AI responses</strong></p>
+            <ul>
+                <li>Use the "Save AI Prompt" feature to see what the AI received</li>
+                <li>Try refreshing the page if you encounter issues</li>
+                <li>Contact support if problems persist</li>
+            </ul>
+        </div>
+
+        <div class="troubleshooting">
+            <p><strong>AI response errors or inconsistencies</strong></p>
+            <ul>
+                <li>Remember the disclaimer: AI responses may contain errors</li>
+                <li>Use your own judgment to evaluate the content</li>
+                <li>Consider the context that the AI might not understand</li>
+                <li>Apply community standards and local knowledge</li>
+                <li>Don't rely solely on AI recommendations for critical decisions</li>
+            </ul>
+        </div>
+
+        <h3>Getting Help</h3>
+        <ol>
+            <li><strong>Use debug features</strong> to see what the AI is receiving</li>
+            <li><strong>Try refreshing the page</strong> if you encounter issues</li>
+            <li><strong>Contact support</strong> if problems persist</li>
+        </ol>
+
+        <h2>🔄 Troubleshooting Tips</h2>
+
+        <div class="tips">
+            <h3>When to Refresh</h3>
+            <ul>
+                <li>If the AI stops responding correctly</li>
+                <li>If you see unexpected behavior</li>
+                <li>If the page seems unresponsive</li>
+            </ul>
+        </div>
+
+        <div class="tips">
+            <h3>How to Refresh</h3>
+            <p>Simply refresh your browser page (F5 or Ctrl+R) to reset the application.</p>
+        </div>
+
+        <h2>📁 Debug Files</h2>
+
+        <div class="debug-files">
+            <ul>
+                <li><strong>Debug Files:</strong> Automatically saved to the <code>debug/</code> folder when you use the Save/Download features</li>
+                <li><strong>AI Prompts:</strong> These files help you understand how the AI makes decisions</li>
+            </ul>
+        </div>
+
+        <div class="ready">
+            <h2>🎉 You're Ready!</h2>
+        </div>
+
+        <div class="footer">
+            <p><em>For technical support or feature requests, check the project documentation or contact the development team.</em></p>
+        </div>
+    </div>
+</body>
+</html>
