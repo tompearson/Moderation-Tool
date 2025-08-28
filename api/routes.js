@@ -1,16 +1,59 @@
 const express = require('express');
-const { loadGuidelines, parseGuidelines } = require('./utils/guidelines');
+const { loadGuidelines } = require('./utils/guidelines');
 const { generateContent, parseModerationResponse } = require('./utils/ai');
 const VERSION = require('../public/version.js');
+const rateLimit = require('express-rate-limit');
 
 const router = express.Router();
+
+// Rate limiting configuration - Different limits for dev vs production
+const moderationLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute window
+  max: process.env.NODE_ENV === 'production' ? 15 : 60, // 15 prod, 60 dev
+  message: {
+    error: 'Too many moderation requests. Please wait a minute before trying again.',
+    retryAfter: 60
+  },
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  handler: (req, res) => {
+    const isDev = process.env.NODE_ENV !== 'production';
+    const limit = isDev ? 60 : 15;
+    
+    res.status(429).json({
+      error: 'Rate limit exceeded',
+      message: `Too many moderation requests. Limit: ${limit} per minute. Please wait before trying again.`,
+      retryAfter: 60,
+      environment: isDev ? 'development' : 'production',
+      limit: limit,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
+// Log rate limiting configuration on startup
+const isDev = process.env.NODE_ENV !== 'production';
+const currentRateLimit = isDev ? 60 : 15;
+console.log(`🚦 Rate limiting configured: ${currentRateLimit} requests/minute (${isDev ? 'development' : 'production'} mode)`);
 
 // Health check endpoint
 router.get('/health', (req, res) => {
   res.json({
     status: 'healthy',
-    version: VERSION.full,
-    timestamp: new Date().toISOString()
+    version: '0.8.9-alpha',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development',
+    message: 'API is working correctly'
+  });
+});
+
+// Test endpoint for debugging
+router.get('/test', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Test endpoint is working',
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || 'development'
   });
 });
 
@@ -45,11 +88,10 @@ router.get('/debug-env', (req, res) => {
 // Debug combined guidelines endpoint
 router.get('/debug-guidelines', async (req, res) => {
   try {
-    const { getGuidelinesWithMetadata, getGuidelinesForDisplay, getCacheStatus } = require('./utils/guidelines.js');
+    const { getGuidelinesForDisplay, getCacheStatus } = require('./utils/guidelines.js');
     
-    // Get both display and AI guidelines
+    // Get display guidelines only (AI now uses prompt folder system)
     const displayGuidelines = await getGuidelinesForDisplay();
-    const aiGuidelines = await getGuidelinesWithMetadata();
     const cacheStatus = getCacheStatus();
     
     res.json({
@@ -59,19 +101,8 @@ router.get('/debug-guidelines', async (req, res) => {
         length: displayGuidelines.rawContent.length,
         source: displayGuidelines.source
       },
-      ai: {
-        content: aiGuidelines.rawContent.substring(0, 1000) + '...',
-        length: aiGuidelines.rawContent.length,
-        source: aiGuidelines.source,
-        fullContent: aiGuidelines.rawContent // Full content for debugging
-      },
       cache: cacheStatus,
-      comparison: {
-        displayLength: displayGuidelines.rawContent.length,
-        aiLength: aiGuidelines.rawContent.length,
-        isCombined: aiGuidelines.rawContent.length > displayGuidelines.rawContent.length,
-        difference: aiGuidelines.rawContent.length - displayGuidelines.rawContent.length
-      }
+      note: 'AI guidelines now use the prompt folder system instead of external URLs'
     });
   } catch (error) {
     console.error('Error getting debug guidelines:', error);
@@ -82,10 +113,134 @@ router.get('/debug-guidelines', async (req, res) => {
   }
 });
 
+// Debug AI prompts endpoint
+router.get('/debug-ai-prompts', async (req, res) => {
+  try {
+    const { buildAIPrompt } = require('./utils/ai.js');
+    const analysisType = req.query.analysisType || 'quick';
+    
+    const promptResult = await buildAIPrompt(analysisType);
+    
+    res.json({
+      success: true,
+      analysisType,
+      config: promptResult.config,
+      promptStructure: {
+        totalLength: promptResult.prompt.length,
+        promptIds: promptResult.config.promptIds,
+        individualPrompts: Object.keys(promptResult.prompts).reduce((acc, key) => {
+          acc[key] = {
+            length: promptResult.prompts[key].length,
+            preview: promptResult.prompts[key].substring(0, 300) + '...',
+            content: promptResult.prompts[key]
+          };
+          return acc;
+        }, {}),
+        combinedPrompt: promptResult.prompt
+      },
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Error getting debug AI prompts:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
+
+// Test AI response parsing endpoint (for debugging production issues)
+router.post('/test-ai-response', async (req, res) => {
+  try {
+    const { text, characterLimit = 300 } = req.body;
+    
+    if (!text) {
+      return res.status(400).json({ error: 'Missing text parameter' });
+    }
+    
+    const { parseModerationResponse } = require('./utils/ai.js');
+    const result = parseModerationResponse(text, characterLimit);
+    
+    res.json({
+      success: true,
+      originalText: text.substring(0, 500) + (text.length > 500 ? '...' : ''),
+      originalLength: text.length,
+      parsedResult: result,
+      hasHtml: text.includes('<html') || text.includes('<!DOCTYPE'),
+      hasErrorKeywords: text.toLowerCase().includes('error') || text.toLowerCase().includes('failed')
+    });
+    
+  } catch (error) {
+    console.error('Error testing AI response parsing:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
+
+// Save AI prompt to debug file endpoint
+router.post('/save-ai-prompt', async (req, res) => {
+  try {
+    const { buildAIPrompt } = require('./utils/ai.js');
+    const { analysisType = 'quick' } = req.body;
+    
+    // Build the AI prompt
+    const promptResult = await buildAIPrompt(analysisType);
+    
+    // Save to debug file with timestamp
+    const fs = require('fs/promises');
+    const path = require('path');
+    
+    try {
+      await fs.mkdir('debug', { recursive: true });
+      
+      // Create timestamped filename
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      const debugFile = `debug/ai-prompt-combined-${timestamp}.txt`;
+      await fs.writeFile(debugFile, promptResult.prompt, 'utf8');
+      
+      // Also update the latest file
+      const latestFile = 'debug/ai-prompt-combined-latest.txt';
+      await fs.writeFile(latestFile, promptResult.prompt, 'utf8');
+      
+      res.json({
+        success: true,
+        message: 'AI prompt saved to debug file',
+        files: {
+          timestamped: debugFile,
+          latest: latestFile
+        },
+        promptInfo: {
+          analysisType,
+          totalLength: promptResult.prompt.length,
+          promptIds: promptResult.config.promptIds,
+          maxTokens: promptResult.config.maxTokens
+        }
+      });
+      
+    } catch (saveError) {
+      console.error('Error saving debug file:', saveError);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to save debug file: ' + saveError.message
+      });
+    }
+    
+  } catch (error) {
+    console.error('Error building AI prompt for debug save:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message 
+    });
+  }
+});
+
 // Get guidelines endpoint
 router.get('/guidelines', async (req, res) => {
   try {
-    const guidelines = await parseGuidelines();
+    const { getGuidelinesForDisplay } = require('./utils/guidelines.js');
+    const guidelines = await getGuidelinesForDisplay();
     res.json({
       success: true,
       guidelines
@@ -176,7 +331,7 @@ router.post('/guidelines-endpoint', async (req, res) => {
 });
 
 // Main moderation endpoint
-router.post('/moderate', async (req, res) => {
+router.post('/moderate', moderationLimiter, async (req, res) => {
   // Enable CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
@@ -214,111 +369,120 @@ router.post('/moderate', async (req, res) => {
     });
   }
   
-  try {
-    // Load moderation rules from guidelines with source tracking
-    let guidelinesData;
-    let ruleSource = 'embedded'; // Default source
-    
-    try {
-      guidelinesData = await parseGuidelines();
-      const guidelines = guidelinesData.rawContent;
-      
-      // Get the guidelines metadata to determine source
-      const { getGuidelinesWithMetadata } = require('./utils/guidelines.js');
-      const guidelinesMetadata = await getGuidelinesWithMetadata();
-      ruleSource = guidelinesMetadata.source || 'embedded';
-      console.log('📋 Rule source:', ruleSource);
-    } catch (error) {
-      console.log('⚠️ Failed to load guidelines, using fallback:', error.message);
-      guidelinesData = { rawContent: 'Fallback rules content' };
-      ruleSource = 'fallback';
-    }
-    
-    const guidelines = guidelinesData.rawContent;
-    
-    // Construct the full moderation prompt
-    const prompt = characterLimit <= 300 ? 
-      // Original simple prompt for 300 characters
-      `SYSTEM: You are a community moderation AI. Your ONLY job is to analyze posts and determine if they violate community guidelines. You must respond in the exact format specified. Never truncate your response being sure to use all the characters available.
+      try {
+        // Build AI prompt using the new prompt folder system
+        const { buildAIPrompt } = require('./utils/ai.js');
+        const analysisType = characterLimit <= 300 ? 'quick' : 'detailed';
+        
+        const promptResult = await buildAIPrompt(analysisType);
+        const aiPrompt = promptResult.prompt;
+        const analysisConfig = promptResult.config;
+        
+        // Production-safe logging
+        if (process.env.NODE_ENV !== 'production') {
+          console.log('🎯 AI Prompt Structure:');
+          console.log(`   - Analysis Type: ${analysisType}`);
+          console.log(`   - Prompt IDs: ${analysisConfig.promptIds.join(', ')}`);
+          console.log(`   - Max Tokens: ${analysisConfig.maxTokens}`);
+          console.log(`   - Total Length: ${aiPrompt.length} characters`);
+        }
+        
+        // Construct the full moderation prompt using prompt files
+        const prompt = `TASK: Analyze the following post according to these community guidelines:
 
-TASK: Analyze the following post according to these community guidelines:
-
-${guidelines}
+${aiPrompt}
 
 POST TO MODERATE:
 "${content}"
 
-MODERATION INSTRUCTIONS:
-- You are a community moderator reviewing a flagged post
-- Compare the post content to each rule above
-- Determine if the post should be kept or removed
-- When in doubt, err on the side of keeping posts
-- Only remove posts that clearly violate rules
-- Consider context and intent
-- Be lenient with local community content
+CHARACTER LIMIT: Keep your response under ${characterLimit} characters. Focus only on the moderation decision.`;
 
-REQUIRED RESPONSE FORMAT (you must use exactly this format):
-**Decision:** [Remove] or [Keep]
-**Reason:** [Brief explanation of which rule(s) apply and why]
-
-Keep your response under ${characterLimit} characters. Focus only on the moderation decision.` :
-      // Detailed prompt for 2000 characters
-      `CRITICAL CHARACTER LIMIT INSTRUCTION: You MUST write a comprehensive and detailed response using MOST of the available ${characterLimit} characters. Provide extensive analysis with specific rule evaluation, context analysis, and detailed reasoning.
-
-SYSTEM: You are a community moderation AI. Your ONLY job is to analyze posts and determine if they violate community guidelines. You must respond in the exact format specified.
-
-TASK: Analyze the following post according to these community guidelines:
-
-${guidelines}
-
-POST TO MODERATE:
-"${content}"
-
-MODERATION INSTRUCTIONS:
-- You are a community moderator reviewing a flagged post
-- Compare the post content to each rule above
-- Determine if the post should be kept or removed
-- When in doubt, err on the side of keeping posts
-- Only remove posts that clearly violate rules
-- Consider context and intent
-- Be lenient with local community content
-
-REQUIRED RESPONSE FORMAT (you must use exactly this format):
-**Decision:** [Remove] or [Keep]
-**Reason:** [Comprehensive analysis with specific rule evaluation, context analysis, and detailed reasoning]
-
-CHARACTER LIMIT ENFORCEMENT: Your ENTIRE response (including "**Decision:**" and "**Reason:**" text) must be EXACTLY ${characterLimit} characters or less. DO NOT exceed ${characterLimit} characters. For ${characterLimit} characters, aim to use at least ${Math.floor(characterLimit * 0.8)} characters in your response.
-
-EXAMPLE FOR ${characterLimit} CHARACTERS:
-**Decision:** Keep
-**Reason:** This post fully aligns with the community guidelines and does not violate any of the specified rules. It promotes a local event focused on Restorative Justice, which is a legitimate and constructive topic for community discussion. The content is highly relevant to the local community as it aims to foster healing, understanding, and transformation within the neighborhood. The event details, including the location in Beaverton, Oregon, clearly place it within the approved local coverage area. The post is written with a civil tone, using respectful, inviting, and inclusive language throughout. There is no hate speech, threats, personal attacks, or excessive profanity. It does not attempt to discriminate based on any protected characteristic, nor does it share any misinformation, false claims, or private information without consent. Furthermore, it does not promote violence, criminal acts, or any other prohibited content like spam or fraudulent schemes. The event is a free community gathering, which is appropriate content for the main feed, and therefore, it does not fall under the 'Incorrect Category' rule that applies to items offered for sale or free. Overall, the post strongly encourages positive community engagement and directly supports the platform's goal of creating a safe, respectful, and inclusive space for neighbors to build stronger communities through constructive conversations. It provides clear, actionable information about a beneficial community event.
-
-Make your response similar in length and detail to this example. REMEMBER: Your response must be ${characterLimit} characters or less.`;
-
-    // Send the full prompt to the AI
-    const aiResponse = await generateContent(prompt);
-    
-    // Parse the AI response to extract decision and reason
-    const parsedResult = parseModerationResponse(aiResponse.text, characterLimit);
-    
-    // Add the AI model information and rule source to the response
-    const finalResult = {
-      ...parsedResult,
-      model: aiResponse.model,
-      ruleSource: ruleSource
-    };
-    
-    // Production-safe logging
-    if (process.env.NODE_ENV !== 'production') {
-      // console.log('AI Model used:', aiResponse.model);
-      // console.log('Response decision:', parsedResult.decision);
-      // console.log('Response length:', aiResponse.text.length);
-    }
-    
-    res.status(200).json(finalResult);
+        // Send the full prompt to the AI with maxTokens from config
+        const aiResponse = await generateContent(prompt, analysisConfig.maxTokens);
+        
+        // Validate AI response before parsing
+        if (!aiResponse || !aiResponse.text) {
+          throw new Error('AI service returned invalid response');
+        }
+        
+        // Additional validation for HTML or error content (double-check)
+        if (aiResponse.text.includes('<html') || aiResponse.text.includes('<!DOCTYPE') || 
+            aiResponse.text.includes('The page') || aiResponse.text.includes('<body') || 
+            aiResponse.text.includes('<title') || aiResponse.text.includes('<head')) {
+          console.error('AI returned HTML content:', aiResponse.text.substring(0, 200));
+          throw new Error('AI service returned HTML error page instead of moderation response');
+        }
+        
+        // Check for common error messages
+        if (aiResponse.text.toLowerCase().includes('error') || 
+            aiResponse.text.toLowerCase().includes('failed') || 
+            aiResponse.text.toLowerCase().includes('unable') ||
+            aiResponse.text.toLowerCase().includes('service unavailable') || 
+            aiResponse.text.toLowerCase().includes('rate limit') || 
+            aiResponse.text.toLowerCase().includes('quota exceeded') || 
+            aiResponse.text.toLowerCase().includes('timeout')) {
+          console.error('AI returned error message:', aiResponse.text.substring(0, 200));
+          throw new Error('AI service encountered an error: ' + aiResponse.text.substring(0, 100));
+        }
+        
+        // Parse the AI response to extract decision and reason
+        let parsedResult;
+        try {
+          parsedResult = parseModerationResponse(aiResponse.text, characterLimit);
+        } catch (parseError) {
+          console.error('Failed to parse AI response:', parseError);
+          // Fallback to safe default
+          parsedResult = {
+            decision: 'Keep',
+            reason: 'Error: Unable to parse AI response. Please try again.',
+            rules: [{ id: 0, title: 'System Error', emoji: '⚠️' }],
+            characterCount: 0,
+            characterLimit
+          };
+        }
+        
+        // Add the AI model information and rule source to the response
+        const finalResult = {
+          ...parsedResult,
+          model: aiResponse.model,
+          ruleSource: `ai-${analysisType}` // Use AI source instead of Gist
+        };
+        
+        // Production-safe logging
+        if (process.env.NODE_ENV !== 'production') {
+          console.log('AI Model used:', aiResponse.model);
+          console.log('Response decision:', parsedResult.decision);
+          console.log('Response length:', aiResponse.text.length);
+        } else {
+          // Minimal production logging
+          console.log(`Moderation completed: ${parsedResult.decision} (${aiResponse.text.length} chars)`);
+        }
+        
+        res.status(200).json(finalResult);
   } catch (error) {
     console.error('Moderation error:', error);
-    res.status(500).json({ error: error.message });
+    
+    // Ensure we always return proper JSON, never HTML
+    let errorMessage = error.message || 'Unknown error occurred';
+    
+    // Sanitize error messages for production
+    if (process.env.NODE_ENV === 'production') {
+      if (errorMessage.includes('HTML') || errorMessage.includes('The page')) {
+        errorMessage = 'AI service temporarily unavailable. Please try again.';
+      } else if (errorMessage.includes('API key') || errorMessage.includes('GEMINI_API_KEY')) {
+        errorMessage = 'Service configuration error. Please contact support.';
+      } else if (errorMessage.includes('quota') || errorMessage.includes('rate limit') || 
+                 errorMessage.includes('429') || errorMessage.includes('RATE_LIMIT_EXCEEDED')) {
+        errorMessage = 'Service temporarily overloaded. Please try again later.';
+      } else {
+        errorMessage = 'Service temporarily unavailable. Please try again.';
+      }
+    }
+    
+    res.status(500).json({ 
+      error: errorMessage,
+      timestamp: new Date().toISOString()
+    });
   }
 });
 

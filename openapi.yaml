@@ -22,7 +22,7 @@ paths:
       summary: Moderate a community post
       description: |
         Analyze a flagged community post using AI-powered moderation.
-        Returns a decision (Remove/Keep) with detailed reasoning based on community guidelines.
+        Returns a decision (Remove/Keep/Maybe Remove) with detailed reasoning based on community guidelines.
       operationId: moderatePost
       tags:
         - Moderation
@@ -69,7 +69,7 @@ paths:
                     example: true
                   decision:
                     type: string
-                    enum: [Remove, Keep]
+                    enum: [Remove, Keep, Maybe Remove]
                     description: The moderation decision
                     example: "Keep"
                   reason:

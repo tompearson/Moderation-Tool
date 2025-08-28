@@ -1,132 +1,10 @@
 import React, { useState } from 'react';
 import './index.css';
 
-// Moderation rules (consolidated from .cursorrules)
-const MODERATION_RULES = `# Community Moderation Rules
-
-## Purpose
-Check whether a flagged post violates community guidelines. 
-
-## When reviewing a post:
-- Read the post carefully.
-- Compare the content to each rule below.
-- If any rule is violated, say which one and why.
-- There are no specific "civil tone' guidelines but the goal of the guidelines is to create a safe, respectful inclusive space where neighbors can build stronger communities through constructive conversations. This platform is locally focused, not a place for discussing events in other states.
-
-## Limitations
-- This tool does not store any submitted posts and has no awareness of the origin of the input. As a result, it cannot identify nuanced or repetitive submissions.
-
-## Local Coverage
-### Counties
-- WASHINGTON COUNTY OR (includes all cities and zip codes within Washington County)
-
-### Specific Cities and Zip Codes
-HILLSBORO OR 97124
-BEAVERTON OR 97006, 97003, 97078
-CORNELIUS OR 97113
-FOREST GROVE OR 97116
-GASTON OR 97119
-NEWBURG OR 97132
-SHERWOOD OR 97140
-PORTLAND OR 97086
-PORTLAND OR 97201
-PORTLAND OR 97202
-PORTLAND OR 97203
-PORTLAND OR 97204
-PORTLAND OR 97205
-PORTLAND OR 97206
-PORTLAND OR 97209
-PORTLAND OR 97210
-PORTLAND OR 97211
-PORTLAND OR 97212
-PORTLAND OR 97213
-PORTLAND OR 97214
-PORTLAND OR 97215
-PORTLAND OR 97216
-PORTLAND OR 97217
-PORTLAND OR 97218
-PORTLAND OR 97219
-PORTLAND OR 97220
-PORTLAND OR 97221
-PORTLAND OR 97222
-PORTLAND OR 97223
-PORTLAND OR 97224
-PORTLAND OR 97225
-PORTLAND OR 97227
-PORTLAND OR 97229
-PORTLAND OR 97230
-PORTLAND OR 97231
-PORTLAND OR 97232
-PORTLAND OR 97233
-PORTLAND OR 97236
-PORTLAND OR 97252
-PORTLAND OR 97253
-PORTLAND OR 97267
-
----
-
-## Rules
-
-### 1. Be Respectful
-- No hate speech, slurs, or harassment.
-- No threats or intimidation.
-- No name-calling, personal attacks, or insults.
-- Excessive profanity aimed at others is not allowed.
-- If the post is respectful and focuses on a legitimate neighborhood concern without singling out or attacking the neighbor
-
-### 2. Keep It Relevant
-- Posts must be relevant to the local community.
-- Do not share unrelated national politics or off-topic content.
-
-### 3. Do Not Discriminate
-- No content that discriminates or promotes hate based on race, ethnicity, religion, gender, sexual orientation, disability, or age.
-
-### 4. No Misinformation
-- Do not share false or misleading information that could harm others.
-- Health, safety, or crime claims must be accurate.
-- Do not allow misinformation about politics and election topics    
-
-### 5. Respect Privacy
-- Do not share someone's private information without consent (addresses, phone numbers, etc.).
-- No doxxing.
-
-### 6. No Prohibited Content
-- No violence or calls for violence.
-- No promotion of criminal acts.
-- No adult sexual content or explicit material.
-- No spam, scams, or fraudulent schemes.
-- Public shaming
-- Threats or harassment
-- Selling or promoting illegal goods or services 
-- Spam or misinformation
-
-### 7. Civil Tone
-- Use civil language.
-- Avoid aggressive or offensive tone.
-
-### 8. Incorrect Catagory 
-- Items offered for sale or free are considered 'Posted In Error' 
-and should not be in the main feed and should not be allowed.
-
----
-
-## Output Format
-
-When you analyze a post, always respond like this:
-
-**Decision:** [Remove] or [Keep]  
-**Reason:** [State the specific rule(s) and exactly why this post violates or does not violate them.]
-
-IMPORTANT: Keep your response brief and concise. Focus on the most relevant rule violations or reasons for keeping the post. Avoid lengthy explanations unless necessary. The character limit will be specified in the moderation instructions.`;
-
 // API endpoint configuration
 const API_ENDPOINT = process.env.NODE_ENV === 'production' 
   ? '/api/moderate'
-  : 'http://127.0.0.1:3000/api/moderate';
-
-const GUIDELINES_ENDPOINT = process.env.NODE_ENV === 'production'
-  ? '/api/guidelines-endpoint'
-  : 'http://127.0.0.1:3000/api/guidelines-endpoint';
+  : 'http://127.0.0.1:3001/api/moderate';
 
 function App() {
   // Debug version loading
@@ -142,9 +20,12 @@ function App() {
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
   const [showRules, setShowRules] = useState(false);
-  const [currentGuidelines, setCurrentGuidelines] = useState(null);
-  const [guidelinesLoading, setGuidelinesLoading] = useState(false);
   const [characterLimit, setCharacterLimit] = useState(300); // Default to 300 chars
+  
+  // New state for dynamic guidelines
+  const [guidelinesContent, setGuidelinesContent] = useState(null);
+  const [guidelinesLoading, setGuidelinesLoading] = useState(false);
+  const [guidelinesError, setGuidelinesError] = useState(null);
 
   // Function to get emoji for rule number
   const getRuleEmoji = (number) => {
@@ -161,105 +42,43 @@ function App() {
     return emojis[number] || '📋';
   };
 
-  // Function to fetch current guidelines
-  const fetchCurrentGuidelines = async () => {
+  // Function to load HTML guidelines for display
+  const loadGuidelines = async () => {
     try {
-      console.log('📋 Fetching current guidelines...');
       setGuidelinesLoading(true);
-      const response = await fetch(GUIDELINES_ENDPOINT);
+      setGuidelinesError(null);
+      
+      // Load the display version (beautiful formatting)
+      const response = await fetch('/docs/Nextdoor/nextdoor-moderation-guidelines.html');
       
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        throw new Error(`Failed to load guidelines: ${response.status}`);
       }
       
-      const data = await response.json();
-      console.log('Guidelines API response:', data);
-      console.log('Guidelines source:', data.guidelines?.source);
-      console.log('Guidelines content length:', data.guidelines?.fullContent?.length);
-      console.log('Guidelines content preview:', data.guidelines?.fullContent?.substring(0, 200));
-      console.log('Guidelines cache age:', data.cache?.age);
+      const htmlContent = await response.text();
       
-      setCurrentGuidelines(data);
-      console.log('✅ Guidelines updated in state');
-      return data;
-    } catch (err) {
-      console.error('Failed to fetch guidelines:', err);
-      // Fallback to embedded guidelines
-      setCurrentGuidelines({
-        guidelines: {
-          source: 'embedded',
-          fullContent: null
-        }
-      });
+      // Set the HTML content directly for display
+      setGuidelinesContent(htmlContent);
+      console.log('✅ Guidelines loaded successfully');
+      
+    } catch (error) {
+      console.error('❌ Failed to load guidelines:', error);
+      setGuidelinesError(error.message);
+      // Guidelines loading error will be handled in the UI
     } finally {
       setGuidelinesLoading(false);
     }
   };
 
-  // Function to format guidelines content for display
-  const formatGuidelinesContent = (content) => {
-    if (!content) return null;
-    
-    // Simple formatting: convert markdown to HTML-like elements
-    const formattedContent = content
-      // Convert #### headers to h4
-      .replace(/^#### (.*$)/gm, '<h4>$1</h4>')
-      // Convert ### headers to h3
-      .replace(/^### (.*$)/gm, '<h3>$1</h3>')
-      // Convert ## headers to h2
-      .replace(/^## (.*$)/gm, '<h2>$1</h2>')
-      // Convert # headers to h1  
-      .replace(/^# (.*$)/gm, '<h1>$1</h1>')
-      // Convert **bold** to <strong>
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      // Convert *italic* to <em>
-      .replace(/\*(.*?)\*/g, '<em>$1</em>')
-      // Convert bullet points
-      .replace(/^[-*]\s+(.*$)/gm, '<li>$1</li>')
-      // Convert numbered lists
-      .replace(/^\d+\.\s+(.*$)/gm, '<li>$1</li>')
-      // Convert paragraphs
-      .replace(/^(?!<[h|li])(.*$)/gm, '<p>$1</p>')
-      // Clean up empty paragraphs
-      .replace(/<p><\/p>/g, '')
-      // Wrap lists
-      .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>');
-    
-    return formattedContent;
-  };
 
-  // Function to format text content with proper styling
-  const formatTextContent = (text) => {
-    if (!text) return [];
-    
-    return text.split('\n').map((line, index) => {
-      const trimmedLine = line.trim();
-      if (!trimmedLine) return null;
-      
-      // Handle bullet points
-      if (trimmedLine.startsWith('*') || trimmedLine.startsWith('-')) {
-        return (
-          <div key={index} className="guideline-item">
-            <span className="bullet">•</span>
-            <span className="text">{trimmedLine.replace(/^[-*]\s*/, '')}</span>
-          </div>
-        );
-      }
-      
-      // Handle bold text (markdown **text**)
-      if (trimmedLine.includes('**')) {
-        const formattedLine = trimmedLine.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        return <p key={index} dangerouslySetInnerHTML={{ __html: formattedLine }} />;
-      }
-      
-      // Regular paragraph
-      return <p key={index}>{trimmedLine}</p>;
-    }).filter(Boolean);
-  };
 
-  const moderatePost = async (content, charLimit = 300) => {
+  const moderatePost = async (content, charLimit = 300, analysisType = 'quick') => {
     try {
-      const requestBody = { content, characterLimit: charLimit };
+      const requestBody = { 
+        content, 
+        characterLimit: charLimit,
+        analysisType: analysisType
+      };
       
       const response = await fetch(API_ENDPOINT, {
         method: 'POST',
@@ -271,7 +90,14 @@ function App() {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+        
+        // Create an error object that preserves the HTTP status and detailed message
+        const error = new Error(errorData.message || errorData.error || `HTTP error! status: ${response.status}`);
+        error.status = response.status;
+        error.errorType = errorData.error;
+        error.retryAfter = errorData.retryAfter;
+        
+        throw error;
       }
 
       const result = await response.json();
@@ -294,10 +120,10 @@ function App() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    await handleSubmitWithLimit(characterLimit);
+    await handleSubmitWithLimit(characterLimit, 'quick'); // Default to quick analysis
   };
 
-  const handleSubmitWithLimit = async (limit) => {
+  const handleSubmitWithLimit = async (limit, analysisType = 'quick') => {
     if (!postContent.trim()) {
       setError('Please enter a post to moderate.');
       return;
@@ -308,21 +134,30 @@ function App() {
     setResult(null);
 
     try {
-      const result = await moderatePost(postContent, limit);
+      const result = await moderatePost(postContent, limit, analysisType);
       setResult(result);
       setError(''); // Clear any previous error
     } catch (err) {
       console.error('Moderation error:', err);
       
-      if (err.message.includes('API_KEY_INVALID') || err.message.includes('Invalid API key')) {
+      // Check for specific error types
+      if (err.status === 429 || err.errorType === 'Rate limit exceeded') {
+        setError('🚫 Rate limit exceeded! The service is currently receiving too many requests. Please wait a minute and try again.');
+      } else if (err.message.includes('quota_limit_value') && err.message.includes('"0"')) {
+        setError('🚨 Service configuration issue: No requests allowed. This is a server-side quota problem that needs to be resolved by the administrator.');
+      } else if (err.message.includes('API_KEY_INVALID') || err.message.includes('Invalid API key')) {
         setError('Invalid API key. Please check the configuration.');
-      } else if (err.message.includes('QUOTA_EXCEEDED')) {
+      } else if (err.message.includes('QUOTA_EXCEEDED') || err.message.includes('quota exceeded')) {
         setError('API quota exceeded. Please check your Google AI usage limits.');
+      } else if (err.message.includes('Rate limit exceeded') || err.message.includes('429') || err.message.includes('Too Many Requests')) {
+        setError('🚫 Rate limit exceeded! The service is currently receiving too many requests. Please wait a minute and try again.');
+      } else if (err.message.includes('Service temporarily overloaded') || err.message.includes('overloaded')) {
+        setError('⚠️ Service temporarily overloaded. Please wait a few minutes and try again.');
       } else if (err.message.includes('SAFETY')) {
         setError('Content was blocked by safety filters. Please try with different content.');
       } else if (err.message.includes('PERMISSION_DENIED')) {
         setError('API key does not have access to this model. Please check your API permissions.');
-      } else if (err.message.includes('overloaded') || err.message.includes('503') || err.status === 503) {
+      } else if (err.message.includes('503') || err.status === 503) {
         setError('All models are currently overloaded or unavailable. Please try again in a few minutes.');
       } else if (err.message.includes('models/') && err.message.includes('not found')) {
         setError('No available models found. Please check your API access.');
@@ -336,44 +171,119 @@ function App() {
 
   // Handle guidelines button click
   const handleShowGuidelines = async () => {
-    if (!currentGuidelines) {
-      await fetchCurrentGuidelines();
-    }
     setShowRules(true);
+    // Load guidelines when modal opens
+    if (!guidelinesContent && !guidelinesLoading) {
+      await loadGuidelines();
+    }
   };
 
   // Handle guidelines refresh button click
   const handleRefreshGuidelines = async () => {
-    setGuidelinesLoading(true);
-    console.log('🔄 Starting guidelines refresh...');
-    
     try {
-      // Force refresh by calling the API with POST
-      console.log('📡 Sending POST request to:', GUIDELINES_ENDPOINT);
-      const response = await fetch(GUIDELINES_ENDPOINT, {
+      // Clear current content and show loading
+      setGuidelinesContent(null);
+      setGuidelinesError(null);
+      setGuidelinesLoading(true);
+      
+      // Force reload external guidelines file
+      await loadGuidelines();
+      
+      // Show success feedback briefly
+      setTimeout(() => {
+        setGuidelinesLoading(false);
+      }, 500);
+      
+    } catch (error) {
+      console.error('Failed to refresh guidelines:', error);
+      setGuidelinesLoading(false);
+      // Show error but don't fall back to embedded content
+      setGuidelinesError(error.message);
+    }
+  };
+
+  // Handle save AI prompt to debug file
+  const handleSaveAIPrompt = async () => {
+    try {
+      // Determine which analysis type to use based on current character limit
+      const analysisType = characterLimit <= 300 ? 'quick' : 'detailed';
+      
+      const response = await fetch('/api/save-ai-prompt', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ action: 'refresh' })
+        body: JSON.stringify({ analysisType })
       });
-      
-      console.log('📡 Response status:', response.status);
-      const data = await response.json();
-      console.log('📡 Response data:', data);
-      
-      if (data.success) {
-        console.log('✅ Backend refresh successful, updating guidelines...');
-        // Use the refreshed content directly from the POST response
-        setCurrentGuidelines(data);
-        console.log('✅ Guidelines refreshed successfully');
-      } else {
-        console.error('❌ Failed to refresh guidelines:', data.error);
+
+      if (!response.ok) {
+        throw new Error(`Failed to save prompt: ${response.status}`);
       }
+
+      const result = await response.json();
+      
+      if (result.success) {
+        // Show success message
+        setError(''); // Clear any previous errors
+        alert(`✅ AI Prompt saved successfully!\n\n📁 Files created:\n• ${result.files.timestamped}\n• ${result.files.latest}\n\n📊 Prompt Info:\n• Analysis Type: ${result.promptInfo.analysisType}\n• Total Length: ${result.promptInfo.totalLength} characters\n• Max Tokens: ${result.promptInfo.maxTokens}`);
+      } else {
+        throw new Error(result.error || 'Unknown error occurred');
+      }
+      
     } catch (error) {
-      console.error('❌ Error refreshing guidelines:', error);
-    } finally {
-      setGuidelinesLoading(false);
+      console.error('Failed to save AI prompt:', error);
+      setError(`Failed to save AI prompt: ${error.message}`);
+    }
+  };
+
+  // Helper function to convert decision to CSS-safe class name
+  const getDecisionClass = (decision) => {
+    if (!decision) return '';
+    return decision.toLowerCase().replace(/\s+/g, '-');
+  };
+
+  // Handle download AI prompt to user's computer
+  const handleDownloadAIPrompt = async () => {
+    try {
+      // Determine which analysis type to use based on current character limit
+      const analysisType = characterLimit <= 300 ? 'quick' : 'detailed';
+      
+      // Call the debug endpoint to get the prompt content
+      const response = await fetch(`/api/debug-ai-prompts?analysisType=${analysisType}`);
+      
+      if (!response.ok) {
+        throw new Error(`Failed to get prompt: ${response.status}`);
+      }
+
+      const result = await response.json();
+      
+      if (result.success) {
+        // Create timestamp for filename
+        const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+        const filename = `ai-prompt-${analysisType}-${timestamp}.txt`;
+        
+        // Create blob and download
+        const blob = new Blob([result.promptStructure.combinedPrompt], { type: 'text/plain' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        
+        // Show success message
+        setError(''); // Clear any previous errors
+        alert(`✅ AI Prompt downloaded successfully!\n\n📁 File: ${filename}\n📊 Analysis Type: ${analysisType}\n📏 Total Length: ${result.promptStructure.totalLength} characters`);
+        
+      } else {
+        throw new Error(result.error || 'Unknown error occurred');
+      }
+      
+    } catch (error) {
+      console.error('Failed to download AI prompt:', error);
+      setError(`Failed to download AI prompt: ${error.message}`);
     }
   };
 
@@ -503,7 +413,7 @@ function App() {
                className="button quick-analysis-button"
                onClick={() => {
                  setCharacterLimit(300);
-                 handleSubmitWithLimit(300);
+                 handleSubmitWithLimit(300, 'quick');
                }}
                disabled={isLoading || !postContent.trim()}
              >
@@ -522,7 +432,7 @@ function App() {
                className="button detailed-analysis-button"
                onClick={() => {
                  setCharacterLimit(2000);
-                 handleSubmitWithLimit(2000);
+                 handleSubmitWithLimit(2000, 'detailed');
                }}
                disabled={isLoading || !postContent.trim()}
              >
@@ -544,6 +454,26 @@ function App() {
             >
               📋 Show Guidelines
             </button>
+            
+            <button 
+              type="button" 
+              className="button debug-button"
+              onClick={handleSaveAIPrompt}
+              disabled={isLoading}
+              title="Save current AI prompt to debug file"
+            >
+              💾 Save AI Prompt
+            </button>
+            
+            <button 
+              type="button" 
+              className="button download-button"
+              onClick={handleDownloadAIPrompt}
+              disabled={isLoading}
+              title="Download AI prompt to your computer"
+            >
+              📥 Download AI Prompt
+            </button>
           </div>
         </form>
 
@@ -554,14 +484,14 @@ function App() {
         )}
 
         {result && (
-          <div className={`result ${result.decision.toLowerCase()}`}>
+          <div className={`result ${getDecisionClass(result.decision)}`}>
             <div className="result-info">
               <div className="character-info">
                 <small>Response: {result.characterCount || 0} / {result.characterLimit || characterLimit} characters • AI Model: {result.model}</small>
               </div>
             </div>
             <h3>Moderation Result</h3>
-            <div className={`decision ${result.decision.toLowerCase()}`}>
+            <div className={`decision ${getDecisionClass(result.decision)}`}>
               Decision: {result.decision}
             </div>
             
@@ -577,7 +507,7 @@ function App() {
                 <h4>Rules Applied:</h4>
                 <div className="rules-grid">
                   {result.rules.map((rule, index) => (
-                    <div key={index} className={`rule-badge ${result.decision.toLowerCase()}`}>
+                    <div key={index} className={`rule-badge ${getDecisionClass(result.decision)}`}>
                       <span className="rule-emoji">{rule.emoji}</span>
                       <span className="rule-title">{rule.title}</span>
                     </div>
@@ -594,12 +524,15 @@ function App() {
                   <span className="source-icon">
                     {result.ruleSource === 'url' ? '🌐' : 
                      result.ruleSource === 'embedded' ? '📋' : 
-                     result.ruleSource === 'fallback' ? '⚠️' : '❓'}
+ 
+                     result.ruleSource.startsWith('ai-') ? '🤖' : '❓'}
                   </span>
                   <span className="source-text">
-                    {result.ruleSource === 'url' ? 'Dynamic Rules (Gist)' :
+                    {result.ruleSource === 'url' ? 'External Guidelines' :
                      result.ruleSource === 'embedded' ? 'Embedded Rules' :
-                     result.ruleSource === 'fallback' ? 'Fallback Rules' : 'Unknown Source'}
+ 
+                     result.ruleSource.startsWith('ai-') ? `AI ${result.ruleSource.split('-')[1].charAt(0).toUpperCase() + result.ruleSource.split('-')[1].slice(1)} Analysis` : 
+                     'Unknown Source'}
                   </span>
                 </div>
               </div>
@@ -634,29 +567,24 @@ function App() {
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
               <h2>📋 Community Guidelines</h2>
-              <div className="guidelines-source">
-                {currentGuidelines?.guidelines?.source === 'url' ? (
-                  <span className="source-badge url">
-                    🌐 Dynamic Rules (Gist)
-                  </span>
-                ) : currentGuidelines?.guidelines?.source === 'embedded' ? (
-                  <span className="source-badge embedded">
-                    📋 Embedded Rules
-                  </span>
-                ) : (
-                  <span className="source-badge fallback">
-                    ⚠️ Fallback Rules
-                  </span>
-                )}
-              </div>
               <div className="modal-actions">
                 <button 
                   className="refresh-button"
                   onClick={handleRefreshGuidelines}
                   disabled={guidelinesLoading}
-                  title="Refresh guidelines from gist"
+                  title="Reload guidelines file from server"
                 >
-                  🔄 Refresh
+                  {guidelinesLoading ? (
+                    <>
+                      <span className="spinning">🔄</span>
+                      Reloading...
+                    </>
+                  ) : (
+                    <>
+                      🔄
+                      Reload File
+                    </>
+                  )}
                 </button>
                 <button 
                   className="modal-close"
@@ -673,145 +601,31 @@ function App() {
                   <div className="spinner"></div>
                   <p>Loading guidelines...</p>
                 </div>
-              ) : currentGuidelines?.guidelines?.fullContent ? (
+              ) : guidelinesError ? (
+                <div className="guidelines-error">
+                  <p>⚠️ Failed to load guidelines: {guidelinesError}</p>
+                  <p>Please check your configuration or try refreshing.</p>
+                </div>
+              ) : guidelinesContent ? (
                 <div className="rules-content">
-                  {/* Display dynamic guidelines content */}
-                  <div 
-                    className="guidelines-text"
-                    dangerouslySetInnerHTML={{ 
-                      __html: formatGuidelinesContent(currentGuidelines.guidelines.fullContent) 
-                    }}
-                  />
+                  <div className="guidelines-text">
+                    <div 
+                      dangerouslySetInnerHTML={{ __html: guidelinesContent }}
+                      style={{ 
+                        maxHeight: '70vh', 
+                        overflowY: 'auto',
+                        padding: '20px',
+                        backgroundColor: 'white',
+                        borderRadius: '8px',
+                        border: '1px solid #e9ecef'
+                      }}
+                    />
+                  </div>
                 </div>
               ) : (
-                <div className="rules-content">
-                  {/* Fallback to embedded guidelines */}
-                  <div className="rules-section">
-                    <h3>🎯 Purpose</h3>
-                    <p>Check whether the reported content violates community guidelines. 
-                      Decide if it should be removed or kept. 
-                      Always use your own discretion when evaluating. 
-                      You don't have to agree with the recommendation by this tool.</p>
-                  </div>
-
-                  <div className="rules-section">
-                    <h3>⚠️ Limitations</h3>
-                    <p>This tool does not store any submitted posts and has no awareness of the origin of the input. 
-                      As a result, it cannot identify nuanced or repetitive submissions.</p>
-                  </div>
-
-                  <div className="rules-section">
-                    <h3>📍 Local Coverage</h3>
-                    <div className="coverage-info">
-                      <h4>Counties:</h4>
-                      <div className="county-list">
-                        <div className="county-item">
-                          <strong>Washington County, OR</strong> - Includes all cities and zip codes within Washington County
-                        </div>
-                      </div>
-                      
-                      <h4>Major Cities and Zip Codes:</h4>
-                      <div className="zip-grid">
-                        <div className="zip-group">
-                          <strong>Hillsboro:</strong> 97124
-                        </div>
-                        <div className="zip-group">
-                          <strong>Beaverton:</strong> 97006, 97003, 97078
-                        </div>
-                        <div className="zip-group">
-                          <strong>Cornelius:</strong> 97113
-                        </div>
-                        <div className="zip-group">
-                          <strong>Forest Grove:</strong> 97116
-                        </div>
-                        <div className="zip-group">
-                          <strong>Gaston:</strong> 97119
-                        </div>
-                        <div className="zip-group">
-                          <strong>Newburg:</strong> 97132
-                        </div>
-                        <div className="zip-group">
-                          <strong>Sherwood:</strong> 97140
-                        </div>
-                        <div className="zip-group">
-                          <strong>Portland:</strong> 97086, 97201-97206, 97209-97214, 97215-97220, 97221-97225, 97227, 97229-97233, 97236, 97252, 97253, 97267
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="rules-section">
-                    <h3>📜 Community Rules</h3>
-                    
-                    <div className="rule-item">
-                      <h4>1. 🤝 Be Respectful</h4>
-                      <ul>
-                        <li>No hate speech, slurs, or harassment</li>
-                        <li>No threats or intimidation</li>
-                        <li>No name-calling, personal attacks, or insults</li>
-                        <li>Excessive profanity aimed at others is not allowed</li>
-                      </ul>
-                    </div>
-
-                    <div className="rule-item">
-                      <h4>2. 🎯 Keep It Relevant</h4>
-                      <ul>
-                        <li>Posts must be relevant to the local community</li>
-                        <li>Do not share unrelated national politics or off-topic content</li>
-                      </ul>
-                    </div>
-
-                    <div className="rule-item">
-                      <h4>3. ❌ Do Not Discriminate</h4>
-                      <ul>
-                        <li>No content that discriminates or promotes hate based on race, ethnicity, religion, gender, sexual orientation, disability, or age</li>
-                      </ul>
-                    </div>
-
-                    <div className="rule-item">
-                      <h4>4. ✅ No Misinformation</h4>
-                      <ul>
-                        <li>Do not share false or misleading information that could harm others</li>
-                        <li>Health, safety, or crime claims must be accurate</li>
-                        <li>Do not allow misinformation about politics and election topics</li>
-                      </ul>
-                    </div>
-
-                    <div className="rule-item">
-                      <h4>5. 🔒 Respect Privacy</h4>
-                      <ul>
-                        <li>Do not share someone's private information without consent (addresses, phone numbers, etc.)</li>
-                        <li>No doxxing</li>
-                      </ul>
-                    </div>
-
-                    <div className="rule-item">
-                      <h4>6. 🚫 No Prohibited Content</h4>
-                      <ul>
-                        <li>No violence or calls for violence</li>
-                        <li>No promotion of criminal acts</li>
-                        <li>No adult sexual content or explicit material</li>
-                        <li>No spam, scams, or fraudulent schemes</li>
-                        <li>No public shaming</li>
-                        <li>No selling or promoting illegal goods or services</li>
-                      </ul>
-                    </div>
-
-                    <div className="rule-item">
-                      <h4>7. 🗣️ Civil Tone</h4>
-                      <ul>
-                        <li>Use civil language</li>
-                        <li>Avoid aggressive or offensive tone</li>
-                      </ul>
-                    </div>
-
-                    <div className="rule-item">
-                      <h4>8. 📦 Incorrect Category</h4>
-                      <ul>
-                        <li>Items offered for sale or free are considered 'Posted In Error' and should not be in the main feed</li>
-                      </ul>
-                    </div>
-                  </div>
+                <div className="guidelines-error">
+                  <p>No guidelines available.</p>
+                  <p>Please check your configuration.</p>
                 </div>
               )}
             </div>

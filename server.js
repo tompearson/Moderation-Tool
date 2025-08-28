@@ -3,51 +3,43 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
-
-// Import API routes and middleware
-const apiRoutes = require('./api/routes');
-const errorHandler = require('./api/middleware/errorHandler');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Production environment setup
-const isProduction = process.env.NODE_ENV === 'production';
-
-// Middleware
-app.use(cors({
-  origin: isProduction 
-    ? ['https://moderation-tool.vercel.app'] 
-    : [
-        'http://127.0.0.1:3000',
-        'http://localhost:3000',
-        'http://192.168.254.201:3000',
-        'http://192.168.254.204:3000',
-        'http://172.24.240.1:3000'
-      ],
-  credentials: true
-}));
+// Basic middleware
+app.use(cors());
 app.use(express.json());
-app.use(express.static('dist')); // Serve the built React app
 
-// API Routes
-app.use('/api', apiRoutes);
+// API Routes - Individual serverless functions
+app.post('/api/moderate', require('./api/moderate'));
+app.get('/api/health', require('./api/health'));
+app.get('/api/test', require('./api/test'));
+app.get('/api/debug-ai-prompts', require('./api/debug-ai-prompts'));
+app.post('/api/save-ai-prompt', require('./api/save-ai-prompt'));
 
-// Error handling middleware
-app.use(errorHandler);
+// Simple test endpoint
+app.get('/api/test', (req, res) => {
+  res.json({ message: 'Test endpoint working!', timestamp: new Date().toISOString() });
+});
 
-// Serve React app for all other routes (only in production)
-if (isProduction) {
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+// Simple POST endpoint
+app.post('/api/test-post', (req, res) => {
+  res.json({ 
+    message: 'POST endpoint working!', 
+    body: req.body,
+    timestamp: new Date().toISOString() 
   });
-}
+});
 
-app.listen(PORT, '127.0.0.1', () => {
-  console.log(`🚀 Server running on ${isProduction ? 'production' : `http://127.0.0.1:${PORT}`}`);
-  console.log(`📊 Health check: ${isProduction ? 'https://moderation-tool.vercel.app' : `http://127.0.0.1:${PORT}`}/api/health`);
-  console.log(`📋 Guidelines: ${isProduction ? 'https://moderation-tool.vercel.app' : `http://127.0.0.1:${PORT}`}/api/guidelines`);
-  console.log(`🤖 Moderation: ${isProduction ? 'https://moderation-tool.vercel.app' : `http://127.0.0.1:${PORT}`}/api/moderate`);
+// Start server
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🚀 Server starting up...`);
+  console.log(`📡 Listening on port ${PORT}`);
   console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🔧 CORS Origins: Development localhost`);
+  console.log(`📊 Health check: http://127.0.0.1:${PORT}/api/health`);
+  console.log(`📋 Guidelines: http://127.0.0.1:${PORT}/api/guidelines`);
+  console.log(`🤖 Moderation: http://127.0.0.1:${PORT}/api/moderate`);
+  console.log(`✅ Server ready to accept requests`);
 }); 

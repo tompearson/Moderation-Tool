@@ -1,146 +1,184 @@
-# Community Moderation Assistant
+# Community Moderation Tool - User Guide
 
-An AI-powered tool for moderating community posts using community guidelines and AI analysis.
+*Last Updated: August 24, 2025*
 
-## 🌐 Live Demo
+The Community Moderation Tool is designed to be simple and effective. Start with Quick Analysis for routine decisions, and use Detailed Analysis when you need full context. The debug features help you understand how the AI makes decisions, making you a more effective moderator.
 
-**Production URL:** https://moderation-assistant-tool.vercel.app/
+<div align="center">
+  <img src="protected\Content\graphics/Screenshot 2025-08-23 123156.jpg" alt="Community Moderation Tool Interface" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);" />
+  <p><em>The Community Moderation Tool interface showing the main workspace for moderating content</em></p>
+</div>
 
-## Features
+## ⚠️ Important Disclaimer
 
-- **AI-Powered Moderation**: Uses Google's Gemini AI to analyze posts against community guidelines
-- **Dynamic Guidelines**: Supports both embedded and URL-based community guidelines
-- **Real-time Analysis**: Instant moderation results with detailed explanations
-- **Responsive Design**: Works on desktop and mobile devices
-- **Vercel Deployment**: Production-ready with clean URLs
-- **Static HTML Pages**: Additional content pages with professional routing
+**AI Response Reliability**: While this tool provides AI-powered moderation analysis, AI responses may occasionally contain errors, inconsistencies, or unexpected behavior. The AI analysis is intended to assist your decision-making process, not replace human judgment.
 
-## 🚀 Quick Start
+**Use Your Own Judgment**: Always review the AI's recommendations carefully and apply your own judgment when handling flagged content. Consider the context, community standards, and specific circumstances of each case. The final moderation decision and responsibility rests with you as the human moderator.
 
-1. **Clone the repository**
-   ```bash
-   git clone <your-repo-url>
-   cd ModerationTool
-   ```
+**Tool Limitations**: This tool is designed to support moderation workflows but should not be used as the sole basis for content decisions. Use it as part of a broader moderation strategy that includes human oversight and community guidelines.
 
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
+## 📱 Responsive Design & Device Compatibility
 
-3. **Set up environment variables**
-   ```bash
-   npm run setup
-   ```
-   This will create a `.env` file. Make sure to add your `GEMINI_API_KEY`.
+**Universal Access**: The Community Moderation Tool is built with responsive design principles and works seamlessly across all device types and screen sizes.
 
-4. **Start the development servers**
-   ```bash
-   npm run dev:separate
-   ```
-   This starts both frontend (Vite) and backend (Express) servers.
+### **Supported Devices:**
+- **🖥️ Desktop Computers** - Full-featured experience with large screens
+- **💻 Laptops** - Optimized for productivity and portability  
+- **📱 Mobile Phones** - Touch-friendly interface for on-the-go moderation
+- **📱 Tablets** - Perfect balance of portability and screen real estate
+- **🖥️ Smart TVs** - Accessible for team collaboration and training
 
-## 📱 Available Scripts
+### **Responsive Features:**
+- **Adaptive Layout** - Automatically adjusts to your screen size
+- **Touch-Friendly** - Optimized for mobile and tablet interactions
+- **Readable Text** - Scales appropriately for all device types
+- **Efficient Navigation** - Streamlined interface for small screens
+- **Cross-Platform** - Works in any modern web browser
 
-- `npm run dev` - Start Vite development server only
-- `npm run server` - Start Express backend server only
-- `npm run dev:full` - Start both servers concurrently
-- `npm run dev:separate` - Start both servers in separate terminals
-- `npm run build` - Build for production
-- `npm run start` - Build and start production server
-- `npm run setup` - Set up environment variables
-- `npm run vercel-build` - Build optimized for Vercel deployment
+### **Mobile Moderation:**
+Perfect for moderators who need to review content while away from their desk. The mobile interface maintains all core functionality while ensuring ease of use on smaller screens.
 
-## 🔧 Environment Variables
+## 🚀 Getting Started
 
-Create a `.env` file with:
+The Community Moderation Tool is ready to use! Simply open the application in your web browser to start moderating content.
 
-```env
-GEMINI_API_KEY=your_gemini_api_key_here
-GUIDELINES_URL=https://example.com/guidelines
-ADDITIONAL_GUIDELINES_URL=https://example.com/additional-rules
-```
+## 🏠 Home Screen Overview
 
-## 🌍 API Endpoints
+The home screen is your main workspace for moderating community content. Here's what you'll see:
 
-- `GET /api/guidelines-endpoint` - Get current guidelines
-- `POST /api/guidelines-endpoint` - Refresh guidelines from URL
-- `POST /api/moderate` - Moderate a post using AI
+### Main Interface Elements
 
-## 🏗️ Development
+- **Flagged Post Content**: Large text box where you paste the content you want to moderate
+- **Analysis Buttons**: Select which button you want to click depending on what type of analysis you desire:
+  - **Quick Analysis**: Fast decision with brief reasoning (under 300 characters)
+  - **Detailed Analysis**: Comprehensive analysis with full explanation (up to 2000 characters)
 
-- **Frontend**: React + Vite (port 3000)
-- **Backend**: Express.js (port 3001)
-- **AI**: Google Gemini API
-- **Styling**: CSS with responsive design
+- **Results Display**: Shows the AI's moderation decision and reasoning
 
-## 🚀 Deployment
+### Additional Features
 
-The app is successfully deployed on Vercel with:
+- **Save AI Prompt**: Downloads the complete AI prompt used for analysis (debug feature)
+- **Download AI Prompt**: Saves the AI prompt to a local file (debug feature)
 
-### **Production URL:**
-https://moderation-assistant-tool.vercel.app/
+## 📝 How to Use the App
 
-### **Clean URL Structure:**
-- **Main App:** `/` → React application
-- **About Page:** `/about` → About page
-- **Docs Page:** `/docs` → Documentation page
-- **Contact Page:** `/contact` → Contact page
-- **Privacy Page:** `/privacy` → Privacy policy
-- **Terms Page:** `/terms` → Terms of service
+### Step 1: Get text into the app
+1. Text from a moderation team associated with a social media platform
+   - Copy text from the external app and paste it to the Flagged Post Content area by clicking the Paste Content Button
+2. Or it can be adhoc content you want to evaluate. Just type it in
 
-### **Configuration:**
-- Frontend: Vite build optimized for Vercel
-- Backend: Express.js server
-- Clean URLs: No .html extensions needed
-- Environment variables managed through Vercel dashboard
+### Step 2: Choose Analysis Type
+- **Quick Analysis**: Use when you need a fast decision
+  - Best for: Urgent moderation decisions
+  - Response: Brief decision + key rule violations
+  - Character limit: 300 characters
+  
+- **Detailed Analysis**: Use when you need full reasoning
+  - Best for: Complex cases, training, documentation
+  - Response: Complete decision + detailed reasoning + rule citations
+  - Character limit: 2000 characters
 
-## 📁 Project Structure
+### Step 3: Run Moderation
+1. Click either the **"Quick Analysis"** or **"Detailed Analysis"** button based on your chosen analysis type
+2. Wait for the AI to analyze the content (usually 2-5 seconds)
+3. Review the results displayed in the **"Moderation Results"** area of the screen
 
-```
-ModerationTool/
-├── src/                 # React source code
-├── public/              # Static assets and HTML pages
-│   ├── about.html       # About page
-│   ├── docs.html        # Documentation page
-│   ├── contact.html     # Contact page
-│   ├── privacy.html     # Privacy policy
-│   ├── terms.html       # Terms of service
-│   ├── version.js       # Version information
-│   └── vite.svg         # Vite logo
-├── dist/                # Build output (generated)
-├── vercel.json          # Vercel configuration
-├── package.json         # Dependencies and scripts
-└── vite.config.js       # Vite configuration
-```
+## 📊 Understanding Results
 
-## 🔄 Adding New HTML Pages
+### Decision Types
+The AI will return one of these decisions:
 
-1. **Create HTML file** in `public/` folder
-2. **Add route** to `vercel.json` rewrites
-3. **Build and deploy** with `npm run build && vercel --prod`
+- **✅ Allow**: Content meets community guidelines
+- **🚫 Remove**: Content violates community guidelines
+- **⚠️ Maybe Remove**: Borderline case requiring human judgment
 
-## 📚 Documentation
+### Result Information
+Each result includes:
+- **Decision**: The AI's recommendation
+- **Reasoning**: Explanation of why the decision was made
+- **Rules Cited**: Specific community guidelines that apply
+- **Source**: Indicates the analysis type used
 
-- [Vercel Deployment Guide](VERCEL_DEPLOYMENT_GUIDE.md) - Complete deployment instructions
-- [Development Notes](DEVELOPMENT_NOTES.md) - Development workflow and notes
-- [Version Management](VERSION_MANAGEMENT.md) - Version control and updates
+## 🔧 Debug Features
 
-## 🆘 Troubleshooting
+### Save AI Prompt
+- **Purpose**: See exactly what instructions the AI received
+- **Use Case**: Debug unexpected AI behavior, verify prompt content
+- **Output**: Downloads a text file with the complete AI prompt
 
-1. Check the troubleshooting section in [VERCEL_DEPLOYMENT_GUIDE.md](VERCEL_DEPLOYMENT_GUIDE.md)
-2. Review the test output
-3. Check configuration files
-4. Open an issue with detailed error information
+### Download AI Prompt
+- **Purpose**: Save AI prompts for later analysis
+- **Use Case**: Training, documentation, troubleshooting
+- **Output**: Saves to local debug folder with timestamp
+
+## 🎯 Best Practices
+
+### For Quick Analysis
+- Use for routine moderation decisions
+- Perfect for high-volume content screening
+- Results are concise and actionable
+
+### For Detailed Analysis
+- Use for complex or controversial content
+- Helpful for training new moderators
+- Provides complete reasoning for documentation
+
+### AI Reliability and Human Judgment
+- **Always review AI recommendations** before making final decisions
+- **Consider context** that the AI might not understand
+- **Apply community standards** and local knowledge
+- **Use AI as a tool**, not as the final authority
+- **Trust your judgment** when AI recommendations seem questionable
+
+## 🚨 Troubleshooting
+
+### Common Issues
+
+**"Failed to moderate content"**
+- Check if the backend server is running
+- Verify your internet connection
+- Try refreshing the page
+
+**"AI models are currently unavailable"**
+- Check your internet connection
+- Try refreshing the page
+- Contact support if the issue persists
+
+**Unexpected AI responses**
+- Use the "Save AI Prompt" feature to see what the AI received
+- Check the debug logs in the terminal
+- Verify your prompt files are properly configured
+
+**AI response errors or inconsistencies**
+- Remember the disclaimer: AI responses may contain errors
+- Use your own judgment to evaluate the content
+- Consider the context that the AI might not understand
+- Apply community standards and local knowledge
+- Don't rely solely on AI recommendations for critical decisions
+
+### Getting Help
+
+1. **Use debug features** to see what the AI is receiving
+2. **Try refreshing the page** if you encounter issues
+3. **Contact support** if problems persist
+
+## 🔄 Troubleshooting Tips
+
+### When to Refresh
+- If the AI stops responding correctly
+- If you see unexpected behavior
+- If the page seems unresponsive
+
+### How to Refresh
+Simply refresh your browser page (F5 or Ctrl+R) to reset the application.
+
+## 📁 Debug Files
+
+- **Debug Files**: Automatically saved to the `debug/` folder when you use the Save/Download features
+- **AI Prompts**: These files help you understand how the AI makes decisions
+
+## 🎉 You're Ready!
 
 ---
 
-**Happy Monitoring! 🚀**
-
----
-
-## Last Updated
-- **Date**: August 15, 2025
-- **0.8.40-alpha
-- **Status**: Production live on Vercel with clean URLs
-- **Next Action**: Ready for production deployment 
+*For technical support or feature requests, check the project documentation or contact the development team.* 

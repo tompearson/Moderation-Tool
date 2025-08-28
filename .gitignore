@@ -9,6 +9,9 @@ pnpm-debug.log*
 dist/
 build/
 
+# Protected content - never commit sensitive prompts
+dist/protected/
+
 # Environment variables
 .env
 .env.local

@@ -14,7 +14,8 @@
     "dev:backend": "node server.js",
     "dev:separate": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
     "setup": "node setup-env.js",
-    "vercel-build": "VITE_CJS_IGNORE_WARNING=true vite build",
+    "vercel-build": "VITE_CJS_IGNORE_WARNING=true vite build && npm run copy-protected-files",
+    "copy-protected-files": "node scripts/copy-api-files.js",
     "test:production": "node test-production.js",
     "test:local": "node test-production.js",
     "update-version": "node scripts/update-version.js",
@@ -38,8 +39,10 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.0",
     "express": "^4.18.2",
+    "node-fetch": "^3.3.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "vercel": "^25.2.0",
     "vite": "^7.0.5"
   },
   "devDependencies": {

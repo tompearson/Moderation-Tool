@@ -4,12 +4,14 @@
   "outputDirectory": "dist",
   "installCommand": "npm install",
   "framework": "vite",
+  "redirects": [
+    { "source": "/", "destination": "/access-denied.html", "permanent": false },
+    { "source": "/app", "destination": "/index.html", "permanent": false }
+  ],
   "rewrites": [
+    { "source": "/access-denied", "destination": "/access-denied.html" },
     { "source": "/about", "destination": "/about.html" },
-    { "source": "/docs", "destination": "/docs.html" },
-    { "source": "/contact", "destination": "/contact.html" },
-    { "source": "/privacy", "destination": "/privacy.html" },
-    { "source": "/terms", "destination": "/terms.html" }
+    { "source": "/browse", "destination": "/directory-listing.html" }
   ],
   "env": {
     "NODE_ENV": "production"
